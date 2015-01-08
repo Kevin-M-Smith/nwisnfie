@@ -1,0 +1,33 @@
+Package: testthat
+Version: 0.9.1
+Title: Testthat code. Tools to make testing fun :)
+Description: A testing package specifically tailored for R that's fun,
+    flexible and easy to set up.
+Authors@R: as.person(c( "Hadley Wickham <hadley@rstudio.com> [aut,
+    cre]", "RStudio [cph]"))
+URL: https://github.com/hadley/testthat
+BugReports: https://github.com/hadley/testthat/issues
+Depends: R (>= 3.1.0), methods
+Imports: digest
+Suggests: devtools
+License: MIT + file LICENSE
+Collate: 'auto-test.r' 'colour-text.r' 'compare.r' 'context.r'
+    'describe.r' 'evaluate-promise.r' 'expect-that.r' 'expectation.r'
+    'expectations.r' 'library.r' 'make-expectation.r' 'mock.r'
+    'reporter.r' 'reporter-list.r' 'reporter-minimal.r'
+    'reporter-multi.r' 'reporter-silent.r' 'reporter-stop.r'
+    'reporter-summary.r' 'reporter-tap.r' 'reporter-teamcity.r'
+    'reporter-zzz.r' 'test-files.r' 'test-package.r' 'test-that.r'
+    'traceback.r' 'utils.r' 'watcher.r'
+Packaged: 2014-09-29 19:17:50 UTC; hadley
+Author: Hadley Wickham [aut, cre], RStudio [cph]
+Maintainer: Hadley Wickham <hadley@rstudio.com>
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2014-10-01 19:16:27
+Built: R 3.1.1; x86_64-apple-darwin13.4.0; 2014-10-06 04:55:43 UTC;
+    unix
+Archs: testthat.so.dSYM
+InstallAgent: packrat 0.4.2.1
+InstallSource: CRAN
+Hash: 8b05e97c7401ae4f8b5dfbaa44cfcf20

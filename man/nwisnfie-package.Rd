@@ -3,39 +3,32 @@
 \alias{nwisnfie}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+National Water Information System - National Flood Interoperability Experiment
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+Facilitates data harvest from USGS National Water Information System and subsequent publication of data in NetCDF format. 
 }
 \details{
 \tabular{ll}{
 Package: \tab nwisnfie\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2015-01-05\cr
-License: \tab What license is it under?\cr
+Version: \tab 0.1 \cr
+Date: \tab 2015-01-05 \cr
+License: \tab GPL (>= 2) \cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
 }
 \author{
-Who wrote it
+Kevin M. Smith (https://github.com/Kevin-M-Smith)
 
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
+Maintainer: Kevin.Smith@tufts.edu
 }
+
 \references{
-~~ Literature or other references for background information ~~
+\tabular{ll}{
+NWIS: \tab http://waterdata.usgs.gov/nwis \cr
+NetCDF:\tab http://www.unidata.ucar.edu/software/netcdf/ \cr
 }
-~~ Optionally other standard keywords, one per line, from file KEYWORDS in the R ~~
-~~ documentation directory ~~
+}
+
 \keyword{ package }
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
-}
+

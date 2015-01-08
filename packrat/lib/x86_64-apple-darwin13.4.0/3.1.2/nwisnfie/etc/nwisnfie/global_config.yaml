@@ -1,0 +1,13 @@
+db:
+ host : localhost
+ name : postgres
+ user : postgres
+ pass : uses
+
+time:
+ midnight.offset.standard : -06:00
+ midnight.offset.daylight : -05:00
+ 
+collections:
+    params: 00060,00065,00045,00095,00010,00062,00054,00036,00035
+ 

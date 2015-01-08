@@ -1,0 +1,543 @@
+2013-03-27  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Document synchronization and testoutputs.
+
+	* man/postgresqlSupport.Rd
+
+2013-03-27  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Change notation of LICENSE in DESCRIPTION upon request from CRAN
+
+	* LICENSE
+	* inst/NEWS
+	* inst/ANNOUNCEMENTS
+	* inst/TODO
+
+2013-03-27  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Use system libpq library when available on OS X (darwin)
+
+	* src/configure.in
+	* src/configure
+
+2012-12-06  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Test implementation of SQL with parameters.
+
+	* R/PostgreSQLSupport.R
+	* src/RS-pgsql-pqexecparams.c
+	* tests/dbGetQueryParams.R
+
+2012-10-04  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Bug fix for GC related errro as reported as issue 42.
+
+	* src/RS-DBI.c
+	* src/RS-PostgreSQL.c 
+	* tests/dbColumnInfo.R
+
+2012-09-18  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Keep consistency of const modifier to const char*
+
+	* src/RS-DBI.c
+
+2012-09-18  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Suppress message when $R_OS_TYPE is unset
+
+	* configure
+	* configure.in
+
+2012-04-06  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	For issue 39: use a single equal sign (=) in test string comparison
+
+	* configure
+	* configure.in
+
+2012-03-28  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Avoid connection cloning.
+	Ensure that BEGIN transaction is meaningfull
+
+	* R/PostgreSQLSupport.R
+	* tests/openSendQuery.R
+	* tests/dbTransactionTests.R
+	* tests/openSendQuery.R	
+	* man/dbCommit-methods.Rd
+
+2012-02-27  Tomoaki NISHIYAMA  <tomoakin@staff.kanazawa-u.ac.jp>
+
+	Suppress dbColumnInfo Segmentation fault. RS_DBI_getTypeName() 
+	return "UNKNOWN" instead of NULL pointer.
+
+	* src/RS-DBI.h
+	* src/RS-DBI.c
+	* tests/unknowntypes.R
+
+2012-01-10  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Windows support for r-devel.
+	Make libpq.a with ar directly from $(OBJ) not via dll.
+	Thus, install.libs.R is no more required.
+
+	* ChangeLog
+	* DESCRIPTION
+	* src/Makevars.win
+	* src/install.libs.R: delete
+	* src/libpq/Makefile.global.win64
+	* src/libpq/Makefile.win
+	* src/libpq/Makefile.shlib
+
+2011-12-31  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Move conditionals from Makevars.in to configure.in and
+	configure so that the GNU extension is not used.
+
+	* ChangeLog
+	* DESCRIPTION
+	* configure
+	* configure.in
+	* src/Makevars.in
+
+2011-12-29  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Prepare for release. As the last update makes many incompatibilities,
+	the version number is large update.
+	Remove dbBeginTransaction which is not defined in DBI.
+
+	* ChangeLog
+	* DESCRIPTION
+	* NAMESPACE
+	* R/PostgreSQL.R
+	* inst/NEWS
+	* man/dbCommit-methods.Rd 
+
+2011-12-03  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Remove exported names that are not defined in DBI and may conflict other packages.
+	Remove safe.write, which is not used anymore.
+	Don't use make.db.names, which prevents using natural names.
+	Move dbBuildTableDefinition to postgresqlBuildTableDefinition.
+	Move isIdCurrent to isPostgresqlIdCurrent
+	row.names be integer rather than charactor for sqldf compatibility.
+
+	* NAMESPACE
+	* R/PostgreSQL.R
+	* R/PostgreSQLSupport.R
+	* R/dbObjectId.R
+	* man/safe.write.Rd
+	* man/dbBuildTableDefinition.Rd
+	* man/postgresqlBuildTableDefinition.Rd
+	* man/make.db.names-methods.Rd
+	* man/dbObjectId-class.Rd
+	* man/isIdCurrent.Rd
+	* man/isPostgresqlIdCurrent.Rd	
+	* man/postgresqlSupport.Rd
+
+2011-12-02  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Add clean: target to clean the libpq subdir on darwin
+	
+	* src/Makevars.in
+
+2011-11-24  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Use internal libpq for Mac OS X without PostgreSQL installation
+
+	* config.guess
+	* config.sub
+	* configure
+	* configure.in
+	* install-sh
+	* Makevars.in
+	* src/libpq/netdb.h
+	* src/libpq/pwd.h	
+
+2011-11-22  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Restructuring libpq directory so that the dynamic library for 
+	Mac OS X / darwin can be made with make -f Makefile.darwin in that
+	directory. Move windows specific include files to wininclude/ so
+	that they do not interfere darwin.  Configuration dependent files
+	are separated as *.win and *.darwin and that should be copied 
+	at the first step of make.  This is not enabled in OS X, though.
+
+	* ChangeLog
+	* src/Makevars.win
+	* src/libpq
+	* src/libpq/getaddrinfo.c: MinGW-w64 compatibility
+	* src/libpq/pg_config_os.h.win: MinGW-w64 compatibility
+
+2011-11-16  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	add LICENSE file
+
+	* ChangeLog
+	* inst/NEWS: Change the release date.
+	* LICENSE
+
+2011-11-15  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Edit DESCRIPTION for LICENSE format, Copyright notice, and
+	requirements for installation.
+
+	* DESCRIPTION
+
+2011-11-14  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Remove make 3.80 dependency, so that the library can be compiled with
+	Rtools214 without newer MinGW/MSYS installation. 
+
+	* ChangeLog
+	* src/libpq/.gitignore: remove
+	* src/libpq/Makefile.global.win32: remove recursion support
+	* src/libpq/Makefile.global.win64: remove recursion support
+	* src/libpq/Makefile.shlib: remove '| $(SHLIB_PREREQS)'
+
+2011-11-12  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Bundle libpq source for compilation on windows.
+
+	* libpq/:
+		src/interfaces/libpq from postgresql-9.1.1 
+		configured on MinGW-w64 environment with some additional files
+		required and Makefile edited to remove reference to other
+		paths.  Makefile.global.win32 is from postgesql-9.1.1
+		configured on MinGW 32-bit envionment.
+	* configure.win: not depending on PG_HOME on windows.
+	* src/Makevars.win: depend on libpq/
+	* src/install.libs.R: derived from R-2.14.0/src/library/tools/R
+		copy libpq/libpq.dll to the destination same as RPostgreSQL.dll.  
+
+2011-10-03  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Use try() not to abort on error to write spacial/kanji characters.
+	For control characters use print again, but not for kanji special
+	latin characters as umlaut.
+
+	* ChangeLog
+	* DESCRIPTION: Change maintainer name & address
+	* tests/dbWriteTabletypes.R: use try()
+	
+2011-10-02  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Avoid using raw UTF-8 string and conversion by print() for the test.
+
+	* tests/dbWriteTabletypes.R: use \uxxxx escape for utf-8 string
+	and use cat() to output them.
+
+2011-10-01  Dirk Eddelbuettel  <edd@debian.org>
+
+	Added $Id$ to all .R .c .h files and removed $Date$ from them.
+	Removed declared-but-unused variables.
+
+2011-09-26  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Raise the version number to 0.2-0
+
+	* ChangeLog
+	* DESCRIPTION
+	* R/PostgreSQL.R
+
+2011-09-25  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/*Rout.save: Updated six reference output files to match
+	current output, differences mostly in whitespace or formatting
+
+2011-09-25  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Type conversion: integer is mapped to integer in postgresql;
+
+	* R/PostgreSQLSupport.R: code change
+	* tests/dbWriteTabletypes.R: testcode that R integer stored to
+	PostgreSQL gets back as integer in R.
+
+2011-09-25  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	dbListFields see only the current_schema unless the schema is
+	specified
+
+	* R/PostgreSQL.R: dbListFields are changed as above
+	* tests/dbListFields.R: testcase
+
+2011-09-24  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Remove warning on enum, array, macaddr and inet; they are just kept as
+	string, though.
+
+	* src/RS-PostgreSQL.c: code change
+	* man/dbSendQuery-methods.Rd: mannual
+
+2011-08-26  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	dbWriteTable does escape strings, without a temporary file
+
+	* NAMESPACE: export postgresqlCopyInDataframe
+	* R/PostgreSQLSupport.R: adapter postgresqlCopyInDataframe
+	* man/postgresqlSupport.Rd: document
+	* src/RS-pgsql-copy.c: major code change; some derive from R
+	* src/S4R.h: include "R.h"
+
+2011-03-11  Dirk Eddelbuettel  <edd@debian.org>
+
+	added a short paragraph to DESCRIPTION reminding people to install
+	PostgreSQL itself
+
+	* DESCRIPTION
+
+2011-03-07  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	dbSendQuery when the return value is not to be used.
+	Use dbGetQeury instead.
+
+	* tests/createTableMixedCaseTest.R
+	* tests/dataTypeTests.R
+	* tests/datetimeTests.R
+	* tests/dbColumnInfo.R
+	* tests/dbtemptable.R
+
+2011-03-07  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Support for writing Date and POSIXct class as date and timestamp with
+	time zone
+	Manual and code consistency for postgresqlQuoteId and
+	postgresqlTableRef.
+
+	* R/PostgreSQLSupport.R: add field type for Date and POSIXct for
+	PostgreSQL
+	* tests/datetimestampwrite.R: the test for above
+	* R/PostgreSQLSupport.R: identifier -> identifiers
+	* man/postgresqlSupport.Rd: explict that one or more identifiers
+	can be passed to postgresqlQuoteId
+
+2011-03-06  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	More handling schema.
+
+	* R/PostgreSQL.R: dbRemoveTable handle c("schema", "table").
+
+2011-03-05  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Handling of schema:
+	postgresqlTableRef generates "schema"."table"
+	from a vector c("schema", "table"), and many of postgresqlQuoteId was
+	changed to postgresqlTableRef.
+
+	* NAMESPACE: exporting postgresqlQuoteId, postgresqlTableRef
+	* R/PostgreSQLSupport.R: the code changed
+	* man/postgresqlSupport.Rd: documentation change
+	* R/PostgreSQL.R: dbExistsTable accept c("schema", "table")
+	* tests/dbExistsqc.R: test for "rock.data"
+	* tests/dbWriteTableSchema.R: tests dbWritetable to c("public",
+	"rockdata")
+
+2010-11-13  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Consistency of tablename argument of dbExistsTable and dbWriteTable.
+
+	* R/PostgreSQL.R: dbExistsTable behave like dbWriteTable on table
+	name.
+	* tests/dbExistsqc.R: test code
+
+2010-11-02  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	Get results after CopyIn so that error is raised when
+	incompatible table exists for dbWriteTable(append=TRUE)
+
+	* NAMESPACE: exporting postgresqlEscapeStrings
+	* R/PostgreSQLSupport.R: call sequence change for dbWriteTable:
+	pqExec, CopyIn, and getResult
+	* src/RS-RS-pgsql-getResult.c: new function to get return results.
+	* src/RS-RS-pgsql-pqexec.c: new function to call pqexec.
+	* man/postgresqlSupport.Rd: documentation
+	* tests/dbWriteTableFailTest.R: New test code
+
+2010-10-17  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Release 0.1-7
+
+2010-10-14  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	* src/RS-PostgreSQL.c: nullOk column in dbColumnInfo to have NA
+	unless the backend has clear statement
+
+2010-10-13  Joe Conway  <joe@conway.com>
+
+	* src/RS-PostgreSQL.c: Correct segfault from issue ticket #24
+
+2010-10-13  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	postgresqlEscapeStrings and postgresqlQuoteId to escape and quote
+	strings and identifiers.  This is used in dbWriteTable, dbExitsTable,
+	and dbRemoveTable.
+
+	* NAMESPACE: exporting postgresqlEscapeStrings
+	* R/PostgreSQL.R: use postgresqlEscapeStrings and postgresqlQuoteId
+	in dbExistsTable and dbRemoveTable
+	* R/PostgreSQLSupport.R: define postgresqlQuoteId
+	* src/RS-PQescape.c: implements postgresqlEscapeStrings, which is
+	adapter to PQescapeStringConn
+	* tests/createTableMixedCaseTest.R: modified what is the right behavior
+	* tests/escape.R: test for postgresqlEscapeStrings
+	* tests/dbExistsq.R: test for dbExistsTable with complex name
+	* tests/selectWhereZero.R: Change species to "Species" so that the
+	error message will not change.
+
+2010-10-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/RS-DBI.h: Applied patch by Brian D. Ripley to correct
+	declaration of getpid() on Windows
+
+	* ChangeLog: Moved from inst/ChangeLog; now C-x 4 a inserts filenames
+
+2010-10-05  Tomoaki NISHIYAMA  <tomoakin@kenroku.kanazawa-u.ac.jp>
+
+	dbWriteTable copies tha data via the network connection
+
+	* R/PostgreSQLSupport.R: postgresqlCopyIn, adapter to RS_PostgreSLQ_copyin
+	* src/RS-pgsql-copy.c: implements RS_PostgreSQL_copyin, adapter to
+	PQputCopyData and PQputCopyEnd
+	* src/RS-PostgreSQL.c: initialize is_select
+	* src/RS-PostgreSQL.h: decleration of RS_PostgreSQL_copyin
+	* NAMESPACE: decleration
+
+2010-09-11  Dirk Eddelbuettel  <edd@debian.org>
+
+	* src/RS-DBI.h: Applying patch by tomoakin@kenroku.kanazawa-u.ac.jp
+	from Issue #21 to add missing unistd.h to help with Intel compiler
+
+2010-07-14  Dirk Eddelbuettel  <edd@debian.org>
+
+	* R/PostgreSQLSupport.R: In postgresqlFetch(), correct case
+	of as.POSIXct() call where format string is passed to tz argument
+	Thanks to Steve Eick for the bug report.
+
+2009-11-05  Dirk Eddelbuettel  <edd@debian.org>
+
+	* R/PostgreSQLSupport.R: Apply patch by Robert McGehee to avoid the
+	default tmpdir not only on Linux but also Darwin
+
+2009-10-19  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-6
+
+	* tests/connectWithNull.R: allow for port to be passed via an env. var.
+	* tests/dataTypeTests.R: idem
+	* tests/datetimeTests.R: idem
+	* tests/dbExistsIssue.R: idem
+	* tests/dbWriteTableTest.R: idem
+	* tests/loadDriverAndConnect.R: idem
+	* tests/selectWhereZero.R: idem
+	* tests/selectWithAlias.R: idem
+
+2009-10-16  Dirk Eddelbuettel  <edd@debian.org>
+
+	* R/PostgreSQL.R: Add missing paste() with thanks to João G.
+
+2009-10-14  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/selectWhereZero.R: Fix upper/lower case table name
+
+2009-10-13  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-5
+	  + No new features but fixes for bugs #1, #2, #3 and #6 on the issue
+	    tracker
+	  + Both #4 and #5 are feature / enhancement request for which
+	    patch contributions are greatly appreciated.
+	  + Lastly #7 cannot be replicated.
+
+	[ Neil Tiffin ]
+
+	* configure.in: Added standard OS X / Fink location
+
+	* src/RS-DBI.*: Consistent formatting via use of GNU indent
+	* src/RS-PostgreSQL.*: idem
+	* src/S4R.h: idem
+
+	[ Dirk Eddelbuettel ]
+
+	* src/RS-PostgreSQL.c: Apply fix by Joe Conway for seg.fault on
+ 	  alias'ed queries report as issue #1 in the issue tracker.
+	* src/RS-PostgreSQL.c: Remove unused variables
+
+	* R/PostgresSQL.R: Correction to dbExistsTable() to also recognise
+	  queries of the form 'schemaname.tablename' which was reported as
+	  issue #3 in the issue tracker following earlier emails by Prasenjit
+	  Kapat -- thanks to Prasenjit and Joe Conway patches that I merged
+
+	* R/PostgreSQLSupport.R: In dbConnect(), stop if any one of user,
+  	  password, host, dbname, port or tty is NULL to prevent a seg.fault
+	  which was reported as issue #2 on the issue tracker 
+	* R/PostgreSQLSupport.R: Wrap dbSendQuery() in try() to be more
+	  fault-tolerant an queries with errors which was reported as 
+	  issue #6, thanks to Joe Conway for the suggested fix.
+
+	* man/dbApply.Rd: Commented-out \usage thanks to new Rd parser
+	* man/safe.write.Rd: Fixed cross-references thanks to R 2.10.0 parser
+	* man/PostgreSQL.Rd: idem
+	* man/dbReadTable-methods.Rd: idem
+
+	* R/dbObjectId.R: Set missing SVN property Date
+	* R/S4R.R: idem
+
+	* tests/connectWithNull.*: added new test and comparison output
+	* tests/dbExistsIssue.*: idem
+	* tests/dbWriteTable.*: idem
+	* tests/selectWhereZero.*: idem
+	* tests/selectWithAlias.*: idem
+	* tests/dataTypeTests.R: Remove correct temp. table
+
+2009-01-26  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-4
+
+	* man/dbDataType-methods.Rd: small correction for error noticed
+	  by the new R parser
+
+2008-12-12  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-3
+
+	* src/RS-DBI.c: Fixed to small memory leaks, with thanks to
+  	  Jeff Horner for a small patch to which we added a similar
+	  fix
+
+	* tests/*: Corrected a small typo in env.var
+
+2008-11-02  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-2
+
+	* tests/*: Even more small fixes
+
+	* configure.win: Test for $PG_HOME
+
+2008-10-28  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: CRAN release 0.1-1
+
+	* tests/*: More cleanup on the tests
+
+	* DESCRIPTION: URL fix
+
+2008-10-21  Dirk Eddelbuettel  <edd@debian.org>
+
+	* tests/*: Tests are now run if and only if the environment variables
+	POSTGRES_USER, POSTGRES_HOST and POSTGRES_DATABASE are set; the
+	variable POSTGRES_PASSWD is also used.  This allows tests to run if
+	the local admin wants them to run.
+	Thanks to Uwe Ligges for the idea, and to Brian Ripley for supporting
+	it. For now, CRAN won't run this though and it is effectively
+	disabled in the default test during 'R CMD check' as the vars will
+	presumably not be set.
+
+	* configure{,.in}: no longer test for libpq.so as a second
+	confirmation as OS X has it as libpq.dylib and would hence always
+	fail. Thanks to Jan de Leeuw for the pointer.
+
+2008-10-14  Dirk Eddelbuettel  <edd@debian.org>
+
+	* DESCRIPTION: Initial CRAN release 0.1-0

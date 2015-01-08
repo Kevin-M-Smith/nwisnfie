@@ -1,10 +1,10 @@
 Package: nwisnfie
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Facilitates data harvest from USGS National Water Information System and subsequent publication of data in NetCDF format. 
+Version: 0.1
 Date: 2015-01-05
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Kevin-M-Smith (https://github.com/kevin-m-smith)
+Maintainer: Kevin Smith <Kevin.Smith@tufts.edu>
+Description: 
+License: GPL (>= 2)
 Suggests: testthat
