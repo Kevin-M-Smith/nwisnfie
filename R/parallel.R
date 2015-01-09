@@ -1,32 +1,64 @@
-# https://github.com/hadley/plyr/blob/80af6d9f1b53e01222edfb6db50dc83a4624f2c4/R/llply.r
-
-
 #' Cluster Management
 #' 
 #' Functions for cleanly starting and stopping PSOCK clusters. 
 #' These clusters are used by \code{nwisnfie} to perform embarassingly parallel tasks in tandem.
 #' PSOCK clusters are used for maximum compatibility across platforms. 
 #'
-#' @name Cluster Management
+#' @name Parallelization
+#' @param config Configuration object created by \code{LoadConfiguration}
+#' @param cluster A cluster reference produced by \code{StartupCluster}
+#' @return \code{StartupCluster} returns an object of class c("SOCKcluster", "cluster"), as built by \code{parallel::makePSOCKcluster}.
 #' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
+#' @details
+#' \code{StartupCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections. 
+#' \code{StopCluster} closes out all database connections, and destroys the cluster.
+NULL
 
+#' @rdname Parallelization
+StartupCluster <- function(config){
+  if (config$parallel$max.cores == "NONE"){
+    ncores = parallel::detectCores()
+  } else if (is.numeric(config$parallel$max.cores)){
+    if (config$parallel$max.cores > parallel::detectCores()){
+      ncores = parallel::detectCores()
+    } else {
+      ncores = config$parallel$max.cores
+    }
+  } else {
+    warning("
+            Did not recognize configuration for parallel/max.cores. 
+            Defaulting to single core operations. 
+            
+            Please specify maximum number of cores numerically (e.g. 4) 
+              or NONE to use all available cores.
 
+            EXAMPLES
+            parallel:
+             max.cores: NONE
 
+            parallel:
+             max.cores: 2")
+  }
 
-#' Starts Cluster for Parallel Operations
-#' 
-#' This function starts up the cluster, loads the \code{nwisnfie} library, and starts database connections
-#'
-#'
-.StartupCluster <- function(config){
   cluster <- parallel::makePSOCKcluster(
-    names = parallel::detectCores(), 
+    names = ncores, 
     outfile = "")
   doParallel::registerDoParallel(cluster)
   parallel::clusterExport(cluster, "config")
   parallel::clusterEvalQ(cluster,{
-    #library(doParallel)
     conn2 <- nwisnfie::StartDBConnection(config = config)
   })
+  return(cluster)
 }
+
+#' @rdname Parallelization
+StopCluster <- function(cluster){
+  cc <- clusterEvalQ(cluster, {
+    dbDisconnect(conn2)
+  })
+  
+  cc <- stopCluster(cluster)
+}
+
+
 

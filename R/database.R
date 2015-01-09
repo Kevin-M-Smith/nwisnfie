@@ -2,22 +2,24 @@
 #' 
 #' Functions used to start and stop database connections. 
 #' 
-#' @name Manage Database Connections
+#' @name DBConnections
 #' @param conn A RPostgreSQL connection object. 
-#' @param config Configuration object created by LoadConfiguration
+#' @param config Configuration object created by LoadConfiguration.
 #' @return For \code{StartDBConnection}, a RPostgreSQL connection object.
 #' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
-#' @examples
+#' @details
+#' \code{StartDBConnection} starts a database connection specified by \code{config}.
+#' \code{StopDBConnection} closes out the database connection contained in the \code{conn} object.
 #' \dontrun{
 #' # Start and End Database Connection
 #'  library(nwisnfie)
 #'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
 #'  conn <- StartDBConnection(config)
-#'  EndDBConnection(conn)
+#'  StopDBConnection(conn)
 #' }
 NULL
 
-#' @describeIn 'Managing Database Connections' Starts a database connection specified by \code{config}.
+#' @rdname DBConnections
 StartDBConnection <- function(config){
   library(RPostgreSQL)
   driver <- DBI::dbDriver("PostgreSQL")
@@ -31,8 +33,8 @@ StartDBConnection <- function(config){
   return(conn)
 }
 
-#' @describeIn 'Managing Database Connections' Closes out the database connection contained in the \code{conn} object.
-EndDBConnection <- function(conn){
+#' @rdname DBConnections
+StopDBConnection <- function(conn){
   cc <- DBI::dbDisconnect(conn)
   cat("Database Logout Successful. \n")
 }
@@ -62,8 +64,6 @@ RunQuery <- function(conn, query){
 #' Checks which tables exist. 
 #' 
 #' Checks for all tables listed in \code{\link{Configuration File}}.
-#' 
-#' 
 #' 
 #' @param conn Database connection created by StartDBConnection.
 #' @param config A configuraiton object created by LoadConfiguration
@@ -109,47 +109,3 @@ RunDBDiagnostics <- function(config){
   WhichTablesExist(conn = conn, config = config)
 }
 
-#' Populates static tables in database. 
-#' 
-#' The following tables are considered 'static':
-#' \enumerate{
-#' \item param.codes
-#' \item site.metadata
-#' \item param.metadata
-#' \item active.sites
-#' \item site.assets
-#' }
-#' 
-#' @param config A configuration object created by LoadConfiguration
-#' @return NULL
-#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
-PopulateStaticTables <- function(config){
-  conn <- StartDBConnection(config)
-  
-  .StartupCluster(config)
-  
-  .PopulateParamCodes(conn = conn, config = config)
-  .PopulateActiveSites(conn = conn, config = config)
-}
-
-#' Populate the param.codes table specified in \code{global.config.}
-.PopulateParamCodes <-function(conn, config){
-  RPostgreSQL::dbWriteTable(conn = conn, 
-                            name = config$tables$param.codes, 
-                            parameter_codes)
-}
-
-
-.PopulateActiveSites <- function(conn, config){
-  pb <- txtProgressBar(min = 1, max = 49, style = 3, width = 20)
-  
-  cc <- foreach(i = 1) %dopar% { 
-    .DownloadActiveSitesForState(state.abb[i]) 
-  }
-  
-  cc <- foreach(i = 2:50) %dopar% {
-    setTxtProgressBar(pb, i)
-    .DownloadActiveSitesForState(state.abb[i]) 
-  }
-  
-}
