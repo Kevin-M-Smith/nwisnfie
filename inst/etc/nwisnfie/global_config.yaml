@@ -10,4 +10,12 @@ time:
  
 collections:
     params: 00060,00065,00045,00095,00010,00062,00054,00036,00035
- 
+    
+tables:
+ data : data
+ site.metadata : site_metadata
+ param.metadata : param_metadata
+ active.sites : active_sites
+ site.assets : site_assets
+ param.codes : param_codes
+ staging.table : staging_table

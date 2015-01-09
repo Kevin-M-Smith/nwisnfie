@@ -38,4 +38,4 @@ GithubRepo: RPostgreSQL
 GithubUsername: Kevin-M-Smith
 GithubRef: master
 GithubSHA1: 644258707956c59c8ab80edb48a84d8e6f71dd08
-Built: R 3.1.2; x86_64-apple-darwin13.4.0; 2015-01-08 19:54:41 UTC; unix
+Built: R 3.1.2; x86_64-apple-darwin13.4.0; 2015-01-09 03:35:30 UTC; unix

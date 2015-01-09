@@ -9,4 +9,5 @@ Maintainer: Kevin Smith <Kevin.Smith@tufts.edu>
 Description: 
 License: GPL (>= 2)
 Suggests: testthat
-Built: R 3.1.2; ; 2015-01-08 20:19:28 UTC; unix
+Imports: RPostgreSQL, dataRetrieval, yaml
+Built: R 3.1.2; ; 2015-01-09 03:40:53 UTC; unix
