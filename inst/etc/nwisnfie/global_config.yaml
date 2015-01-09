@@ -19,3 +19,6 @@ tables:
  site.assets : site_assets
  param.codes : param_codes
  staging.table : staging_table
+
+parallel:
+ max.cores: NULL
