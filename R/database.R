@@ -22,6 +22,7 @@ NULL
 #' @rdname DBConnections
 StartDBConnection <- function(config){
   library(RPostgreSQL)
+  
   driver <- DBI::dbDriver("PostgreSQL")
   conn <- DBI::dbConnect(driver, 
                          dbname    = config$db$name, 
@@ -29,14 +30,14 @@ StartDBConnection <- function(config){
                          host      = config$db$host,
                          password  = config$db$pass)
   
-  cat("Database Login Successful. \n")
+  .message("Database login successful. \n", config = config)
   return(conn)
 }
 
 #' @rdname DBConnections
-StopDBConnection <- function(conn){
+StopDBConnection <- function(conn, config){
   cc <- DBI::dbDisconnect(conn)
-  cat("Database Logout Successful. \n")
+  .message("Database logout successful. \n", config = config)
 }
 
 #' Runs specified query.
@@ -53,11 +54,13 @@ StopDBConnection <- function(conn){
 #'  print(result)
 #'  EndDBConnection(conn)
 #' }
-RunQuery <- function(conn, query){
+RunQuery <- function(conn, query, config){
   if (missing(query)){
-    stop("No query specified for .RunQuery.")
+    .stop("No query specified for .RunQuery.", config = config)
   }
   
+  .message("Successfully ran query: ", config = config)
+  .message(query, config = config)
   res <- RPostgreSQL::dbGetQuery(conn, query)
 }
 
@@ -67,30 +70,39 @@ RunQuery <- function(conn, query){
 #' 
 #' @param conn Database connection created by StartDBConnection.
 #' @param config A configuraiton object created by LoadConfiguration
+#' @param quietly Logical, should the check proceed quietly?
 #' @return NULL
 #' @seealso To build a \code{conn} object, see \code{\link{StartDBConnection}}.
-WhichTablesExist <- function(conn, config){
+.WhichTablesExist <- function(conn, config, quietly = FALSE){
   
   BuildAndRunQuery <- function(table){
     result <- RunQuery(conn = conn, 
-              query = paste("select count(relname) from pg_class where relname = '", 
-                    table,
-                    "';", 
-                    sep = "")
-              )
-   
-    cat(paste("\t", table, "\t\t\t\t", as.logical(result), "\n", sep = ""))
+                       query = paste("select count(relname) from pg_class where relname = '", 
+                                     table,
+                                     "';", 
+                                     sep = ""),
+                       config = config)
+    
     return(as.logical(result))
   }
   
-  cat("Which Tables Exist: \n")
-  
-  if( sum(sapply(config$tables, BuildAndRunQuery)) > 0){
-    cat("At least one existing table was found.")
-  } else {
-    cat("No tables found.")
+  PrintHelper <- function(entry){
+    .message(paste(entry[1], entry[2], entry[3], sep = "\t"), config = config)
   }
   
+  cc <- sapply(config$tables, BuildAndRunQuery, USE.NAMES = TRUE)
+  
+  if (!quietly){
+    if( sum(cc) > 0){
+      .message("At least one existing table was found.", config = config)
+      .message("Which tables exist:", config = config)
+      apply(cbind(cc, config$tables, paste("(", names(config$tables), ")")), 1, PrintHelper)
+    } else {
+      .message("No tables found.", config = config)
+    }
+  }
+  
+  return(cc)
 }
 
 #' Run Diagnotistics on Database
@@ -106,6 +118,7 @@ WhichTablesExist <- function(conn, config){
 #' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
 RunDBDiagnostics <- function(config){
   conn <- StartDBConnection(config)
-  WhichTablesExist(conn = conn, config = config)
+  .WhichTablesExist(conn = conn, config = config)
+  StopDBConnection(conn = conn, config = config)
 }
 

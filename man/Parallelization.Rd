@@ -2,21 +2,21 @@
 % Please edit documentation in R/parallel.R
 \name{Parallelization}
 \alias{Parallelization}
-\alias{StartupCluster}
+\alias{StartCluster}
 \alias{StopCluster}
 \title{Cluster Management}
 \usage{
-StartupCluster(config)
+StartCluster(config)
 
 StopCluster(cluster)
 }
 \arguments{
 \item{config}{Configuration object created by \code{LoadConfiguration}}
 
-\item{cluster}{A cluster reference produced by \code{StartupCluster}}
+\item{cluster}{A cluster reference produced by \code{StartCluster}}
 }
 \value{
-\code{StartupCluster} returns an object of class c("SOCKcluster", "cluster"), as built by \code{parallel::makePSOCKcluster}.
+\code{StartCluster} returns an object of class c("SOCKcluster", "cluster"), as built by \code{parallel::makePSOCKcluster}.
 }
 \description{
 Functions for cleanly starting and stopping PSOCK clusters.
@@ -24,7 +24,7 @@ These clusters are used by \code{nwisnfie} to perform embarassingly parallel tas
 PSOCK clusters are used for maximum compatibility across platforms.
 }
 \details{
-\code{StartupCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections.
+\code{StartCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections.
 \code{StopCluster} closes out all database connections, and destroys the cluster.
 }
 \seealso{

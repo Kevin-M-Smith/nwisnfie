@@ -8,7 +8,7 @@
 \usage{
 StartDBConnection(config)
 
-StopDBConnection(conn)
+StopDBConnection(conn, config)
 }
 \arguments{
 \item{config}{Configuration object created by LoadConfiguration.}

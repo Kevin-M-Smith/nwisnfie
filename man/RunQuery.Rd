@@ -4,7 +4,7 @@
 \alias{RunQuery}
 \title{Runs specified query.}
 \usage{
-RunQuery(conn, query)
+RunQuery(conn, query, config)
 }
 \arguments{
 \item{conn}{A RPostgreSQL connection object.}

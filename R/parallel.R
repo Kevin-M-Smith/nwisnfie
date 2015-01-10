@@ -6,16 +6,21 @@
 #'
 #' @name Parallelization
 #' @param config Configuration object created by \code{LoadConfiguration}
-#' @param cluster A cluster reference produced by \code{StartupCluster}
-#' @return \code{StartupCluster} returns an object of class c("SOCKcluster", "cluster"), as built by \code{parallel::makePSOCKcluster}.
+#' @param cluster A cluster reference produced by \code{StartCluster}
+#' @return \code{StartCluster} returns an object of class c("SOCKcluster", "cluster"), as built by \code{parallel::makePSOCKcluster}.
 #' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
 #' @details
-#' \code{StartupCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections. 
+#' \code{StartCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections. 
 #' \code{StopCluster} closes out all database connections, and destroys the cluster.
 NULL
 
 #' @rdname Parallelization
-StartupCluster <- function(config){
+StartCluster <- function(config){
+  
+  cat("Loading parallelization backend. \n")
+  library(foreach)
+  library(doParallel)
+    
   if (config$parallel$max.cores == "NONE"){
     ncores = parallel::detectCores()
   } else if (is.numeric(config$parallel$max.cores)){
@@ -39,25 +44,35 @@ StartupCluster <- function(config){
             parallel:
              max.cores: 2")
   }
+  
+  cat(paste("Attempting to start PSOCK cluster with", ncores, "workers. \n"))
 
   cluster <- parallel::makePSOCKcluster(
     names = ncores, 
     outfile = "")
+  
   doParallel::registerDoParallel(cluster)
   parallel::clusterExport(cluster, "config")
+  
   parallel::clusterEvalQ(cluster,{
     conn2 <- nwisnfie::StartDBConnection(config = config)
   })
+    
   return(cluster)
 }
 
 #' @rdname Parallelization
 StopCluster <- function(cluster){
-  cc <- clusterEvalQ(cluster, {
-    dbDisconnect(conn2)
+  cat("Attempting to stop cluster. \n")
+  
+  cc <- parallel::clusterEvalQ(cluster, {
+    DBI::dbDisconnect(conn2)
   })
   
-  cc <- stopCluster(cluster)
+  cc <- parallel::stopCluster(cluster)
+  
+  cat("Cluster stopped successfully. \n")
+  
 }
 
 
