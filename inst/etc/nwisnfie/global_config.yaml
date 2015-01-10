@@ -28,4 +28,4 @@ parallel:
 logging:
  level: INFO
  time.stamp.format : [%Y-%m-%d %H:%M:%S]
- 
+ file: NULL
