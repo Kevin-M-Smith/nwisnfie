@@ -13,8 +13,6 @@
 #' }
 LoadConfiguration <- function(configFile = "global_config.yaml"){
   config <- yaml::yaml.load_file(configFile)
-  config$logging$file = NULL
-  return(config)
 }
 
 #' Adds a log file to a \code{config} object. 

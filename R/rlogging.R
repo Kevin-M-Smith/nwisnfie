@@ -37,7 +37,7 @@
   base::message(timestamp, ..., domain=  domain)
   
   if (!is.null(config$logging$level)) {
-    cat(timestamp, ..., "\n", file = config$logging$level, sep="", append=TRUE)
+    cat(timestamp, ..., "\n", file = config$logging$file, sep="", append=TRUE)
   }
   
 }
@@ -73,9 +73,7 @@
   is.condition <- length(args) == 1L && inherits(args[[1L]], "condition")
   if (!is.condition) {
     # if loglevel is set to INFO or WARN, then print log message
-    loglevel <- .GetLogLevel()
-    split.files <- get("split.files", envir = .rloggingOptions)
-    if (loglevel %in% c("INFO", "WARN")) {
+    if (config$logging$level %in% c("INFO", "WARN")) {
       .PrintLogMessage("[WARN] ", config = config, ...)
     }
     # always collect warnings when printing log messages
