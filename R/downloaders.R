@@ -42,37 +42,6 @@
   
   assets <- dataRetrieval::importRDB1(url)
   assets <- base::transform(assets, 
-                      seriesid = paste(agency_cd, ":", site_no, ":", parm_cd, ":00011:", 
-                                       formatC(dd_nu, width = 5, format = "d", flag = "0"), sep = ""),
-                      familyid = paste(agency_cd, ":", site_no, ":00011:", 
-                                       formatC(dd_nu, width = 5, format = "d", flag = "0"), sep = ""))
-  
-  if(nrow(assets) > 0){
-    RPostgreSQL::dbWriteTable(conn = conn2, 
-                              name = config$tables$site.assets, 
-                              value = assets, 
-                              append = TRUE, 
-                              row.names = FALSE, 
-                              overwrite = FALSE)
-  }
-}
-
-#' Downloads Assets at Sites
-#' 
-#' Downloads & imports the inventory of instantaneous values at a given set of sites. 
-#' 
-#' @param sites A character vector of USGS site numbers, comma separated, with no spaces. (e.g. "0101010,1020202,10101010")
-#' @param config Configuration object created by LoadConfiguration.
-#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
-.DownloadAssetsForSites <- function(sites, config){
-  
-  url <- paste("http://waterservices.usgs.gov/nwis/site/?format=rdb,1.0&sites=",
-               sites,
-               "&seriesCatalogOutput=true&outputDataTypeCd=iv",
-               sep = "")
-  
-  assets <- dataRetrieval::importRDB1(url)
-  assets <- base::transform(assets, 
                             seriesid = paste(agency_cd, ":", site_no, ":", parm_cd, ":00011:", 
                                              formatC(dd_nu, width = 5, format = "d", flag = "0"), sep = ""),
                             familyid = paste(agency_cd, ":", site_no, ":00011:", 
@@ -86,4 +55,97 @@
                               row.names = FALSE, 
                               overwrite = FALSE)
   }
+}
+
+
+.DownloadDataFromNWIS <- function(sites, 
+                                  params, 
+                                  startDate = NULL, 
+                                  endDate = NULL, 
+                                  period = NULL, 
+                                  offset = NULL, 
+                                  config){
+  
+  url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
+  url = paste(url, "&sites=", sites, sep = "")  
+  url = paste(url, "&parameterCd=", params, sep = "")
+  
+  if (is.null(startDate) || is.null(endDate)){
+    if (is.null(period)){
+      .stop("A lookback period or a pair of start 
+            and end dates must be specified.", 
+            config = config)
+    } else {
+      url = paste(url, "&period=", period, sep = "")  
+    }
+  } else {
+    if (is.null(period)){
+      if (is.null(offset)){
+        url = paste(url, "&startDT=", date, "T00:00:00", sep = "")
+        url = paste(url, "&endDT=", date, "T23:59:59", sep = "")
+      } else {
+        url = paste(url, "&startDT=", date, "T00:00:00", offset, sep = "")
+        url = paste(url, "&endDT=", date, "T23:59:59", offset, sep = "")
+      }
+    } else {
+      .stop("Please choose either a lookback period or a pair of start 
+            and end dates, but not both.", 
+            config = config)
+    }
+  }
+  
+  g = RCurl::basicTextGatherer()
+  
+  xml = RCurl::curlPerform(url = url, 
+                           writefunction = g$update, 
+                           httpheader = c(AcceptEncoding="gzip,deflate")) 
+  
+  doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  doc <- XML::xmlRoot(doc)
+  
+  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+  now <- format(Sys.time(), "%FT%T%z") 
+  
+  IsDataValidated <- function(x){
+    if(x == "P") 0 else 1
+  }
+  
+  if(length(vars) > 0){
+    for (i in 1:length(vars)){ 
+      parent <- XML::xmlDoc(vars[[i]]) 
+      parent <- XML::xmlRoot(parent) 
+      parentName <- unlist(XML::xpathApply(parent, "//ns1:timeSeries/@name")) 
+      sensors <- XML::xpathApply(parent, "//ns1:values") 
+      parameter <- XML::xpathApply(parent, "//ns1:variableCode", XML::xmlValue)
+      familyName <- paste(unlist(strsplit(parentName, ":", fixed = TRUE))[-3], collapse = ":")
+      for (j in 1:length(sensors)){ 
+        child <- XML::xmlDoc(sensors[[j]]) 
+        child <- XML::xmlRoot(child) 
+        if(!is.null(unlist(XML::xpathApply(child, "//@dateTime")))){
+          childName <- unlist(XML::xpathApply(child, "//ns1:method/@methodID")) 
+          childName <- formatC(strtoi(childName), width = 5, format = "d", flag = "0")  
+          
+          result <- data.frame( 
+            unlist(XML::xpathApply(child, "//@dateTime")), 
+            paste(parentName, ":", childName, sep = ""), 
+            paste(familyName, ":", childName, sep = ""),
+            unlist(XML::xpathApply(child, "//ns1:value", XML::xmlValue)),
+            parameter, 
+            unlist(lapply(XML::xpathApply(child, "//@qualifiers"), IsDataValidated)), 
+            now, 
+            now 
+          ) 
+          
+          colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
+          
+          cc <- RPostgreSQL::dbWriteTable(conn2, 
+                                          config$tables$data, 
+                                          result, 
+                                          append = TRUE, 
+                                          row.names = FALSE, 
+                                          overwrite = FALSE) 
+        }
+      } 
+    }
+  }   
 }

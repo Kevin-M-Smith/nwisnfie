@@ -11,7 +11,7 @@
 #'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
 #'  conn <- StartDBConnection(config)
 #' }
-LoadConfiguration <- function(configFile = "global_config.yaml"){
+LoadConfiguration <- function(configFile = "global_config.yaml") {
   config <- yaml::yaml.load_file(configFile)
 }
 
@@ -25,7 +25,7 @@ LoadConfiguration <- function(configFile = "global_config.yaml"){
 #'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
 #'  config <- AssignLogFileToConfig(file = "~/nwisnfie/logs/myLog.log", config = config)
 #' }
-AssignLogFileToConfig <- function(file, config){
+AssignLogFileToConfig <- function(file, config) {
   config$logging$file = file
   return(config)
 }

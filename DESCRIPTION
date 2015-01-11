@@ -8,4 +8,4 @@ Maintainer: Kevin Smith <Kevin.Smith@tufts.edu>
 Description: 
 License: GPL (>= 2)
 Suggests: testthat
-Imports: RPostgreSQL, dataRetrieval, yaml, foreach, doParallel, plyr
+Imports: RPostgreSQL, dataRetrieval, yaml, foreach, doParallel, plyr, RCurl, XML

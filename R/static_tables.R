@@ -141,7 +141,6 @@ RebuildStaticTables <- function(config){
   PopulateStaticTables(config)
 }
 
-
 # @TODO Add a check on database after completion to make sure all 50 states are present. 
 #' Populate the active.sites table specified in \code{config}.
 .PopulateActiveSites <- function(conn, config){
@@ -176,15 +175,14 @@ RebuildStaticTables <- function(config){
 }
 
 #' Populate the site.assets table specified in \code{config}.
-.PopulateSiteAssets<- function(conn, config){
+.PopulateSiteAssets <- function(conn, config){
   
   .message(paste("Populating table", 
                  config$tables$site.assets, 
                  "with an inventory of assets at each site."), 
            config = config)
   
-  query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
-  sites <- RunQuery(conn = conn, query = query, config = config)
+  sites <- .GetAllSites(conn = conn, config = config)
   
   # map.size controls how many sites are downloaded in a single REST call
   map.size = 50
@@ -230,9 +228,8 @@ RebuildStaticTables <- function(config){
            config = config)
 }
 
-
 #' Populate the param.codes table specified in \code{config}.
-.PopulateParamCodes <-function(conn, config){
+.PopulateParamCodes <- function(conn, config){
   .message(paste("Populating table", 
                  config$tables$param.codes, 
                  "with parameter codes."), 
@@ -250,7 +247,7 @@ RebuildStaticTables <- function(config){
 
 # @TODO Not implemented. No parameter metadata available yet.
 #' Populate the param.metadata table specified in \code{config}.
-.PopulateParamMetadata <-function(conn, config){
+.PopulateParamMetadata <- function(conn, config){
   .message(paste("Populating table", 
                  config$tables$param.metadata, 
                  "with parameter metadata."), 
@@ -258,7 +255,7 @@ RebuildStaticTables <- function(config){
 }
 
 #' Populate the sensor.metadata table specified in \code{config}.
-.PopulateSensorMetadata <-function(conn, config){
+.PopulateSensorMetadata <- function(conn, config){
   .message(paste("Populating table", 
                  config$tables$sensor.metadata, 
                  "with sensor metadata."), 
@@ -288,7 +285,7 @@ ON
 }
 
 #' Populate the site.metadata table specified in \code{config}.
-.PopulateSiteMetadata <-function(conn, config){
+.PopulateSiteMetadata <- function(conn, config){
   .message(paste("Populating table", 
                  config$tables$site.metadata, 
                  "with site metadata."), 
