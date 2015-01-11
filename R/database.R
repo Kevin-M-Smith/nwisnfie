@@ -10,12 +10,15 @@
 #' @details
 #' \code{StartDBConnection} starts a database connection specified by \code{config}.
 #' \code{StopDBConnection} closes out the database connection contained in the \code{conn} object.
+#' \code{TestDBConnection} attempts to start and stop a database connection based on \code{config}.
 #' \dontrun{
 #' # Start and End Database Connection
 #'  library(nwisnfie)
 #'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
 #'  conn <- StartDBConnection(config)
 #'  StopDBConnection(conn)
+#' # or equivalently:
+#'  TestDBConnection(conn)
 #' }
 NULL
 
@@ -30,14 +33,20 @@ StartDBConnection <- function(config){
                          host      = config$db$host,
                          password  = config$db$pass)
   
-  .message("Database login successful. \n", config = config)
+  .message("Database login successful.", config = config)
   return(conn)
 }
 
 #' @rdname DBConnections
 StopDBConnection <- function(conn, config){
   cc <- DBI::dbDisconnect(conn)
-  .message("Database logout successful. \n", config = config)
+  .message("Database logout successful.", config = config)
+}
+
+#' @rdname DBConnections
+TestDBConnection <- function(config){
+  conn <- StartDBConnection(config)
+  StopDBConnection(conn = conn, config = config)
 }
 
 #' Runs specified query.
@@ -121,4 +130,5 @@ RunDBDiagnostics <- function(config){
   .WhichTablesExist(conn = conn, config = config)
   StopDBConnection(conn = conn, config = config)
 }
+
 

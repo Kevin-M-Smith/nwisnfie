@@ -36,7 +36,7 @@
   timestamp <- format(Sys.time(), format = config$logging$time.stamp.format)
   base::message(timestamp, ..., domain=  domain)
   
-  if (!is.null(config$logging$level)) {
+  if (!is.null(config$logging$file)) {
     cat(timestamp, ..., "\n", file = config$logging$file, sep="", append=TRUE)
   }
   

@@ -35,7 +35,7 @@ PopulateStaticTables <- function(config){
   .PopulateSiteAssets(conn = conn, config = config)
   .PopulateSiteMetadata(conn = conn, config = config)
   
-  StopCluster(cluster)
+  StopCluster(cluster = cluster, config = config)
 }
 
 #' @rdname StaticTables
@@ -50,12 +50,13 @@ DropStaticTables <- function(config){
                          query = paste("drop table ", 
                                        config$tables[table],
                                        ";", 
-                                       sep = "")
-      )
-      cat(paste("Table '", table, "' dropped successfully. \n", sep = ""))
+                                       sep = ""),
+                         config = config)
+      
+      .message(paste("Table '", table, "' dropped successfully.", sep = ""), config = config)
       return(TRUE)
     } else {
-      cat(paste("Table '", table, "' did not exist. \n", sep = ""))
+      .message(paste("Table '", table, "' did not exist.", sep = ""), config = config)
       return(FALSE)
     }
   }
@@ -69,9 +70,9 @@ DropStaticTables <- function(config){
   
   cc <- lapply(staticTables, BuildAndRunQuery)
   
-  cat("No static tables remain. \n")
+  .message("No static tables remain.", config = config)
   
-  cc <- StopDBConnection(conn)
+  cc <- StopDBConnection(conn = conn, config = config)
   
 }
 
@@ -86,9 +87,15 @@ RebuildStaticTables <- function(config){
 #' Populate the active.sites table specified in \code{config}.
 .PopulateActiveSites <- function(conn, config){
   
-  cat(paste("Populating table", config$tables$active.sites, "with active sites. \n"))
-  cat(paste("Active sites have updated instantanous values within the lookback period: ", 
-            config$collections$lookback, ". \n", sep = ""))
+  .message(paste("Populating table", 
+                 config$tables$active.sites, 
+                 "with active sites."), 
+           config = config)
+  
+  .message(paste("Active sites are defined as sites with instantanous values that have
+                 been updated within the lookback period: ",
+            config$collections$lookback, ".", sep = ""), 
+           config = config)
   
   pb <- txtProgressBar(min = 1, max = 50, style = 3, width = 20)
   
@@ -101,18 +108,24 @@ RebuildStaticTables <- function(config){
     .DownloadActiveSitesForState(state = state.abb[i], config = config) 
   }
   
-  setTxtProgressBar(pb, 50); cat("\n")
+  setTxtProgressBar(pb, 50); 
   
-  cat(paste("Table ", config$tables$active.sites, " now populated with active sites. \n"))
+  .message(paste("Table", 
+                 config$tables$active.sites, 
+                 "now populated with active sites."), 
+           config = config)
 }
 
 #' Populate the site.assets table specified in \code{config}.
 .PopulateSiteAssets<- function(conn, config){
   
-  cat(paste("Populating table", config$tables$site.assets, "with an inventory of assets at each site. \n"))
+  .message(paste("Populating table", 
+                 config$tables$site.assets, 
+                 "with an inventory of assets at each site."), 
+           config = config)
   
   query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
-  sites <- RunQuery(conn = conn, query = query)
+  sites <- RunQuery(conn = conn, query = query, config = config)
   
   # map.size controls how many sites are downloaded in a single REST call
   map.size = 50
@@ -141,46 +154,66 @@ RebuildStaticTables <- function(config){
       } 
     }, warning = function(w) {
     }, error = function(e) {
-      cat(paste("Site:",
+      .warning(paste("Site:",
                 sites[i,1],
                 "at index",
                 i,
                 "failed:",
-                e)
-      )
-    }, finally = {
+                e))
     })
   }
   
   setTxtProgressBar(pb, length(map))
   
-  cat(paste("\n Table ", config$tables$site.assets, " now populated with site iventories. \n"))
+  .message(paste("Table", 
+                 config$tables$site.assets, 
+                 "now populated with site invetories."), 
+           config = config)
 }
 
 
 #' Populate the param.codes table specified in \code{config}.
 .PopulateParamCodes <-function(conn, config){
-  cat(paste("Populating table", config$tables$param.codes, "with parameter codes. \n"))
+  .message(paste("Populating table", 
+                 config$tables$param.codes, 
+                 "with parameter codes."), 
+           config = config)
+  
   RPostgreSQL::dbWriteTable(conn = conn, 
                             name = config$tables$param.codes, 
                             parameter_codes)
-  cat(paste("Table ", config$tables$param.codes, " now populated with parameter codes. \n"))
+  
+  .message(paste("Table", 
+                 config$tables$param.codes, 
+                 "now populated with parameter codes."), 
+           config = config)
 }
 
 # @TODO Not implemented. No parameter metadata available yet.
 #' Populate the param.metadata table specified in \code{config}.
 .PopulateParamMetadata <-function(conn, config){
-  cat(paste("Populating table", config$tables$param.metadata, "with parameter metadata. \n"))
+  .message(paste("Populating table", 
+                 config$tables$param.metadata, 
+                 "with parameter metadata."), 
+           config = config)
 }
 
 #' Populate the param.codes table specified in \code{config}.
 .PopulateSensorMetadata <-function(conn, config){
-  cat(paste("Populating table", config$tables$sensor.metadata, "with sensor metadata. \n"))
+  .message(paste("Populating table", 
+                 config$tables$sensor.metadata, 
+                 "with sensor metadata."), 
+           config = config)
+  
+  
 }
 
 #' Populate the param.codes table specified in \code{config}.
 .PopulateSiteMetadata <-function(conn, config){
-  cat(paste("Populating table", config$tables$site.metadata, "with site metadata. \n"))
+  .message(paste("Populating table", 
+                 config$tables$site.metadata, 
+                 "with site metadata."), 
+           config = config)
   
   query = paste("SELECT DISTINCT
   a.familyid,
@@ -206,8 +239,14 @@ LEFT OUTER JOIN
 ON
   (a.site_no = b.site_no);", sep = "")
   
-  result <- RunQuery(conn = conn, query = query)
-  cat(paste("Table ", config$tables$site.metadata, " now populated with site metadata. \n"))
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+.message(paste("Table", 
+               config$tables$site.metadata, 
+               "now populated with site metadata."), 
+         config = config)
 }
 
 

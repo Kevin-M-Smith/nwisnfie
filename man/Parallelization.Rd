@@ -4,11 +4,14 @@
 \alias{Parallelization}
 \alias{StartCluster}
 \alias{StopCluster}
+\alias{TestClusterSettings}
 \title{Cluster Management}
 \usage{
 StartCluster(config)
 
-StopCluster(cluster)
+StopCluster(cluster, config)
+
+TestClusterSettings(config)
 }
 \arguments{
 \item{config}{Configuration object created by \code{LoadConfiguration}}
@@ -26,6 +29,17 @@ PSOCK clusters are used for maximum compatibility across platforms.
 \details{
 \code{StartCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections.
 \code{StopCluster} closes out all database connections, and destroys the cluster.
+\code{TestClusterSettings} runs \code{StartCluster} and \code{StopCluster} in succession.
+}
+\examples{
+\dontrun{
+ library(nwisnfie)
+ config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
+ cluster <- StartCluster(config)
+ StopCluster(cluster = cluster, config = config)
+ # or equivalently:
+ TestClusterSettings(config)
+}
 }
 \seealso{
 To build a \code{config} object, see \code{\link{LoadConfiguration}}.

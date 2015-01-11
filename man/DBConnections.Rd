@@ -4,11 +4,14 @@
 \alias{DBConnections}
 \alias{StartDBConnection}
 \alias{StopDBConnection}
+\alias{TestDBConnection}
 \title{Manage Database Connections}
 \usage{
 StartDBConnection(config)
 
 StopDBConnection(conn, config)
+
+TestDBConnection(config)
 }
 \arguments{
 \item{config}{Configuration object created by LoadConfiguration.}
@@ -24,12 +27,15 @@ Functions used to start and stop database connections.
 \details{
 \code{StartDBConnection} starts a database connection specified by \code{config}.
 \code{StopDBConnection} closes out the database connection contained in the \code{conn} object.
+\code{TestDBConnection} attempts to start and stop a database connection based on \code{config}.
 \dontrun{
 # Start and End Database Connection
  library(nwisnfie)
  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
  conn <- StartDBConnection(config)
  StopDBConnection(conn)
+# or equivalently:
+ TestDBConnection(conn)
 }
 }
 \seealso{

@@ -12,12 +12,22 @@
 #' @details
 #' \code{StartCluster} starts up the cluster, loads the \code{nwisnfie} library, and starts individual database connections. 
 #' \code{StopCluster} closes out all database connections, and destroys the cluster.
+#' \code{TestClusterSettings} runs \code{StartCluster} and \code{StopCluster} in succession. 
+#' @examples
+#' \dontrun{
+#'  library(nwisnfie)
+#'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
+#'  cluster <- StartCluster(config)
+#'  StopCluster(cluster = cluster, config = config)
+#'  # or equivalently:
+#'  TestClusterSettings(config)
+#' }
 NULL
 
 #' @rdname Parallelization
 StartCluster <- function(config){
   
-  cat("Loading parallelization backend. \n")
+  .message("Loading parallelization backend.", config = config)
   library(foreach)
   library(doParallel)
     
@@ -45,14 +55,26 @@ StartCluster <- function(config){
              max.cores: 2")
   }
   
-  cat(paste("Attempting to start PSOCK cluster with", ncores, "workers. \n"))
+  .message(paste("Attempting to start PSOCK cluster with", 
+                 ncores, 
+                 "workers."), 
+           config = config)
+  
+  NewClusterMessage <- function(message, config){
+    .message(paste("Successfully built a ",
+                   capture.output(print(message)),
+                   ".", 
+                   sep = ""),
+             config = config)
+  }
+  
 
-  cluster <- parallel::makePSOCKcluster(
-    names = ncores, 
-    outfile = "")
+  cluster <- parallel::makePSOCKcluster(names = ncores, outfile = "")
   
   doParallel::registerDoParallel(cluster)
   parallel::clusterExport(cluster, "config")
+  
+  lapply(cluster, NewClusterMessage, config)
   
   parallel::clusterEvalQ(cluster,{
     conn2 <- nwisnfie::StartDBConnection(config = config)
@@ -62,8 +84,12 @@ StartCluster <- function(config){
 }
 
 #' @rdname Parallelization
-StopCluster <- function(cluster){
-  cat("Attempting to stop cluster. \n")
+StopCluster <- function(cluster, config){
+  .message(paste("Attempting to stop ", 
+                 capture.output(print(cluster)),
+                 ".", 
+                 sep = ""), 
+           config = config)
   
   cc <- parallel::clusterEvalQ(cluster, {
     DBI::dbDisconnect(conn2)
@@ -71,9 +97,12 @@ StopCluster <- function(cluster){
   
   cc <- parallel::stopCluster(cluster)
   
-  cat("Cluster stopped successfully. \n")
-  
+  .message("Cluster stopped successfully.", config = config)
 }
 
-
+#' @rdname Parallelization
+TestClusterSettings <- function(config){
+  cluster <- StartCluster(config)
+  StopCluster(cluster = cluster, config = config)
+}
 
