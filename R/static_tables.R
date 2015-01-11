@@ -34,6 +34,7 @@ PopulateStaticTables <- function(config){
   .PopulateActiveSites(conn = conn, config = config)
   .PopulateSiteAssets(conn = conn, config = config)
   .PopulateSiteMetadata(conn = conn, config = config)
+  .PopulateSensorMetadata(conn = conn, config = config)
   
   StopCluster(cluster = cluster, config = config)
 }
@@ -46,6 +47,15 @@ DropStaticTables <- function(config){
   
   BuildAndRunQuery <- function(table){
     if (exists[table]) {
+
+      .message(paste("Table '", 
+                     config$tables[table],
+                     "' (",
+                     table,
+                     ") exists.", 
+                     sep = ""), 
+               config = config)
+      
       result <- RunQuery(conn = conn, 
                          query = paste("drop table ", 
                                        config$tables[table],
@@ -53,10 +63,16 @@ DropStaticTables <- function(config){
                                        sep = ""),
                          config = config)
       
-      .message(paste("Table '", table, "' dropped successfully.", sep = ""), config = config)
       return(TRUE)
     } else {
-      .message(paste("Table '", table, "' did not exist.", sep = ""), config = config)
+      .message(paste("Table '", 
+                     config$tables[table], 
+                     "' (",
+                     table,
+                     ") does not exist.", 
+                     sep = ""), 
+               config = config)
+      
       return(FALSE)
     }
   }
@@ -72,6 +88,49 @@ DropStaticTables <- function(config){
   
   .message("No static tables remain.", config = config)
   
+  cc <- StopDBConnection(conn = conn, config = config)
+  
+}
+
+#' @rdname StaticTables
+WhichStaticTablesExist <- function(config){
+  .message("Checking existance of static tables...", config = config)
+  conn <- StartDBConnection(config)
+  
+  exists <- .WhichTablesExist(conn, config, quietly = TRUE)
+
+  CheckIfStaticTableExists <- function(table){
+    if (exists[table]) {
+      .message(paste("Table '", 
+                     config$tables[table],
+                     "' (",
+                     table,
+                     ") exists.", 
+                     sep = ""), 
+               config = config)
+      
+      return(TRUE)
+    } else {
+      .message(paste("Table '", 
+                     config$tables[table], 
+                     "' (",
+                     table,
+                     ") does not exist.", 
+                     sep = ""), 
+               config = config)
+      
+      return(FALSE)
+    }
+  }
+  
+  staticTables <- list("param.codes",
+                       "site.metadata",
+                       "param.metadata",
+                       "sensor.metadata",
+                       "active.sites",
+                       "site.assets")
+  
+  cc <- lapply(staticTables, CheckIfStaticTableExists)
   cc <- StopDBConnection(conn = conn, config = config)
   
 }
@@ -94,7 +153,7 @@ RebuildStaticTables <- function(config){
   
   .message(paste("Active sites are defined as sites with instantanous values that have
                  been updated within the lookback period: ",
-            config$collections$lookback, ".", sep = ""), 
+                 config$collections$lookback, ".", sep = ""), 
            config = config)
   
   pb <- txtProgressBar(min = 1, max = 50, style = 3, width = 20)
@@ -155,11 +214,11 @@ RebuildStaticTables <- function(config){
     }, warning = function(w) {
     }, error = function(e) {
       .warning(paste("Site:",
-                sites[i,1],
-                "at index",
-                i,
-                "failed:",
-                e))
+                     sites[i,1],
+                     "at index",
+                     i,
+                     "failed:",
+                     e))
     })
   }
   
@@ -198,17 +257,37 @@ RebuildStaticTables <- function(config){
            config = config)
 }
 
-#' Populate the param.codes table specified in \code{config}.
+#' Populate the sensor.metadata table specified in \code{config}.
 .PopulateSensorMetadata <-function(conn, config){
   .message(paste("Populating table", 
                  config$tables$sensor.metadata, 
                  "with sensor metadata."), 
            config = config)
   
+  query = paste("SELECT
+  a.familyid,
+  a.parm_cd,
+  a.loc_web_ds
+INTO ", config$tables$sensor.metadata, "
+FROM 
+  public.", config$tables$site.assets, " a
+LEFT OUTER JOIN 
+  public.", config$tables$active.sites, " b
+ON
+  (a.site_no = b.site_no);",
+                sep = "")
   
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  .message(paste("Table", 
+                 config$tables$sensor.metadata, 
+                 "now populated with sensor metadata."), 
+           config = config)
 }
 
-#' Populate the param.codes table specified in \code{config}.
+#' Populate the site.metadata table specified in \code{config}.
 .PopulateSiteMetadata <-function(conn, config){
   .message(paste("Populating table", 
                  config$tables$site.metadata, 
@@ -233,7 +312,7 @@ RebuildStaticTables <- function(config){
   b.county_cd,
   b.country_cd
 INTO ", config$tables$site.metadata, 
-" FROM public.", config$tables$site.assets, " a 
+                " FROM public.", config$tables$site.assets, " a 
 LEFT OUTER JOIN 
    public.", config$tables$active.sites, " b 
 ON
@@ -243,10 +322,10 @@ ON
                      query = query, 
                      config = config)
   
-.message(paste("Table", 
-               config$tables$site.metadata, 
-               "now populated with site metadata."), 
-         config = config)
+  .message(paste("Table", 
+                 config$tables$site.metadata, 
+                 "now populated with site metadata."), 
+           config = config)
 }
 
 

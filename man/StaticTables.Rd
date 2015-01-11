@@ -5,11 +5,14 @@
 \alias{PopulateStaticTables}
 \alias{RebuildStaticTables}
 \alias{StaticTables}
+\alias{WhichStaticTablesExist}
 \title{Manage static tables.}
 \usage{
 PopulateStaticTables(config)
 
 DropStaticTables(config)
+
+WhichStaticTablesExist(config)
 
 RebuildStaticTables(config)
 }
