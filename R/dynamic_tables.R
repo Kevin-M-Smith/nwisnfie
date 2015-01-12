@@ -133,11 +133,11 @@ PRIMARY KEY(ts, seriesId) );")
                  sep = ""), 
            config = config)
   
-  query = paste("CREATE OR REPLACE FUNCTION upsert() RETURNS TRIGGER AS $$
+  query = paste("CREATE OR REPLACE FUNCTION ", config$tables$data,"_upsert() RETURNS TRIGGER AS $$
 BEGIN
-  IF (SELECT COUNT(ts) FROM", config$tables$data, 
-                "WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
-    UPDATE", config$tables$data, "SET 
+  IF (SELECT COUNT(ts) FROM ", config$tables$data, 
+                " WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
+    UPDATE ", config$tables$data, " SET 
       updated = NEW.updated,
       validated = NEW.validated,
       value = NEW.value
@@ -147,7 +147,7 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-CREATE TRIGGER data_merge BEFORE INSERT ON data FOR EACH ROW EXECUTE PROCEDURE upsert();")
+CREATE TRIGGER ", config$tables$data, "_data_merge BEFORE INSERT ON ", config$tables$data, " FOR EACH ROW EXECUTE PROCEDURE ", config$tables$data, "_upsert();", sep = "")
   
   cc <- RunQuery(conn = conn, 
                  query = query, 
@@ -172,7 +172,9 @@ CREATE TRIGGER data_merge BEFORE INSERT ON data FOR EACH ROW EXECUTE PROCEDURE u
                  sep = ""), 
            config = config)
   
-  query = paste("CREATE INDEX combined_index on ", 
+  query = paste("CREATE INDEX ",
+                config$tables$data,
+                "_combined_index on ", 
                 config$tables$data, 
                 "(ts, paramcd, seriesid);",
                 sep = "")
@@ -181,7 +183,53 @@ CREATE TRIGGER data_merge BEFORE INSERT ON data FOR EACH ROW EXECUTE PROCEDURE u
                  query = query, 
                  config = config)
   
-  query = paste("CREATE INDEX validated_index on ", 
+  query = paste("CREATE INDEX ",
+                config$tables$data,
+                "_cross_index on ", 
+                config$tables$data, 
+                "(ts, paramcd, familyid);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  query = paste("CREATE INDEX ",
+                config$tables$data,
+                "_ts_index on ", 
+                config$tables$data, 
+                "(ts);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  query = paste("CREATE INDEX ",
+                config$tables$data,
+                "_familyid_index on ", 
+                config$tables$data, 
+                "(familyid);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  query = paste("CREATE INDEX ",
+                config$tables$data,
+                "_paramcd_index on ", 
+                config$tables$data, 
+                "(paramcd);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  query = paste("CREATE INDEX ", 
+                config$tables$data,
+                "_validated_index on ", 
                 config$tables$data, 
                 "(validated);",
                 sep = "")
