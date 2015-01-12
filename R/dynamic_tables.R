@@ -1,4 +1,42 @@
+#' Manage dynamic tables. 
+#' 
+#' The following tables are considered 'dynamic':
+#' \enumerate{
+#' \item data
+#' }
+#' 
+#' @name DynamicTables
+#' @param config A configuration object created by LoadConfiguration
+#' @return NULL
+#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
+#' @examples
+#' \dontrun{
+#'  library(nwisnfie)
+#'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
+#'  BuildDynamicTables(config)
+#'  DropDynamicTables(config)
+#'  # Equivalently...
+#'  RebuildDynamicTables(config)
+#'  }
+NULL
+
+#' @rdname DynamicTables
+BuildDynamicTables <- function(config) {
+  conn <- StartDBConnection(config)
+  
+  .CreateDynamicTables(conn = conn, config = config)
+  .BuildDynamicTriggers(conn = conn, config = config)
+  .BuildDynamicIndices(conn = conn, config = config)
+  .ConfigureDynamicTables(conn = conn, config = config)
+  
+  StopDBConnection(conn = conn, config = config)
+}
+
+#' @rdname DynamicTables
 DropDynamicTables <- function(config) {
+  
+  .message("Dropping all dynamic tables...", config = config)
+  
   conn <- StartDBConnection(config)
   
   exists <- .WhichTablesExist(conn, config, quietly = TRUE)
@@ -44,3 +82,147 @@ DropDynamicTables <- function(config) {
   cc <- StopDBConnection(conn = conn, config = config)
   
 }
+
+#' @rdname DynamicTables
+RebuildDynamicTables <- function(config) {
+  BuildDynamicTables(config)
+  DropDynamicTables(config)
+}
+
+.CreateDynamicTables <- function(conn, config) {
+  
+  .message(paste("Building table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+  query = paste("CREATE TABLE IF NOT EXISTS", config$tables$data,"
+(ts timestamp with time zone NOT NULL,
+seriesId text NOT NULL, 
+familyId text, 
+value numeric, 
+paramcd text, 
+validated integer, 
+imported timestamp with time zone, 
+updated timestamp with time zone, 
+PRIMARY KEY(ts, seriesId) );")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  .message(paste("Successfully built table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+}
+
+.BuildDynamicTriggers <- function(conn, config) {
+  
+  .message(paste("Setting triggers on table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+  query = paste("CREATE OR REPLACE FUNCTION upsert() RETURNS TRIGGER AS $$
+BEGIN
+  IF (SELECT COUNT(ts) FROM", config$tables$data, 
+                "WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
+    UPDATE", config$tables$data, "SET 
+      updated = NEW.updated,
+      validated = NEW.validated,
+      value = NEW.value
+      WHERE ts = NEW.ts AND seriesid = NEW.seriesid;
+    RETURN NULL;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER data_merge BEFORE INSERT ON data FOR EACH ROW EXECUTE PROCEDURE upsert();")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  .message(paste("Triggers set for table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+}
+
+.BuildDynamicIndices <- function(conn, config) {
+  
+  .message(paste("Building indices for table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+  query = paste("CREATE INDEX combined_index on ", 
+                config$tables$data, 
+                "(ts, paramcd, seriesid);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  query = paste("CREATE INDEX validated_index on ", 
+                config$tables$data, 
+                "(validated);",
+                sep = "")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  .message(paste("Successfully built indices for table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+}
+
+.ConfigureDynamicTables <- function(conn, config) {
+  .message(paste("Setting proper configuration for table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+  query = paste("ALTER TABLE",
+                config$tables$data,
+                "SET (autovacuum_enabled = false);")
+  
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  .message(paste("Succesfully set configuration for table ", 
+                 config$tables$data, 
+                 "(",
+                 names(config$tables$data),
+                 ").",
+                 sep = ""), 
+           config = config)
+}
+

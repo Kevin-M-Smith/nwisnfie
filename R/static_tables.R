@@ -20,12 +20,12 @@
 #'  PopulateStaticTables(config)
 #'  DropStaticTables(config)
 #'  # Equivalently...
-#'  RebuildStaticTables(config)
+#'  RepopulateStaticTables(config)
 #'  }
 NULL
 
 #' @rdname StaticTables
-PopulateStaticTables <- function(config){
+PopulateStaticTables <- function(config) {
   conn <- StartDBConnection(config)
   
   cluster <- StartCluster(config)
@@ -37,10 +37,11 @@ PopulateStaticTables <- function(config){
   .PopulateSensorMetadata(conn = conn, config = config)
   
   StopCluster(cluster = cluster, config = config)
+  StopDBConnection(conn = conn, config = config)
 }
 
 #' @rdname StaticTables
-DropStaticTables <- function(config){
+DropStaticTables <- function(config) {
   conn <- StartDBConnection(config)
   
   exists <- .WhichTablesExist(conn, config, quietly = TRUE)
@@ -93,7 +94,7 @@ DropStaticTables <- function(config){
 }
 
 #' @rdname StaticTables
-WhichStaticTablesExist <- function(config){
+WhichStaticTablesExist <- function(config) {
   .message("Checking existance of static tables...", config = config)
   conn <- StartDBConnection(config)
   
@@ -136,14 +137,14 @@ WhichStaticTablesExist <- function(config){
 }
 
 #' @rdname StaticTables
-RebuildStaticTables <- function(config){
+RepopulateStaticTables <- function(config) {
   DropStaticTables(config)
   PopulateStaticTables(config)
 }
 
 # @TODO Add a check on database after completion to make sure all 50 states are present. 
-#' Populate the active.sites table specified in \code{config}.
-.PopulateActiveSites <- function(conn, config){
+#' Populate the active.sites table specified in \code{config} using \code{conn}.
+.PopulateActiveSites <- function(conn, config) {
   
   .message(paste("Populating table", 
                  config$tables$active.sites, 
@@ -174,8 +175,8 @@ RebuildStaticTables <- function(config){
            config = config)
 }
 
-#' Populate the site.assets table specified in \code{config}.
-.PopulateSiteAssets <- function(conn, config){
+#' Populate the site.assets table specified in \code{config} using \code{conn}.
+.PopulateSiteAssets <- function(conn, config) {
   
   .message(paste("Populating table", 
                  config$tables$site.assets, 
@@ -228,8 +229,8 @@ RebuildStaticTables <- function(config){
            config = config)
 }
 
-#' Populate the param.codes table specified in \code{config}.
-.PopulateParamCodes <- function(conn, config){
+#' Populate the param.codes table specified in \code{config} using \code{conn}.
+.PopulateParamCodes <- function(conn, config) {
   .message(paste("Populating table", 
                  config$tables$param.codes, 
                  "with parameter codes."), 
@@ -247,15 +248,15 @@ RebuildStaticTables <- function(config){
 
 # @TODO Not implemented. No parameter metadata available yet.
 #' Populate the param.metadata table specified in \code{config}.
-.PopulateParamMetadata <- function(conn, config){
+.PopulateParamMetadata <- function(conn, config) {
   .message(paste("Populating table", 
                  config$tables$param.metadata, 
                  "with parameter metadata."), 
            config = config)
 }
 
-#' Populate the sensor.metadata table specified in \code{config}.
-.PopulateSensorMetadata <- function(conn, config){
+#' Populate the sensor.metadata table specified in \code{config} using \code{conn}.
+.PopulateSensorMetadata <- function(conn, config) {
   .message(paste("Populating table", 
                  config$tables$sensor.metadata, 
                  "with sensor metadata."), 
@@ -285,7 +286,7 @@ ON
 }
 
 #' Populate the site.metadata table specified in \code{config}.
-.PopulateSiteMetadata <- function(conn, config){
+.PopulateSiteMetadata <- function(conn, config) {
   .message(paste("Populating table", 
                  config$tables$site.metadata, 
                  "with site metadata."), 
@@ -324,9 +325,3 @@ ON
                  "now populated with site metadata."), 
            config = config)
 }
-
-
-
-
-
-

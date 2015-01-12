@@ -2,13 +2,19 @@ all_tables.R
   DropAllTables(config)         Undocumented
   
 dynamic_tables.R
-  DropDynamicTables(config)           Undocumented
+  DropDynamicTables(config)           
+  BuildDynamicTables(config)
+  RebuildDynamicTables(config)
+  .CreateDynamicTables(conn, config)
+  .BuildDynamicTriggers(conn, config)
+  .BuildDynamicIndices(conn, config)
+  .ConfigureDynamicTables(conn, config)
 
 static_tables.R
   PopulateStaticTables(config)
   DropStaticTables(config)
   WhichStaticTablesExist(config)
-  RebuildStaticTables(config)
+  RepopulateStaticTables(config)
   .PopulateActiveSites(conn, config)              @TODO 
   .PopulateSiteAssetsfunction(conn, config)
   .PopulateParamCodes(conn, config)

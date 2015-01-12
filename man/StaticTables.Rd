@@ -3,7 +3,7 @@
 \name{StaticTables}
 \alias{DropStaticTables}
 \alias{PopulateStaticTables}
-\alias{RebuildStaticTables}
+\alias{RepopulateStaticTables}
 \alias{StaticTables}
 \alias{WhichStaticTablesExist}
 \title{Manage static tables.}
@@ -14,7 +14,7 @@ DropStaticTables(config)
 
 WhichStaticTablesExist(config)
 
-RebuildStaticTables(config)
+RepopulateStaticTables(config)
 }
 \arguments{
 \item{config}{A configuration object created by LoadConfiguration}
@@ -36,7 +36,7 @@ The following tables are considered 'static':
  PopulateStaticTables(config)
  DropStaticTables(config)
  # Equivalently...
- RebuildStaticTables(config)
+ RepopulateStaticTables(config)
  }
 }
 \seealso{
