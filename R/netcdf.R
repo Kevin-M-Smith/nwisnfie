@@ -5,6 +5,7 @@
   gettextf("%.0f", sec)
 }
 
+
 BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   if (is.null(conn)){
@@ -124,4 +125,20 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   result <- RunQuery(conn = conn,
                      query = query,
                      config = config)
+}
+
+
+Sample <- function(config) {
+  
+  conn <- StartDBConnection(config)
+  
+  query = "select * from data where ts > '2015-01-09' AND ts <= '2015-01-11';"
+  
+  data <- RunQuery(conn = conn, 
+                   config = config,
+                   query = query)
+  
+  StopDBConnection(conn = conn, config = config)
+  
+  return(data)
 }
