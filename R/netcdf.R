@@ -1,12 +1,16 @@
+library(pryr)
+
 .ISO8601ToEpochTime <- function(ISO8601) {
   time1 <- as.POSIXct(ISO8601)
   time0 <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
   seconds <- as.numeric(difftime(time1, time0, units="secs"))
-  gettextf("%.0f", sec)
+  gettextf("%.0f", seconds)
 }
 
 
 BuildNetCDF <- function(data, name, config, conn = NULL) {
+  
+  .message(mem_used(), config = config)
   
   if (is.null(conn)){
     logoutOnCompletion = TRUE
@@ -18,127 +22,309 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   # output file
   file <- paste(tempdir(), name, sep = "/")
   
-  # nLayers
+  siteMetadata <- .GetSiteMetadata(conn = conn, config = config)
+  
+  sensorMetadata <- .GetSensorMetadata(conn = conn, config = config)
+  
   layers <- sort(unique(data$familyid))
-  nLayers <- length(layers)
+  layerDim <- .BuildLayerDim(layers = layers, config = config)
   
-  # nTimes
   data$ts <- .ISO8601ToEpochTime(data$ts)
-  times <- sort(unique(data$ts))
-  nTimes <- length(times)
+  times <- sort(unique(data$ts))  
+  timeDim <- .BuildTimeDim(times = times, config = config)
+  timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
   
-  # nParams
   params <- unique(data$paramcd)
-  nParams <- length(params)
-  
-  # base dimensions
-  layerDim <- ncdf4::ncdim_def("layer_dim", units = "", vals = 1:nLayers, create_dimvar = FALSE)
-  timeDim <- ncdf4::ncdim_def("time_dim", units = "", vals = 1:nTimes, create_dimvar = FALSE)
   
   # padded data
-  padding <- data.table::CJ(ts = times, familyid = layers, paramcd = params)
+  padding <- data.table::CJ(familyid = layers, ts = times)
   
-  # 0. Add Time & Initialize  
-  .AddTime(data = times, dims = list(timeDim), file = file, config = config)
+  siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
+                                             config = config)
   
-  # 1. Add Parameters
-  AddParameterWrapper <- function(paramcd) {
-    .AddParameter(paramcd = paramcd,
-                  data = subset(x = data, paramcd == paramcd),
-                  padding = padding,
-                  dims = list(layerDim, timeDim),
-                  file = file,
-                  config = config)
-  }
+  siteMetadataVars <- .BuildSiteMetadataVars(siteMetadata = siteMetadata,
+                                             siteMetadataDims = siteMetadataDims,
+                                             layerDim = layerDim,
+                                             config = config)
   
-  lapply(params, AddParameterWrapper)
+  valueVars <- .BuildValueVars(params = params,
+                               layerDim = layerDim,
+                               timeDim = timeDim,
+                               config = config)
   
-  sensorMetadata <- .GetSensorMetadata()
-  siteMetadata <- .GetSiteMetadata()
+  validatedVars <- .BuildValidatedVars(params = params,
+                                       layerDim = layerDim,
+                                       timeDim = timeDim,
+                                       config = config)
   
-  if (logoutOnCompletion){
-    StopDBConnection(conn = conn, config = config)
-  }
+  sensorMetadataDims <- .BuildSensorMetadataDims(params = params,
+                                                 sensorMetadata = sensorMetadata,
+                                                 config = config)
   
+  sensorMetadataVars <- .BuildSensorMetadataVars(params = params,
+                                                 sensorMetadataDims = sensorMetadataDims,
+                                                 layerDim = layerDim,
+                                                 config = config)
+  
+  return(NULL)
 }
-
-
-#  varTypes <- lapply(meta.pad[1,], typeof)
-
-
-.AddSiteMetadata <- function(paramcd) {
-  
-}
-
-.AddParameter <- function(paramcd, data, padding, dims, file, config) {
-  
-  name <- paste(paste("v", paramcd, sep = ""))
-  
-  data <- data.table::merge(x = padding, 
-                            y = data, 
-                            by = c("ts", "familyid"), 
-                            all.x = TRUE, 
-                            all.y = FALSE)
-  
-  paramVar <- ncdf4::ncvar_def(name = paste(name, "_value", sep = ""),
-                               units = "",
-                               dim = dims,
-                               prec = "double")
-  
-  validVar <- ncdf4::ncvar_def(name = paste(name, "_validated", sep = ""),
-                               units = "",
-                               dim = dims,
-                               prec = "double")
-  
-  nc <- ncdf4::nc_open(filename = file, write = TRUE)
-  
-  ncdf4::ncvar_put(nc = nc,
-                   varid = name,
-                   vals = data[ , -which(names(data) %in% "validated")])
-  
-  ncdf4::ncvar_put(nc = nc,
-                   varid = name,
-                   vals = data[ , -which(names(data) %in% "value")])
-  
-  ncdf4::nc_close(nc)
-}
-
-.AddTime <- function(data, dims, file, config) {
-  # time var
-  timeVar <- ncdf4::ncvar_def("time", units = "", dim = dims, prec = 'integer')
-  nc <- ncdf4::nc_create(timeVar)
-  ncdf4::ncvar_put(nc = nc, 
-                   varid = "time", 
-                   vals = times)
-  ncdf4::nc_close(nc)
-} 
 
 .GetSiteMetadata <- function(conn, config) {
   query <- paste("select * from", config$tables$site.metadata)
   result <- RunQuery(conn = conn,
                      query = query,
                      config = config)
+  # familyid         site_no dd_nu                                         station_nm site_tp_cd dec_lat_va dec_long_va
+  # 1 AZ011:340553110562745:00011:00001 340553110562745     1 PLEASANT VALLEY RANGER STATION PRECIP NR YOUNG, AZ         AT   34.09810   -110.9415
+  # 2 AZ011:340553110562745:00011:00002 340553110562745     2 PLEASANT VALLEY RANGER STATION PRECIP NR YOUNG, AZ         AT   34.09810   -110.9415
+  # 3 AZ011:340639111162945:00011:00001 340639111162945     1                GIESELA PRECIP GAGE NEAR PAYSON, AZ         AT   34.11087   -111.2754
+  # 4 AZ011:340639111162945:00011:00002 340639111162945     2                GIESELA PRECIP GAGE NEAR PAYSON, AZ         AT   34.11087   -111.2754
+  # 5 AZ011:342946111342645:00011:00001 342946111342645     1                   CROOK TRAIL PRECIP NEAR PINE, AZ         AT   34.49614   -111.5746
+  # 6 AZ011:342946111342645:00011:00002 342946111342645     2                   CROOK TRAIL PRECIP NEAR PINE, AZ         AT   34.49614   -111.5746
+  # dec_coord_datum_cd alt_va alt_datum_cd huc_cd tz_cd agency_cd district_cd county_cd country_cd
+  # 1              NAD83   5184       NGVD29          MST     AZ011          04       007         US
+  # 2              NAD83   5184       NGVD29          MST     AZ011          04       007         US
+  # 3              NAD83   2920       NGVD29          MST     AZ011          04       007         US
+  # 4              NAD83   2920       NGVD29          MST     AZ011          04       007         US
+  # 5              NAD83   6300       NGVD29          MST     AZ011          04       025         US
+  # 6              NAD83   6300       NGVD29          MST     AZ011          04       025         US
 }
 
 .GetSensorMetadata <- function(conn, config) {
-  descriptionQuery <- paste("select * from", config$tables$sensor.metadata)
+  query <- paste("select * from", config$tables$sensor.metadata)
   result <- RunQuery(conn = conn,
                      query = query,
                      config = config)
+  # familyid parm_cd loc_web_ds
+  # 1 USGS:01010000:00011:00008   00065           
+  # 2 USGS:01010000:00011:00018   00020           
+  # 3 USGS:01010000:00011:00030   00011           
+  # 4 USGS:01010000:00011:00005   00010           
+  # 5 USGS:01010000:00011:00026   00021           
+  # 6 USGS:01010000:00011:00006   00060           
+  
 }
 
+.BuildLayerDim <- function(layers, config) {
+  name = "layer_dim"
+  dim <- ncdf4::ncdim_def(name = name, 
+                          units = "", 
+                          vals = 1:length(layers), 
+                          create_dimvar = FALSE)
+  
+  .message(paste("Layer dim", 
+                 name,
+                 "built succesfully."),
+           config = config)
+  
+  dim
+}
 
-Sample <- function(config) {
+.BuildTimeDim <- function(times, config)  { 
+  name <- "ts_dim"
+  dim <- ncdf4::ncdim_def(name = name, 
+                          units = "", 
+                          vals = 1:length(times), 
+                          create_dimvar = FALSE)
   
-  conn <- StartDBConnection(config)
+  .message(paste("Time dimension", 
+                 name, 
+                 "built succesffully."), 
+           config = config)
+  dim
+}
+
+.BuildTimeVar <- function(timeDim, config) {
+  name <- "time"
+  var <- ncdf4::ncvar_def(name = name, 
+                          units = "", 
+                          dim = list(timeDim), 
+                          prec = 'integer')
   
-  query = "select * from data where ts > '2015-01-09' AND ts <= '2015-01-11';"
+  .message(paste("Time variable ", 
+                 name, 
+                 " built succesffully.", sep = ""),
+           config = config)
+  var
+}
+
+.BuildSiteMetadataDims <- function(siteMetadata, config) {
+  .message("Building site metadata dimensions... ", config = config)
   
-  data <- RunQuery(conn = conn, 
-                   config = config,
-                   query = query)
+  varTypes <- lapply(siteMetadata, typeof)
   
-  StopDBConnection(conn = conn, config = config)
+  BuildSiteMetadataDim <- function(name){
+    
+    maxChar <- max(unlist(lapply(siteMetadata[name], nchar)))
+    
+    name = paste(name, "Char", sep = "")
+    
+    dim <- ncdf4::ncdim_def(name = name, 
+                            units = "", 
+                            vals = 1:maxChar, 
+                            create_dimvar = FALSE)
+    
+    .message(paste("Site metadata dimension ",
+                   name,
+                   " built succesfully.",
+                   sep = ""),
+             config = config)
+    
+    dim
+  }
   
-  return(data)
+  # only string vars need extra dimension
+  stringVars <- names(siteMetadata)[which(varTypes == "character")]
+  lapply(stringVars, BuildSiteMetadataDim)
+}
+
+.BuildSiteMetadataVars <- function(siteMetadata, siteMetadataDims, layerDim, config) {
+  
+  .message("Building site metadata variables... ", config = config)
+  
+  varTypes <- lapply(siteMetadata, typeof)
+  stringVars <- names(siteMetadata)[which(varTypes == "character")]
+  
+  BuildSiteMetadataVar <- function(metadataVar) {
+    
+    if(varTypes[metadataVar] == 'character'){
+      var <- ncdf4::ncvar_def(metadataVar, 
+                              units = "", 
+                              dim = list(siteMetadataDims[[which(stringVars == metadataVar)]], layerDim), 
+                              prec = 'char')    
+    } else {
+      if(varTypes[metadataVar] == 'integer'){
+        var <- ncdf4::ncvar_def(metadataVar, 
+                                units = "", 
+                                dim = list(layerDim), 
+                                prec = 'integer')          
+      } else {
+        if(varTypes[metadataVar] == 'double'){
+          var <- ncdf4::ncvar_def(metadataVar, 
+                                  units = "", 
+                                  dim = list(layerDim), 
+                                  prec = 'double')
+        } else {
+          .stop(paste("Could not find appropriate metadataVar type.", 
+                      "(", 
+                      varTypes[metadataVar], 
+                      "),", 
+                      metadataVar), 
+                config = config)
+        }
+      }
+    }
+    .message(paste("Site metadata variable ", 
+                   metadataVar,
+                   " built succesfully.",
+                   sep = ""),
+             config = config)
+  }
+  
+  lapply(names(siteMetadata), BuildSiteMetadataVar)
+}
+
+.BuildValueVars <- function(params, layerDim, timeDim, config) {
+  
+  .message("Building value variables... ", config = config)
+  
+  BuildValueVar <- function(paramcd) {
+    
+    name = paste("v", paramcd, "_value", sep = "")
+    
+    var <- ncdf4::ncvar_def(name = name,
+                            units = "", 
+                            dim = list(layerDim, timeDim), 
+                            prec = "double")
+    
+    .message(paste("Value variable ",
+                   name,
+                   " built succesfully.",
+                   sep = ""),
+             config = config)
+  }
+  
+  lapply(params, BuildValueVar)
+}
+
+.BuildValidatedVars <- function(params, layerDim, timeDim, config) {
+  
+  .message("Building validated variables... ", config = config)
+  
+  BuildValidatedVar <- function(paramcd) {
+    
+    name = paste("v", paramcd, "_validated", sep = "")
+    
+    var <- ncdf4::ncvar_def(name = name,
+                            units = "", 
+                            dim = list(layerDim, timeDim), 
+                            prec = "double")
+    
+    .message(paste("Validated variable ",
+                   name,
+                   " built succesfully.",
+                   sep = ""),
+             config = config)
+  }
+  
+  lapply(params, BuildValidatedVar)
+}
+
+.BuildSensorMetadataDims <- function(params, sensorMetadata, config) {
+  
+  .message("Building sensor metadata dimensions... ", config = config)
+  
+  BuildSensorMetadataDim <- function(paramcd) {
+    
+    maxChar <- max(nchar(subset(sensorMetadata, parm_cd == paramcd)$loc_web_ds))
+    maxChar <- max(maxChar, 1)
+        
+    name = paste("v", paramcd, "_descriptionChar", sep = "")
+    
+    dim <- ncdf4::ncdim_def(name = name, 
+                            units = "", 
+                            vals = 1:maxChar, 
+                            create_dimvar = FALSE)
+    
+    .message(paste("Sensor metadata dimension ",
+                   name,
+                   " built succesfully",
+                   sep = ""),
+             config = config)
+    
+    dim
+   }
+   
+   lapply(params, BuildSensorMetadataDim)
+}
+
+.BuildSensorMetadataVars <- function(params, sensorMetadataDims, layerDim, config) {
+  
+  .message("Building sensor metadata variables... ", config = config)
+  
+  BuildSensorMetadataVar <- function(paramcd) {
+    
+    name = paste("v", paramcd, "_description", sep = "")
+    
+    for (i in 1:length(sensorMetadataDims)) {
+      match <- grep(name, sensorMetadataDims[[i]]$name)
+      if (length(match) > 0) {
+        break
+      }
+    }
+            
+    var <- ncdf4::ncvar_def(name = name,
+                            units = "", 
+                            dim = list(sensorMetadataDims[[match]], layerDim), 
+                            prec = 'char')
+    
+    .message("Sensor metadata variable ", 
+             name, 
+             " built successfully.",
+             sep = "",
+             config = config)
+    var
+  }
+  
+  lapply(params, BuildSensorMetadataVar)
 }
