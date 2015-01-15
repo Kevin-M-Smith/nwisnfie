@@ -82,6 +82,7 @@ InstallFiles <- function(installDirectory, overwrite = FALSE){
   
   cat("Files installed successfully: \n")
   cat(installDirectory)
+  cat("\n")
 }
 
 
