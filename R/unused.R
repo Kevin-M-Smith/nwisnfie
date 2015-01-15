@@ -48,7 +48,7 @@ test <- function(){
 
 NCBuild <- function(data, config){
   BuildNetCDF(data = data, 
-              name = "test", 
+              name = "test2", 
               config = config, 
               conn = NULL)
 }

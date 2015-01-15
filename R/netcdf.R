@@ -71,13 +71,15 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                                            times = times,
                                            config = config)
   
+  .AddTimeVars(ncdf = ncdf,
+               times = times,
+               config = config)
   
-  print(ncdf)
-  
-  .AddValueVars(ncdf = ncdf,
-                padded = paddedDataTable,
-                data = data,
-                config = config)
+  .AddValueAndValidatedVars(ncdf = ncdf,
+                            padded = paddedDataTable,
+                            data = data,
+                            params = params,
+                            config = config)
   
   return(NULL)
 }
@@ -332,7 +334,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
         break
       }
     }
-      
+    
     var <- ncdf4::ncvar_def(name = name,
                             units = "", 
                             dim = list(sensorMetadataDims[[match]], layerDim), 
@@ -357,14 +359,14 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                  sep = ""),
            config = config)
   
-  ncdf <- ncdf4::nc_create(file = file, vars = vars)
+  ncdf <- ncdf4::nc_create(file = file, vars = vars, force_v4 = TRUE)
   
   .message(paste("Successfully initialized empty NetCDF file (",
                  file, 
                  ").",
                  sep = ""),
            config = config)
-    
+  
   ncdf
 }
 
@@ -395,7 +397,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
            config = config)
   
   ncdf4::ncvar_put(ncdf, "time", times)
-
+  
   .message(paste("Variable time added succesfully. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
@@ -403,39 +405,107 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
            config = config)
 }
 
-.AddValueVars <- function(ncdf, padded, data, config) {
-  .message(paste("Adding paramcd time to NetCDF file. Total R memory usage: ", 
+.AddValueAndValidatedVars <- function(ncdf, padded, data, params, config) {
+  
+  
+  .message(paste("Adding value and validated variables to NetCDF file... Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
            config = config)
   
-  sub <- subset(data, paramcd == "00060")
+  AddValueAndValidatedVar <- function(paramcd){
+    
+    .message(paste("Subsetting data for ", 
+                   paramcd,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    sub <- subset(data, paramcd == paramcd)
+    sub <- sub[c("ts", "familyid", "value", "validated")]
+    
+    .message(paste("Merging subsetted data for ",
+                   paramcd,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
+    
+    name = paste("v", paramcd, "_value", sep = "")
+    
+    .message(paste("Properly casting data for ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    val <- data.matrix(reshape2::dcast(sub, familyid ~ ts, value.var = "value"))[, -1]
+    
+    .message(paste("Adding data for ",
+                   name,
+                   " into NetCDF File. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val)
+    
+    .message(paste("Succesfully added ",
+                   name,
+                   " to NetCDF File. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    name = paste("v", paramcd, "_validated", sep = "")
+    
+    .message(paste("Properly casting data for ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    val <- data.matrix(reshape2::dcast(sub, familyid ~ ts, value.var = "value"))[, -1]
+    
+    .message(paste("Adding data for ",
+                   name,
+                   " into NetCDF File. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val)
+    
+    .message(paste("Succesfully added ",
+                   name,
+                   " to NetCDF File. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+  }
   
-  .message(paste("Subsetting data. Total R memory usage: ", 
+  lapply(params, AddValueAndValidatedVar)
+  
+  .message(paste("Added value and validated variables to NetCDF file. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
            config = config)
-  
-  sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
-  
-  .message(paste("Merging subsetted data. Total R memory usage: ", 
-                 capture.output(pryr::mem_used()),
-                 ".",
-                 sep = ""), 
-           config = config)
-  
-  .message(paste("Added paramcd time to NetCDF file. Total R memory usage: ", 
-                 capture.output(pryr::mem_used()),
-                 ".",
-                 sep = ""), 
-           config = config)
-  
-}
-
-.AddValidatedVars <- function() {
-  
 }
 
 .AddSiteMetadataVars <- function() {

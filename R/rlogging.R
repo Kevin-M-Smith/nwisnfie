@@ -33,11 +33,12 @@
 
 .PrintLogMessage <- function(..., config, domain = NULL, level) {
   
+  pid <- paste("[PID: ", Sys.getpid(), "]", sep = "")
   timestamp <- format(Sys.time(), format = config$logging$time.stamp.format)
-  base::message(timestamp, ..., domain=  domain)
+  base::message(pid, timestamp, ..., domain=  domain)
   
   if (!is.null(config$logging$file)) {
-    cat(timestamp, ..., "\n", file = config$logging$file, sep="", append=TRUE)
+    cat(pid, timestamp, ..., "\n", file = config$logging$file, sep="", append=TRUE)
   }
   
 }
