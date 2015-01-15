@@ -1,5 +1,3 @@
-library(pryr)
-
 .ISO8601ToEpochTime <- function(ISO8601) {
   time1 <- as.POSIXct(ISO8601)
   time0 <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
@@ -9,8 +7,6 @@ library(pryr)
 
 
 BuildNetCDF <- function(data, name, config, conn = NULL) {
-  
-  .message(mem_used(), config = config)
   
   if (is.null(conn)){
     logoutOnCompletion = TRUE
@@ -36,9 +32,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   params <- unique(data$paramcd)
   
-  # padded data
-  padding <- data.table::CJ(familyid = layers, ts = times)
-  
   siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
                                              config = config)
   
@@ -46,16 +39,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                                              siteMetadataDims = siteMetadataDims,
                                              layerDim = layerDim,
                                              config = config)
-  
-  valueVars <- .BuildValueVars(params = params,
-                               layerDim = layerDim,
-                               timeDim = timeDim,
-                               config = config)
-  
-  validatedVars <- .BuildValidatedVars(params = params,
-                                       layerDim = layerDim,
-                                       timeDim = timeDim,
-                                       config = config)
   
   sensorMetadataDims <- .BuildSensorMetadataDims(params = params,
                                                  sensorMetadata = sensorMetadata,
@@ -66,6 +49,30 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                                                  layerDim = layerDim,
                                                  config = config)
   
+  valueVars <- .BuildValueVars(params = params,
+                               layerDim = layerDim,
+                               timeDim = timeDim,
+                               config = config)
+  
+  validatedVars <- .BuildValidatedVars(params = params,
+                                       layerDim = layerDim,
+                                       timeDim = timeDim,
+                                       config = config)  
+  
+  ncdf <- .InitializeNCDF(file = file,
+                          vars = c(list(timeVar),
+                                   siteMetadataVars,
+                                   sensorMetadataVars,
+                                   valueVars,
+                                   validatedVars),
+                          config = config)
+  
+  paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
+                                           times = times,
+                                           config = config)
+  
+  
+  print(ncdf)
   return(NULL)
 }
 
@@ -219,6 +226,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    " built succesfully.",
                    sep = ""),
              config = config)
+    
+    var
   }
   
   lapply(names(siteMetadata), BuildSiteMetadataVar)
@@ -242,6 +251,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    " built succesfully.",
                    sep = ""),
              config = config)
+    
+    var
   }
   
   lapply(params, BuildValueVar)
@@ -265,6 +276,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    " built succesfully.",
                    sep = ""),
              config = config)
+    
+    var
   }
   
   lapply(params, BuildValidatedVar)
@@ -277,8 +290,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   BuildSensorMetadataDim <- function(paramcd) {
     
     maxChar <- max(nchar(subset(sensorMetadata, parm_cd == paramcd)$loc_web_ds))
-    maxChar <- max(maxChar, 1)
-        
+    maxChar <- max(maxChar, 2)
+    
     name = paste("v", paramcd, "_descriptionChar", sep = "")
     
     dim <- ncdf4::ncdim_def(name = name, 
@@ -293,9 +306,9 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
              config = config)
     
     dim
-   }
-   
-   lapply(params, BuildSensorMetadataDim)
+  }
+  
+  lapply(params, BuildSensorMetadataDim)
 }
 
 .BuildSensorMetadataVars <- function(params, sensorMetadataDims, layerDim, config) {
@@ -309,10 +322,11 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     for (i in 1:length(sensorMetadataDims)) {
       match <- grep(name, sensorMetadataDims[[i]]$name)
       if (length(match) > 0) {
+        match = i
         break
       }
     }
-            
+      
     var <- ncdf4::ncvar_def(name = name,
                             units = "", 
                             dim = list(sensorMetadataDims[[match]], layerDim), 
@@ -327,4 +341,39 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   }
   
   lapply(params, BuildSensorMetadataVar)
+}
+
+
+.InitializeNCDF <- function(file, vars, config) {
+  .message(paste("Initializing empty NetCDF file (",
+                 file, 
+                 ").",
+                 sep = ""),
+           config = config)
+  
+  ncdf <- ncdf4::nc_create(file = file, vars = vars)
+  
+  .message(paste("Successfully initialized empty NetCDF file (",
+                 file, 
+                 ").",
+                 sep = ""),
+           config = config)
+    
+  ncdf
+}
+
+.BuildPaddedDataTable <- function(times, layers, config) {
+  .message(paste("Building padded data table. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  padded <- data.table::CJ(ts = times, familyid = layers)
+  
+  .message(paste("Successfully built padded data table. Total R memory usage: ",
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""),
+           config = config)
 }
