@@ -73,6 +73,12 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   
   print(ncdf)
+  
+  .AddValueVars(ncdf = ncdf,
+                padded = paddedDataTable,
+                data = data,
+                config = config)
+  
   return(NULL)
 }
 
@@ -376,4 +382,67 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                  ".",
                  sep = ""),
            config = config)
+  
+  padded
+  
 }
+
+.AddTimeVars <- function(ncdf, times, config) {
+  .message(paste("Adding variable time to NetCDF file. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  ncdf4::ncvar_put(ncdf, "time", times)
+
+  .message(paste("Variable time added succesfully. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+}
+
+.AddValueVars <- function(ncdf, padded, data, config) {
+  .message(paste("Adding paramcd time to NetCDF file. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  sub <- subset(data, paramcd == "00060")
+  
+  .message(paste("Subsetting data. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
+  
+  .message(paste("Merging subsetted data. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  .message(paste("Added paramcd time to NetCDF file. Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+}
+
+.AddValidatedVars <- function() {
+  
+}
+
+.AddSiteMetadataVars <- function() {
+  
+}
+
+.AddSensorMetadataVars <- function() {
+  
+}
+
