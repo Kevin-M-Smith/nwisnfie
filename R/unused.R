@@ -58,7 +58,7 @@ Sample <- function(config) {
   
   conn <- StartDBConnection(config)
   
-  query = "select * from data where ts > '2015-01-09' AND ts <= '2015-01-11';"
+  query = "select * from data where ts > now() - interval '1 day';"
   
   data <- RunQuery(conn = conn, 
                    config = config,

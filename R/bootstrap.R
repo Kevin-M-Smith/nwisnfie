@@ -21,12 +21,12 @@ Bootstrap <- function(config) {
     
     result = tryCatch({
       .DownloadDataFromNWIS(site = sites[i,1],
-                          params = config$collections$params,
-                          startDate = NULL,
-                          endDate = NULL,
-                          period = config$collections$lookback,
-                          offset = NULL, 
-                          config = config)
+                            params = config$collections$params,
+                            startDate = NULL,
+                            endDate = NULL,
+                            period = config$collections$lookback,
+                            offset = NULL, 
+                            config = config)
     }, warning = function(w) {
       
     }, error = function(e){

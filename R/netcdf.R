@@ -16,11 +16,16 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   }
   
   # output file
-  file <- paste(tempdir(), name, sep = "/")
+  #file <- paste(tempdir(), "name23", sep = "/")
+  file <- "~/Desktop/test2.nc"
   
   siteMetadata <- .GetSiteMetadata(conn = conn, config = config)
   
   sensorMetadata <- .GetSensorMetadata(conn = conn, config = config)
+  
+  if (logoutOnCompletion == TRUE){
+    StopDBConnection(conn = conn, config = config)
+  } 
   
   layers <- sort(unique(data$familyid))
   layerDim <- .BuildLayerDim(layers = layers, config = config)
@@ -81,7 +86,19 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                             params = params,
                             config = config)
   
-  return(NULL)
+  .AddSensorMetadataVars(ncdf = ncdf,
+                         sensorMetadata = sensorMetadata,
+                         layers = layers,
+                         params = params,
+                         config = config)
+  
+  .AddSiteMetadataVars(ncdf = ncdf, 
+                       siteMetadata = siteMetadata, 
+                       layers = layers, 
+                       params = params, 
+                       config = config)
+  
+  .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
 
 .GetSiteMetadata <- function(conn, config) {
@@ -137,6 +154,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
 
 .BuildTimeDim <- function(times, config)  { 
   name <- "ts_dim"
+  
   dim <- ncdf4::ncdim_def(name = name, 
                           units = "", 
                           vals = 1:length(times), 
@@ -144,7 +162,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   .message(paste("Time dimension", 
                  name, 
-                 "built succesffully."), 
+                 "built succesfully."), 
            config = config)
   dim
 }
@@ -154,11 +172,12 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   var <- ncdf4::ncvar_def(name = name, 
                           units = "", 
                           dim = list(timeDim), 
-                          prec = 'integer')
+                          prec = 'integer',
+                          compression = 9)
   
   .message(paste("Time variable ", 
                  name, 
-                 " built succesffully.", sep = ""),
+                 " built succesfully.", sep = ""),
            config = config)
   var
 }
@@ -206,19 +225,22 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
       var <- ncdf4::ncvar_def(metadataVar, 
                               units = "", 
                               dim = list(siteMetadataDims[[which(stringVars == metadataVar)]], layerDim), 
-                              prec = 'char')    
+                              prec = 'char',
+                              compression = 9)    
     } else {
       if(varTypes[metadataVar] == 'integer'){
         var <- ncdf4::ncvar_def(metadataVar, 
                                 units = "", 
                                 dim = list(layerDim), 
-                                prec = 'integer')          
+                                prec = 'integer',
+                                compression = 9)          
       } else {
         if(varTypes[metadataVar] == 'double'){
           var <- ncdf4::ncvar_def(metadataVar, 
                                   units = "", 
                                   dim = list(layerDim), 
-                                  prec = 'double')
+                                  prec = 'double',
+                                  compression = 9)
         } else {
           .stop(paste("Could not find appropriate metadataVar type.", 
                       "(", 
@@ -252,7 +274,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     var <- ncdf4::ncvar_def(name = name,
                             units = "", 
                             dim = list(layerDim, timeDim), 
-                            prec = "double")
+                            prec = "double",
+                            compression = 9)
     
     .message(paste("Value variable ",
                    name,
@@ -277,7 +300,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     var <- ncdf4::ncvar_def(name = name,
                             units = "", 
                             dim = list(layerDim, timeDim), 
-                            prec = "double")
+                            prec = "double",
+                            compression = 9)
     
     .message(paste("Validated variable ",
                    name,
@@ -338,7 +362,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     var <- ncdf4::ncvar_def(name = name,
                             units = "", 
                             dim = list(sensorMetadataDims[[match]], layerDim), 
-                            prec = 'char')
+                            prec = 'char',
+                            compression = 9)
     
     .message("Sensor metadata variable ", 
              name, 
@@ -395,6 +420,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                  ".",
                  sep = ""), 
            config = config)
+  
   
   ncdf4::ncvar_put(ncdf, "time", times)
   
@@ -477,7 +503,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
-    val <- data.matrix(reshape2::dcast(sub, familyid ~ ts, value.var = "value"))[, -1]
+    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
+    val <- data.matrix(val)[, -1]
     
     .message(paste("Adding data for ",
                    name,
@@ -508,11 +535,139 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
            config = config)
 }
 
-.AddSiteMetadataVars <- function() {
+.AddSensorMetadataVars <- function(ncdf, sensorMetadata, layers, params, config) {
+  .message(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  AddSensorMetadataVar <- function(paramcd) {
+    
+    name = paste("v", paramcd, "_description", sep = "")
+    
+    .message(paste("Adding sensor metadata to ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    sub <- subset(sensorMetadata, parm_cd == paramcd)
+    sub <- plyr::join(data.frame(familyid = layers, stringsAsFactors = FALSE), sub, by = "familyid")
+    
+    ncdf4::ncvar_put(nc = ncdf,
+                     varid = name,
+                     vals = sub$loc_web_ds)
+    
+    .message(paste("Successfully added sensor metadata to ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+  }
+  
+  lapply(params, AddSensorMetadataVar)
   
 }
 
-.AddSensorMetadataVars <- function() {
+.AddSensorMetadataVars <- function(ncdf, sensorMetadata, layers, params, config) {
+  .message(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  AddSensorMetadataVar <- function(paramcd) {
+    
+    name = paste("v", paramcd, "_description", sep = "")
+    
+    .message(paste("Adding sensor metadata to ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    sub <- subset(sensorMetadata, parm_cd == paramcd)
+    sub <- plyr::join(data.frame(familyid = layers, stringsAsFactors = FALSE), sub, by = "familyid")
+    
+    ncdf4::ncvar_put(nc = ncdf,
+                     varid = name,
+                     vals = sub$loc_web_ds)
+    
+    .message(paste("Successfully added sensor metadata to ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+  }
+  
+  lapply(params, AddSensorMetadataVar)
   
 }
+
+
+
+
+.AddSiteMetadataVars <- function(ncdf, siteMetadata, layers, params, config) {
+  
+  .message(paste("Adding site metadata variables to NetCDF file... Total R memory usage: ", 
+                 capture.output(pryr::mem_used()),
+                 ".",
+                 sep = ""), 
+           config = config)
+  
+  siteMetadata <- plyr::join(data.frame(familyid = layers, stringsAsFactors = FALSE), 
+                             siteMetadata, 
+                             by = "familyid")
+  
+  AddSiteMetadataVar <- function(name) {
+    
+    .message(paste("Adding site metadata variable ",
+                   name,
+                   " to NetCDF file. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+   ncdf4::ncvar_put(nc = ncdf,
+                    varid = name,
+                    vals = unlist(siteMetadata[name]))
+    
+    .message(paste("Successfully added site metadata variable ",
+                   name,
+                   " to NetCDF file. Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+  }
+  
+#  excluded <- names(siteMetadata) %in% c("familyid")
+ # siteMetadataVarNames <- names(siteMetadata)[!excluded]
+  
+  lapply(names(siteMetadata), AddSiteMetadataVar)
+}
+
+.CloseNetCDF <- function(ncdf, file, config){
+  ncdf4::nc_close(ncdf)
+  .message(paste("Succesfully closed out NetCDF file (",
+           file,
+           ").",
+           sep = ""),
+           config = config)
+}
+
+
 
