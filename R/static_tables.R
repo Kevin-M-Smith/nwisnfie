@@ -167,7 +167,8 @@ RepopulateStaticTables <- function(config) {
     .DownloadActiveSitesForState(state = state.abb[i], config = config) 
   }
   
-  setTxtProgressBar(pb, 50); 
+  setTxtProgressBar(pb, 50)
+  cat("\n")
   
   .message(paste("Table", 
                  config$tables$active.sites, 
@@ -222,6 +223,7 @@ RepopulateStaticTables <- function(config) {
   }
   
   setTxtProgressBar(pb, length(map))
+  cat("\n")
   
   .message(paste("Table", 
                  config$tables$site.assets, 
