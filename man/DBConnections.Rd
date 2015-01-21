@@ -35,7 +35,7 @@ Functions used to start and stop database connections.
  conn <- StartDBConnection(config)
  StopDBConnection(conn)
 # or equivalently:
- TestDBConnection(conn)
+ TestDBConnection(config)
 }
 }
 \seealso{

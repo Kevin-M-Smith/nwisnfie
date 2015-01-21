@@ -20,12 +20,11 @@ tables:
  active.sites : active_sites
  site.assets : site_assets
  param.codes : param_codes
- staging.table : staging_table
  sensor.metadata : sensor_metadata
 
 parallel:
  max.cores: NONE
- 
+
 logging:
  level: INFO
  time.stamp.format : "[%Y-%m-%d %H:%M:%S]"

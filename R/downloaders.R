@@ -58,41 +58,95 @@
 }
 
 
+# @ return primary key
+.StageURL(config = config, url = url) {
+  
+  query <- paste("INSERT INTO ", 
+                 config$tables$staging,
+                 "(url) values ('",
+                 url,
+                 "'') RETURNING id;",
+                 sep = "")
+  
+}
+
+.UnstageURL(config = config, url = NULL, id = NULL) {
+  if (is.null(url) && is.null(id)){
+    .stop("Error attempting to unstage URL. Must specify either url or id.",
+          config = config)
+  } 
+  
+  if (is.null(url)){
+    
+    query <- paste("delete from only ",
+                   config$tables$staging,
+                   " where id = ",
+                   id,
+                   ";",
+                   sep = "")
+    
+  } else {
+    
+    query <- paste("delete from only ",
+                   config$tables$staging,
+                   "where url = '",
+                   url,
+                   "';",
+                   sep = "")
+    
+  }
+  
+  cc <- RunQuery(conn = conn2, 
+                 query = query, 
+                 config = config)
+  
+}
+
+
+.RetryDownloadDataFromNWIS <- function(config, url) {
+  .DownloadDataFromNWIS(sites = NULL, params = NULL, url = url, config = config)
+}
+
 .DownloadDataFromNWIS <- function(sites, 
                                   params, 
                                   startDate = NULL, 
                                   endDate = NULL, 
                                   period = NULL, 
-                                  offset = NULL, 
+                                  offset = NULL,
+                                  url = NULL,
                                   config){
   
-  url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
-  url = paste(url, "&sites=", sites, sep = "")  
-  url = paste(url, "&parameterCd=", params, sep = "")
-  
-  if (is.null(startDate) || is.null(endDate)){
-    if (is.null(period)){
-      .stop("A lookback period or a pair of start 
+  if (is.null(url)) {
+    url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
+    url = paste(url, "&sites=", sites, sep = "")  
+    url = paste(url, "&parameterCd=", params, sep = "")
+    
+    if (is.null(startDate) || is.null(endDate)){
+      if (is.null(period)){
+        .stop("A lookback period or a pair of start 
             and end dates must be specified.", 
-            config = config)
-    } else {
-      url = paste(url, "&period=", period, sep = "")  
-    }
-  } else {
-    if (is.null(period)){
-      if (is.null(offset)){
-        url = paste(url, "&startDT=", date, "T00:00:00", sep = "")
-        url = paste(url, "&endDT=", date, "T23:59:59", sep = "")
+              config = config)
       } else {
-        url = paste(url, "&startDT=", date, "T00:00:00", offset, sep = "")
-        url = paste(url, "&endDT=", date, "T23:59:59", offset, sep = "")
+        url = paste(url, "&period=", period, sep = "")  
       }
     } else {
-      .stop("Please choose either a lookback period or a pair of start 
+      if (is.null(period)){
+        if (is.null(offset)){
+          url = paste(url, "&startDT=", date, "T00:00:00", sep = "")
+          url = paste(url, "&endDT=", date, "T23:59:59", sep = "")
+        } else {
+          url = paste(url, "&startDT=", date, "T00:00:00", offset, sep = "")
+          url = paste(url, "&endDT=", date, "T23:59:59", offset, sep = "")
+        }
+      } else {
+        .stop("Please choose either a lookback period or a pair of start 
             and end dates, but not both.", 
-            config = config)
+              config = config)
+      }
     }
   }
+  
+  .StageURL(url = url, config = config)
   
   g = RCurl::basicTextGatherer()
   

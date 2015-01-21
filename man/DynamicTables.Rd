@@ -20,6 +20,7 @@ RebuildDynamicTables(config)
 The following tables are considered 'dynamic':
 \enumerate{
 \item data
+\item staging
 }
 }
 \examples{

@@ -294,7 +294,7 @@ ON
                  "with site metadata."), 
            config = config)
   
-  query = paste("SELECT DISTINCT
+  query <- paste("SELECT DISTINCT
   a.familyid,
   a.site_no,
   a.dd_nu,
