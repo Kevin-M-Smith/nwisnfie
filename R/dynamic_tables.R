@@ -3,6 +3,7 @@
 #' The following tables are considered 'dynamic':
 #' \enumerate{
 #' \item data
+#' \item staging
 #' }
 #' 
 #' @name DynamicTables
@@ -25,9 +26,8 @@ BuildDynamicTables <- function(config) {
   conn <- StartDBConnection(config)
   
   .CreateDynamicTables(conn = conn, config = config)
-  .BuildDynamicTriggers(conn = conn, config = config)
+  .SetDynamicTriggers(conn = conn, config = config)
   .BuildDynamicIndices(conn = conn, config = config)
-  .ConfigureDynamicTables(conn = conn, config = config)
   
   StopDBConnection(conn = conn, config = config)
 }
@@ -90,7 +90,20 @@ RebuildDynamicTables <- function(config) {
 }
 
 .CreateDynamicTables <- function(conn, config) {
-  
+  .CreateDataTable(conn = conn, config = config)
+  .CreateStagingTable(conn = conn, config = config)
+}
+
+.SetDynamicTriggers <- function(conn, config) {
+  .SetDataTriggers(conn = conn, config = config)
+}
+
+.BuildDynamicIndices <- function(conn, config) {
+  .BuildDataIndices(conn = conn, config = config)
+}
+
+
+.CreateDataTable <- function(conn, config) {
   .message(paste("Building table ", 
                  config$tables$data, 
                  "(",
@@ -99,7 +112,7 @@ RebuildDynamicTables <- function(config) {
                  sep = ""), 
            config = config)
   
-  query = paste("CREATE TABLE IF NOT EXISTS", config$tables$data,"
+  query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$data,"
 (ts timestamp with time zone NOT NULL,
 seriesId text NOT NULL, 
 familyId text, 
@@ -123,7 +136,34 @@ PRIMARY KEY(ts, seriesId) );")
            config = config)
 }
 
-.BuildDynamicTriggers <- function(conn, config) {
+.CreateStagingTable <- function(conn, config) {
+  .message(paste("Building table ", 
+                 config$tables$staging, 
+                 "(",
+                 names(config$tables$staging),
+                 ").",
+                 sep = ""), 
+           config = config)
+  
+  query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$staging,"
+                 (id serial primary key, url text);")
+
+  cc <- RunQuery(conn = conn, 
+                 query = query, 
+                 config = config)
+  
+  .message(paste("Successfully built table ", 
+                 config$tables$staging, 
+                 "(",
+                 names(config$tables$staging),
+                 ").",
+                 sep = ""), 
+           config = config)
+}
+
+
+
+.SetDataTriggers <- function(conn, config) {
   
   .message(paste("Setting triggers on table ", 
                  config$tables$data, 
@@ -162,7 +202,7 @@ CREATE TRIGGER ", config$tables$data, "_data_merge BEFORE INSERT ON ", config$ta
            config = config)
 }
 
-.BuildDynamicIndices <- function(conn, config) {
+.BuildDataIndices <- function(conn, config) {
   
   .message(paste("Building indices for table ", 
                  config$tables$data, 
@@ -247,30 +287,3 @@ CREATE TRIGGER ", config$tables$data, "_data_merge BEFORE INSERT ON ", config$ta
            config = config)
   
 }
-
-.ConfigureDynamicTables <- function(conn, config) {
-  .message(paste("Setting proper configuration for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-  
-  query = paste("ALTER TABLE",
-                config$tables$data,
-                "SET (autovacuum_enabled = false);")
-  
-  cc <- RunQuery(conn = conn, 
-                 query = query, 
-                 config = config)
-  
-  .message(paste("Succesfully set configuration for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-}
-

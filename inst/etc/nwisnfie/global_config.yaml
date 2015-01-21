@@ -14,6 +14,7 @@ collections:
 
 tables:
  data : data
+ staging : staging
  site.metadata : site_metadata
  param.metadata : param_metadata
  active.sites : active_sites
