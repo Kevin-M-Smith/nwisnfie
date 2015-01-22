@@ -28,6 +28,8 @@ Functions used to start and stop database connections.
 \code{StartDBConnection} starts a database connection specified by \code{config}.
 \code{StopDBConnection} closes out the database connection contained in the \code{conn} object.
 \code{TestDBConnection} attempts to start and stop a database connection based on \code{config}.
+}
+\examples{
 \dontrun{
 # Start and End Database Connection
  library(nwisnfie)

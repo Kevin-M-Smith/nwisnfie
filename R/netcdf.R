@@ -5,7 +5,6 @@
   gettextf("%.0f", seconds)
 }
 
-
 BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   if (is.null(conn)){
@@ -376,7 +375,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   lapply(params, BuildSensorMetadataVar)
 }
 
-
 .InitializeNCDF <- function(file, vars, config) {
   .message(paste("Initializing empty NetCDF file (",
                  file, 
@@ -614,9 +612,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   lapply(params, AddSensorMetadataVar)
   
 }
-
-
-
 
 .AddSiteMetadataVars <- function(ncdf, siteMetadata, layers, params, config) {
   
