@@ -10,22 +10,6 @@
 #' @name Configuration File
 NULL
 
-#' Internal function that throws error if file exists.
-#' 
-#' @param file File name in working directory. 
-#' @return NULL
-.ThrowErrorIfFileExists <- function(file){
-  if (file.exists(file)){
-    stop("      Previous installation detected at this location. 
-         
-         Please rename files that you wish to save, 
-         delete other previously installed files, and try again.
-         
-         Alternatively, if you have no files you wish to save, use overwrite = TRUE.")
-  }
-}
-
-
 #' Installs scripts and configuration files to the specified directory. 
 #' 
 #' If the directory does not exist, one will be created. 

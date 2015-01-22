@@ -102,7 +102,6 @@ RebuildDynamicTables <- function(config) {
   .BuildDataIndices(conn = conn, config = config)
 }
 
-
 .CreateDataTable <- function(conn, config) {
   .message(paste("Building table ", 
                  config$tables$data, 
@@ -160,8 +159,6 @@ PRIMARY KEY(ts, seriesId) );")
                  sep = ""), 
            config = config)
 }
-
-
 
 .SetDataTriggers <- function(conn, config) {
   

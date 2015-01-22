@@ -1,9 +1,3 @@
-SuperTest <- function(config){
-  TestClusterSettings(config)
-  RunDBDiagnostics(config)
-  RebuildStaticTables(config)
-}
-
 DownloadOneSite <- function(config){
   conn <- StartDBConnection(config)
   cluster <- StartCluster(config)
@@ -24,8 +18,17 @@ DownloadOneSite <- function(config){
   StopDBConnection(conn = conn, config = config)
 }
 
-.GetAllSites <- function(conn, config){
-  query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
-  sites <- RunQuery(conn = conn, query = query, config = config)
+Sample24H <- function(config) {
+  
+  conn <- StartDBConnection(config)
+  
+  query = "select * from data where ts > now() - interval '1 day';"
+  
+  data <- RunQuery(conn = conn, 
+                   config = config,
+                   query = query)
+  
+  StopDBConnection(conn = conn, config = config)
+  
+  return(data)
 }
-

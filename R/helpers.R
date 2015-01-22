@@ -29,3 +29,23 @@ AssignLogFileToConfig <- function(file, config) {
   config$logging$file = file
   return(config)
 }
+
+.GetAllSites <- function(conn, config){
+  query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
+  sites <- RunQuery(conn = conn, query = query, config = config)
+}
+
+#' Internal function that throws error if file exists.
+#' 
+#' @param file File name in working directory. 
+#' @return NULL
+.ThrowErrorIfFileExists <- function(file){
+  if (file.exists(file)){
+    stop("      Previous installation detected at this location. 
+         
+         Please rename files that you wish to save, 
+         delete other previously installed files, and try again.
+         
+         Alternatively, if you have no files you wish to save, use overwrite = TRUE.")
+  }
+}

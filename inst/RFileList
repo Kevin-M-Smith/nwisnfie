@@ -1,43 +1,8 @@
 all_tables.R
-  DropAllTables(config)         Undocumented
-  
-dynamic_tables.R
-  DropDynamicTables(config)           
-  BuildDynamicTables(config)
-  RebuildDynamicTables(config)
-  .CreateDynamicTables(conn, config)
-  .BuildDynamicTriggers(conn, config)
-  .BuildDynamicIndices(conn, config)
-  .ConfigureDynamicTables(conn, config)
+  DropAllTables(config)       					Undocumented
 
-static_tables.R
-  PopulateStaticTables(config)
-  DropStaticTables(config)
-  WhichStaticTablesExist(config)
-  RepopulateStaticTables(config)
-  .PopulateActiveSites(conn, config)              @TODO 
-  .PopulateSiteAssetsfunction(conn, config)
-  .PopulateParamCodes(conn, config)
-  .PopulateParamMetadata(conn, config)
-  .PopulateSensorMetadata(conn, config)
-  .PopulateSiteMetadata(conn, config)
-
-bootstrap.R
-  Bootstrap(config)              Undocumented
-
-install.R
-  .ThrowErrorIfFileExists(file)
-  InstallFiles(installDirectory, overwrite = FALSE)
-
-parallel.R
-  StartCluster(config)
-  StopCluster(cluster, config)
-  TestClusterSettings(config)
-
-downloaders.R
-  .DownloadAssetsForSites(sites, config)
-  .DownloadActiveSitesForState(state, config)
-  .DownloadDataFromNWIS(sites, params, startDate = NULL, endDate = NULL, period = NULL, offset = NULL, config)      Undocumented
+bootstrap.R	
+  Bootstrap(config)						Undocumented
 
 database.R
   RunDBDiagnostics(config)
@@ -46,10 +11,75 @@ database.R
   TestDBConnection(config)
   StopDBConnection(conn, config)
   StartDBConnection(config)
+  EnableAutoVacuum(conn, config)
+  DisableAutoVacuum(conn, config)
+
+debug.R
+  DownloadOneSite(config)              				Undocumented
+  Sample24H(config)						Undocumented
+
+downloaders.R
+  .DownloadAssetsForSites(sites, config)
+  .DownloadActiveSitesForState(state, config)
+
+  .DownloadDataFromNWIS(sites, 					Undocumented
+                        params, 
+                        startDate = NULL, 
+                        endDate = NULL, 
+                        period = NULL, 
+                        offset = NULL,
+                        url = NULL,
+                        config)  
+
+   .RetryDownloadDataFromNWIS(config, url)			Undocumented
+
+dynamic_tables.R
+  DropDynamicTables(config)           
+  BuildDynamicTables(config)
+  RebuildDynamicTables(config)
+  .CreateDynamicTables(conn, config)
+  .SetDynamicTriggers(conn, config)
+  .BuildDynamicIndices(conn, config)
+  .CreateStagingTable(conn, config)
+  .SetDataTriggers(conn, config)
+  .BuildDataIndices(conn, config)
 
 helpers.R
   LoadConfiguration(configFile = "global_config.yaml")
   AssignLogFileToConfig(file, config)
+  .GetAllSites <- function(conn, config)              		Undocumented
+  .ThrowErrorIfFileExists(file)
+
+install.R
+  InstallFiles(installDirectory, overwrite = FALSE)
+
+netcdf.R
+BuildNetCDF(data, name, config, conn = NULL)
+.ISO8601ToEpochTime(ISO8601)
+.GetSiteMetadata(conn, config)
+.GetSensorMetadata(conn, config)
+.BuildLayerDim(layers, config)
+.BuildTimeDim(times, config)
+.BuildTimeVar(timeDim, config)
+.BuildSiteMetadataDims(siteMetadata, config)
+.BuildSiteMetadataVars(siteMetadata, siteMetadataDims, layerDim, config)
+.BuildValueVars(params, layerDim, timeDim, config)
+.BuildValidatedVars(params, layerDim, timeDim, config)
+.BuildSensorMetadataDims(params, sensorMetadata, config)
+.BuildSensorMetadataVars(params, sensorMetadataDims, layerDim, config)
+.InitializeNCDF(file, vars, config)
+.BuildPaddedDataTable(times, layers, config)
+.AddTimeVars(ncdf, times, config)
+.AddValueAndValidatedVars(ncdf, padded, data, params, config)
+.AddSensorMetadataVars(ncdf, sensorMetadata, layers, params, config)
+.AddSensorMetadataVars(ncdf, sensorMetadata, layers, params, config)
+.AddSiteMetadataVars(ncdf, siteMetadata, layers, params, config)
+.CloseNetCDF(ncdf, file, config)
+
+parallel.R
+  StartCluster(config)
+  StopCluster(cluster, config)
+  TestClusterSettings(config)
 
 rlogging.R                                                      Undocumented
   .PrintLogMessage(..., config, domain = NULL, level) 
@@ -57,7 +87,18 @@ rlogging.R                                                      Undocumented
   .stop(..., config, call. = TRUE, domain = NULL)
   .warning(..., config, call. = TRUE, immediate. = FALSE, domain = NULL)
 
-debug.R
-  SuperTest <- function(config)                       Undocumented  
-  DownloadOneSite <- function(config)                 Undocumented
-  .GetAllSites <- function(conn, config)              Undocumented
+static_tables.R
+  PopulateStaticTables(config)
+  DropStaticTables(config)
+  WhichStaticTablesExist(config)
+  RepopulateStaticTables(config)
+  .PopulateActiveSites(conn, config)              @TODO Not Implemented
+  .PopulateSiteAssetsfunction(conn, config)
+  .PopulateParamCodes(conn, config)
+  .PopulateParamMetadata(conn, config)
+  .PopulateSensorMetadata(conn, config)
+  .PopulateSiteMetadata(conn, config)
+
+sync.R
+  SyncDB(config, period)					Undocumented
+
