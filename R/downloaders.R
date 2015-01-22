@@ -57,52 +57,6 @@
   }
 }
 
-
-# @ return primary key
-.StageURL(config = config, url = url) {
-  
-  query <- paste("INSERT INTO ", 
-                 config$tables$staging,
-                 "(url) values ('",
-                 url,
-                 "'') RETURNING id;",
-                 sep = "")
-  
-}
-
-.UnstageURL(config = config, url = NULL, id = NULL) {
-  if (is.null(url) && is.null(id)){
-    .stop("Error attempting to unstage URL. Must specify either url or id.",
-          config = config)
-  } 
-  
-  if (is.null(url)){
-    
-    query <- paste("delete from only ",
-                   config$tables$staging,
-                   " where id = ",
-                   id,
-                   ";",
-                   sep = "")
-    
-  } else {
-    
-    query <- paste("delete from only ",
-                   config$tables$staging,
-                   "where url = '",
-                   url,
-                   "';",
-                   sep = "")
-    
-  }
-  
-  cc <- RunQuery(conn = conn2, 
-                 query = query, 
-                 config = config)
-  
-}
-
-
 .RetryDownloadDataFromNWIS <- function(config, url) {
   .DownloadDataFromNWIS(sites = NULL, params = NULL, url = url, config = config)
 }

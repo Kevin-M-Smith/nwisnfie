@@ -1,4 +1,4 @@
-SyncDB <- function(config, period){
+SyncDB <- function(config, period) {
   
   conn <- StartDBConnection(config)
   cluster <- StartCluster(config)
