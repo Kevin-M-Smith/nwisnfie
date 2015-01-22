@@ -81,7 +81,7 @@ parallel.R
   StopCluster(cluster, config)
   TestClusterSettings(config)
 
-rlogging.R                                                      Undocumented
+logging.R                                                      Undocumented
   .PrintLogMessage(..., config, domain = NULL, level) 
   .message(..., config, domain = NULL, appendLF = TRUE)
   .stop(..., config, call. = TRUE, domain = NULL)
