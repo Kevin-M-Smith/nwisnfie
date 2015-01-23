@@ -2,13 +2,15 @@ This page lists the files and respective functions in the `nwisnfie` package und
 
 <hr>
 
-## all_tables.R
-* DropAllTables(config)       					__@TODO: Undocumented__
+## [all_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/all_tables.R)
+#### Exported:
+* DropAllTables(config)         				__@TODO: Undocumented__
 
-## bootstrap.R	
+## [bootstrap.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/bootstrap.R)
+#### Exported:
 * Bootstrap(config)						__@TODO: Undocumented__
 
-## database.R
+## [database.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/database.R)
 #### Exported: 
 * RunDBDiagnostics(config)
 * RunQuery(conn, query, config)
@@ -18,23 +20,28 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * EnableAutoVacuum(conn, config)
 * DisableAutoVacuum(conn, config)
 
-#### Non-Exported
+#### Non-Exported:
 * .WhichTablesExist(conn, config, quietly = FALSE)
 
-## debug.R
+## [debug.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/debug.R)
+#### Exported:
 * DownloadOneSite(config)              			__@TODO: Undocumented__
 * Sample24H(config)					__@TODO: Undocumented__
 
-## downloaders.R
+## [downloaders.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/downloaders.R)
+#### Non-Exported: 
 * .DownloadAssetsForSites(sites, config)
 * .DownloadActiveSitesForState(state, config)
 * .DownloadDataFromNWIS(sites, params, startDate = NULL, endDate = NULL, period = NULL, offset = NULL, url = NULL, config)  
 * .RetryDownloadDataFromNWIS(config, url)			
 
-## dynamic_tables.R
+## [dynamic_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/dynamic_tables.R)
+#### Exported:
 * DropDynamicTables(config)           
 * BuildDynamicTables(config)
 * RebuildDynamicTables(config)
+
+#### Non-Exported: 
 * .CreateDynamicTables(conn, config)
 * .SetDynamicTriggers(conn, config)
 * .BuildDynamicIndices(conn, config)
@@ -42,24 +49,24 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * .SetDataTriggers(conn, config)
 * .BuildDataIndices(conn, config)
 
-## helpers.R
-#### Exported Functions
+## [helpers.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/helpers.R)
+#### Exported:
 * LoadConfiguration(configFile = "global_config.yaml")
 * AssignLogFileToConfig(file, config)
 
-#### Non-Exported Functions
+#### Non-Exported:
 * .GetAllSites <- function(conn, config)              		__@TODO: Undocumented__
 * .ThrowErrorIfFileExists(file)
 
-## install.R
-#### Exported Functions
+## [install.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/install.R)
+#### Exported:
 * InstallFiles(installDirectory, overwrite = FALSE)
 
-## netcdf.R
-#### Exported Functions
+## [netcdf.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/netcdf.R)
+#### Exported:
 * BuildNetCDF(data, name, config, conn = NULL)                  __@TODO: Undocumented__
 
-#### Non-Exported Functions
+#### Non-Exported:
 * .ISO8601ToEpochTime(ISO8601)
 * .GetSiteMetadata(conn, config)
 * .GetSensorMetadata(conn, config)
@@ -81,25 +88,27 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * .AddSiteMetadataVars(ncdf, siteMetadata, layers, params, config)
 * .CloseNetCDF(ncdf, file, config)
 
-## parallel.R
+## [parallel.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/parallel.R)
+#### Exported: 
 * StartCluster(config)
 * StopCluster(cluster, config)
 * TestClusterSettings(config)
 
-## logging.R                                                      
+## [logging.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/logging.R)              
+#### Non-Exported:                                         
 * .PrintLogMessage(..., config, domain = NULL, level) 
 * .message(..., config, domain = NULL, appendLF = TRUE)
 * .stop(..., config, call. = TRUE, domain = NULL)
 * .warning(..., config, call. = TRUE, immediate. = FALSE, domain = NULL)
 
-## static_tables.R
-#### Exported Functions
+## [static_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/static_tables.R)
+#### Exported:
 * PopulateStaticTables(config)
 * DropStaticTables(config)
 * WhichStaticTablesExist(config)
 * RepopulateStaticTables(config)
 
-#### Non-Exported Functions
+#### Non-Exported:
 * .PopulateActiveSites(conn, config)             
 * .PopulateSiteAssetsfunction(conn, config)
 * .PopulateParamCodes(conn, config)
@@ -107,6 +116,6 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * .PopulateSensorMetadata(conn, config)
 * .PopulateSiteMetadata(conn, config)
 
-## sync.R
-#### Exported Functions
+## [sync.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/sync.R)
+#### Exported:
 * SyncDB(config, period)			 __@TODO Undocumented__
