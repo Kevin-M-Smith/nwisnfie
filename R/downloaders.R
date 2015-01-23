@@ -57,6 +57,56 @@
   }
 }
 
+
+# @ return primary key
+.StageURL <- function(config = config, url = url) {
+  
+  query <- paste("INSERT INTO ", 
+                 config$tables$staging,
+                 "(url) values ('",
+                 url,
+                 "') RETURNING id;",
+                 sep = "")
+  
+  cc <- RunQuery(conn = conn2, 
+                 query = query, 
+                 config = config)
+  
+}
+
+.UnstageURL <- function(config = config, url = NULL, id = NULL) {
+  if (is.null(url) && is.null(id)){
+    .stop("Error attempting to unstage URL. Must specify either url or id.",
+          config = config)
+  } 
+  
+  if (is.null(url)){
+    
+    query <- paste("delete from only ",
+                   config$tables$staging,
+                   " where id = ",
+                   id,
+                   ";",
+                   sep = "")
+    
+  } else {
+    
+    query <- paste("delete from only ",
+                   config$tables$staging,
+                   "where url = '",
+                   url,
+                   "';",
+                   sep = "")
+    
+  }
+  
+  cc <- RunQuery(conn = conn2, 
+                 query = query, 
+                 config = config)
+  
+}
+
+
 .RetryDownloadDataFromNWIS <- function(config, url) {
   .DownloadDataFromNWIS(sites = NULL, params = NULL, url = url, config = config)
 }
@@ -100,11 +150,13 @@
     }
   }
   
-  .StageURL(url = url, config = config)
+  id <- .StageURL(url = url, config = config)
+  .message(paste("Staged", url, "with id", id),
+           config = config)
   
-  g = RCurl::basicTextGatherer()
+  g <- RCurl::basicTextGatherer()
   
-  xml = RCurl::curlPerform(url = url, 
+  xml <- RCurl::curlPerform(url = url, 
                            writefunction = g$update, 
                            httpheader = c(AcceptEncoding="gzip,deflate")) 
   
@@ -153,7 +205,8 @@
                                           row.names = FALSE, 
                                           overwrite = FALSE) 
         }
-      } 
+      }
     }
-  }   
+  } 
+  .UnstageURL(id = id, config = config)
 }
