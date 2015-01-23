@@ -48,7 +48,7 @@ DropStaticTables <- function(config) {
   
   BuildAndRunQuery <- function(table){
     if (exists[table]) {
-
+      
       .message(paste("Table '", 
                      config$tables[table],
                      "' (",
@@ -99,7 +99,7 @@ WhichStaticTablesExist <- function(config) {
   conn <- StartDBConnection(config)
   
   exists <- .WhichTablesExist(conn, config, quietly = TRUE)
-
+  
   CheckIfStaticTableExists <- function(table){
     if (exists[table]) {
       .message(paste("Table '", 
@@ -312,7 +312,7 @@ ON
   b.county_cd,
   b.country_cd
 INTO ", config$tables$site.metadata, 
-                " FROM public.", config$tables$site.assets, " a 
+                 " FROM public.", config$tables$site.assets, " a 
 LEFT OUTER JOIN 
    public.", config$tables$active.sites, " b 
 ON
@@ -321,6 +321,179 @@ ON
   result <- RunQuery(conn = conn, 
                      query = query, 
                      config = config)
+  
+  query <- paste("ALTER TABLE", config$tables$site.metadata,
+                 "ADD COLUMN huc_l1 text,
+                 ADD COLUMN huc_l2 text,
+                 ADD COLUMN huc_l3 text,
+                 ADD COLUMN huc_l4 text;")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <-paste("CREATE TABLE hucs_temp (huc_l1 text, 
+                huc_l2 text, huc_l3 text, huc_l4 text);")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("INSERT INTO hucs_temp (huc_l1, huc_l2, huc_l3, huc_l4)
+SELECT 
+substring(huc_cd from 1 for 2),
+substring(huc_cd from 1 for 4),
+substring(huc_cd from 1 for 6),
+substring(huc_cd from 1 for 8)
+FROM ", config$tables$site.metadata, ";", sep = "")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE ", config$tables$site.metadata,
+                 " set huc_l1 = hucs_temp.huc_l1,
+huc_l2 = hucs_temp.huc_l2,
+huc_l3 = hucs_temp.huc_l3
+from hucs_temp
+where ", config$tables$site.metadata, ".huc_cd = hucs_temp.huc_l4;",
+                 sep = "")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("DROP TABLE hucs_temp;")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("ALTER TABLE", config$tables$site.metadata, "
+ADD COLUMN nfie_hydro_region_num text, 
+ADD COLUMN nfie_hydro_region_name text;")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '01',
+nfie_hydro_region_name = 'New England'
+where huc_l1 = '01';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '02',
+nfie_hydro_region_name = 'Mid-Atlantic'
+where huc_l1 = '02';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '03',
+nfie_hydro_region_name = 'South Atlantic-Gulf'
+where huc_l1 = '03';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '04',
+nfie_hydro_region_name = 'Great Lake'
+where huc_l1 = '04';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '08',
+nfie_hydro_region_name = 'Mississippi'
+where 
+huc_l1 = '05' OR
+huc_l1 = '06' OR
+huc_l1 = '07' OR
+huc_l1 = '08' OR
+huc_l1 = '10' OR
+huc_l1 = '11';
+")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '09',
+nfie_hydro_region_name = 'Souris-Red-Rainy'
+where huc_l1 = '09';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '12',
+nfie_hydro_region_name = 'Texas-Gulf'
+where huc_l1 = '12';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '13',
+nfie_hydro_region_name = 'Rio Grande'
+where huc_l1 = '13';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '15',
+nfie_hydro_region_name = 'Colorado'
+where 
+huc_l1 = '14' OR
+huc_l1 = '15';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '16',
+nfie_hydro_region_name = 'Great Basin'
+where huc_l1 = '16';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '17',
+nfie_hydro_region_name = 'Pacific Northwest'
+where huc_l1 = '17';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
+  query <- paste("UPDATE", config$tables$site.metadata, "set 
+nfie_hydro_region_num = '18',
+nfie_hydro_region_name = 'California'
+where huc_l1 = '18';")
+  
+  result <- RunQuery(conn = conn, 
+                     query = query, 
+                     config = config)
+  
   
   .message(paste("Table", 
                  config$tables$site.metadata, 
