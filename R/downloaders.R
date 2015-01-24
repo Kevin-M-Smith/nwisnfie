@@ -156,61 +156,61 @@
   .message(paste("Staged", url, "with id", id),
            config = config)
   
-#   g <- RCurl::basicTextGatherer()
-#   
-#   xml <- RCurl::curlPerform(url = url, 
-#                            writefunction = g$update, 
-#                            httpheader = c(AcceptEncoding="gzip,deflate")) 
-#   
-#   doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
-#   doc <- XML::xmlRoot(doc)
-#   
-#   vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
-#   now <- format(Sys.time(), "%FT%T%z") 
-#   
-#   IsDataValidated <- function(x){
-#     if(x == "P") 0 else 1
-#   }
-#   
-#   if(length(vars) > 0){
-#     for (i in 1:length(vars)){ 
-#       parent <- XML::xmlDoc(vars[[i]]) 
-#       parent <- XML::xmlRoot(parent) 
-#       parentName <- unlist(XML::xpathApply(parent, "//ns1:timeSeries/@name")) 
-#       sensors <- XML::xpathApply(parent, "//ns1:values") 
-#       parameter <- XML::xpathApply(parent, "//ns1:variableCode", XML::xmlValue)
-#       familyName <- paste(unlist(strsplit(parentName, ":", fixed = TRUE))[-3], collapse = ":")
-#       for (j in 1:length(sensors)){ 
-#         child <- XML::xmlDoc(sensors[[j]]) 
-#         child <- XML::xmlRoot(child) 
-#         if(!is.null(unlist(XML::xpathApply(child, "//@dateTime")))){
-#           childName <- unlist(XML::xpathApply(child, "//ns1:method/@methodID")) 
-#           childName <- formatC(strtoi(childName), width = 5, format = "d", flag = "0")  
-#           
-#           result <- data.frame( 
-#             unlist(XML::xpathApply(child, "//@dateTime")), 
-#             paste(parentName, ":", childName, sep = ""), 
-#             paste(familyName, ":", childName, sep = ""),
-#             unlist(XML::xpathApply(child, "//ns1:value", XML::xmlValue)),
-#             parameter, 
-#             unlist(lapply(XML::xpathApply(child, "//@qualifiers"), IsDataValidated)), 
-#             now, 
-#             now 
-#           ) 
-#           
-#           colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
-#           
-#           table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
-#           
-#           cc <- RPostgreSQL::dbWriteTable(conn2, 
-#                                           name = table, 
-#                                           value = result, 
-#                                           append = TRUE, 
-#                                           row.names = FALSE, 
-#                                           overwrite = FALSE) 
-#         }
-#       }
-#     }
-#   } 
-#   .UnstageURL(id = id, config = config)
+  g <- RCurl::basicTextGatherer()
+  
+  xml <- RCurl::curlPerform(url = url, 
+                           writefunction = g$update, 
+                           httpheader = c(AcceptEncoding="gzip,deflate")) 
+  
+  doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  doc <- XML::xmlRoot(doc)
+  
+  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+  now <- format(Sys.time(), "%FT%T%z") 
+  
+  IsDataValidated <- function(x){
+    if(x == "P") 0 else 1
+  }
+  
+  if(length(vars) > 0){
+    for (i in 1:length(vars)){ 
+      parent <- XML::xmlDoc(vars[[i]]) 
+      parent <- XML::xmlRoot(parent) 
+      parentName <- unlist(XML::xpathApply(parent, "//ns1:timeSeries/@name")) 
+      sensors <- XML::xpathApply(parent, "//ns1:values") 
+      parameter <- XML::xpathApply(parent, "//ns1:variableCode", XML::xmlValue)
+      familyName <- paste(unlist(strsplit(parentName, ":", fixed = TRUE))[-3], collapse = ":")
+      for (j in 1:length(sensors)){ 
+        child <- XML::xmlDoc(sensors[[j]]) 
+        child <- XML::xmlRoot(child) 
+        if(!is.null(unlist(XML::xpathApply(child, "//@dateTime")))){
+          childName <- unlist(XML::xpathApply(child, "//ns1:method/@methodID")) 
+          childName <- formatC(strtoi(childName), width = 5, format = "d", flag = "0")  
+          
+          result <- data.frame( 
+            unlist(XML::xpathApply(child, "//@dateTime")), 
+            paste(parentName, ":", childName, sep = ""), 
+            paste(familyName, ":", childName, sep = ""),
+            unlist(XML::xpathApply(child, "//ns1:value", XML::xmlValue)),
+            parameter, 
+            unlist(lapply(XML::xpathApply(child, "//@qualifiers"), IsDataValidated)), 
+            now, 
+            now 
+          ) 
+          
+          colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
+          
+          table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
+          
+          cc <- RPostgreSQL::dbWriteTable(conn2, 
+                                          name = table, 
+                                          value = result, 
+                                          append = TRUE, 
+                                          row.names = FALSE, 
+                                          overwrite = FALSE) 
+        }
+      }
+    }
+  } 
+  .UnstageURL(id = id, config = config)
 }
