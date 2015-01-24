@@ -20,6 +20,7 @@ tables:
  site.assets : site_assets
  param.codes : param_codes
  sensor.metadata : sensor_metadata
+ url.stash : url_stash
 
 parallel:
  max.cores: NONE

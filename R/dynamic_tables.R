@@ -144,7 +144,7 @@ PRIMARY KEY(ts, seriesId) );")
                  sep = ""), 
            config = config)
   
-  query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$staging,"
+  query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$url.stash,"
                  (id serial primary key, url text);")
 
   cc <- RunQuery(conn = conn, 

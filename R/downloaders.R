@@ -153,8 +153,8 @@
   
   id <- .StageURL(url = url, config = config)
   
-  .message(paste("Staged", url, "with id", id),
-           config = config)
+ # .message(paste("Staged", url, "with id", id),
+ #           config = config)
   
   g <- RCurl::basicTextGatherer()
   
