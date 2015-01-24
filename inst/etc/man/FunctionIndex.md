@@ -62,12 +62,16 @@ This page lists the files and respective functions in the `nwisnfie` package und
 #### Exported:
 * InstallFiles(installDirectory, overwrite = FALSE)
 
+## ISO8601.R
+* .ISO8601ToEpochTime(ISO8601)
+* .ParseISO8601Duration(duration)
+* .ParseISO8601Offset(offset)
+
 ## [netcdf.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/netcdf.R)
 #### Exported:
 * BuildNetCDF(data, name, config, conn = NULL)                  __@TODO: Undocumented__
 
 #### Non-Exported:
-* .ISO8601ToEpochTime(ISO8601)
 * .GetSiteMetadata(conn, config)
 * .GetSensorMetadata(conn, config)
 * .BuildLayerDim(layers, config)
