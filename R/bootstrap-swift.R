@@ -21,7 +21,7 @@ BootstrapSwift <- function(config) {
                            startDate = date,
                            endDate = date,
                            period = NULL,
-                           offset = config$time$midnight.offset.standard, 
+                           offset = config$time$utc.offset, 
                            stage = TRUE,
                            config = config)
      
@@ -40,7 +40,7 @@ BootstrapSwift <- function(config) {
                                 startDate = date,
                                 endDate = date,
                                 period = NULL,
-                                offset = config$time$midnight.offset.standard, 
+                                offset = config$time$utc.offset, 
                                 stage = TRUE,
                                 config = config)
           
