@@ -4,14 +4,14 @@ BootstrapSwift <- function(config) {
   
   sites <- .GetAllSites(conn = conn, config = config)
   
-  startDate <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P5W"), "day")
-  endDate   <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P1D"), "day")
-  dates     <- strftime(seq(startDate, endDate, by = "day"), '%Y-%m-%d')
+#  startDate <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P5W"), "day")
+#  endDate   <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P1D"), "day")
+#  dates     <- strftime(seq(startDate, endDate, by = "day"), '%Y-%m-%d')
   
   pb <- txtProgressBar(min = 1, max = nrow(sites) * length(dates), style = 3, width = 20)
   
   cc <-  foreach(j = 1:length(dates)) %:% foreach(i = 1:nrow(sites)) %dopar% {
-        setTxtProgressBar(pb, i*j)
+#        setTxtProgressBar(pb, i*j)
       
 #         result = tryCatch({
 #           .DownloadDataFromNWIS(site = sites[i,1],
