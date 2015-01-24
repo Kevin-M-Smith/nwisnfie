@@ -118,6 +118,7 @@
                                   period = NULL, 
                                   offset = NULL,
                                   url = NULL,
+                                  stage = FALSE,
                                   config){
   
   if (is.null(url)) {
@@ -136,11 +137,11 @@
     } else {
       if (is.null(period)){
         if (is.null(offset)){
-          url = paste(url, "&startDT=", date, "T00:00:00", sep = "")
-          url = paste(url, "&endDT=", date, "T23:59:59", sep = "")
+          url = paste(url, "&startDT=", startDate, "T00:00:00", sep = "")
+          url = paste(url, "&endDT=", endDate, "T23:59:59", sep = "")
         } else {
-          url = paste(url, "&startDT=", date, "T00:00:00", offset, sep = "")
-          url = paste(url, "&endDT=", date, "T23:59:59", offset, sep = "")
+          url = paste(url, "&startDT=", startDate, "T00:00:00", offset, sep = "")
+          url = paste(url, "&endDT=", endDate, "T23:59:59", offset, sep = "")
         }
       } else {
         .stop("Please choose either a lookback period or a pair of start 
@@ -198,9 +199,11 @@
           
           colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
           
+          table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
+          
           cc <- RPostgreSQL::dbWriteTable(conn2, 
-                                          config$tables$data, 
-                                          result, 
+                                          name = table, 
+                                          value = result, 
                                           append = TRUE, 
                                           row.names = FALSE, 
                                           overwrite = FALSE) 

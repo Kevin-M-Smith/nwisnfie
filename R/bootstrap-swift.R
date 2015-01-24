@@ -4,8 +4,8 @@ BootstrapSwift <- function(config) {
   
   sites <- .GetAllSites(conn = conn, config = config)
   
-  startDate <- floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P5W"), "day")
-  endDate   <- floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P1D"), "day")
+  startDate <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P5W"), "day")
+  endDate   <- lubridate::floor_date(now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P1D"), "day")
   dates     <- strftime(seq(startDate, endDate, by = "day"), '%Y-%m-%d')
   
   pb <- txtProgressBar(min = 1, max = nrow(sites) * length(dates), style = 3, width = 20)
