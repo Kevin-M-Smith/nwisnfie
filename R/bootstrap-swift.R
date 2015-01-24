@@ -10,12 +10,10 @@ BootstrapSwift <- function(config) {
   
   pb <- txtProgressBar(min = 1, max = nrow(sites) * length(dates), style = 3, width = 20)
   
-  cc <- 
-    foreach(j = 1:length(dates)) %:% 
-      foreach(i = 1:nrow(sites)) %dopar% {
+  cc <-  foreach(j = 1:length(dates)) %:% foreach(i = 1:nrow(sites)) %dopar% {
         setTxtProgressBar(pb, i*j)
       
-        result = tryCatch({
+#         result = tryCatch({
           .DownloadDataFromNWIS(site = sites[i,1],
                                 params = config$collections$params,
                                 startDate = dates[j],
@@ -24,20 +22,20 @@ BootstrapSwift <- function(config) {
                                 offset = config$time$midnight.offset.standard, 
                                 stage = TRUE,
                                 config = config)
-        
-        
-        }, warning = function(w) {
-        
-        }, error = function(e){
-          error <- paste("\nSite:",
-                         sites[i,1],
-                         "at index",
-                         i,
-                         "failed:",
-                         e)
-          .stop(error , config = config)
-      })
-        
+#         
+#         
+#         }, warning = function(w) {
+#         
+#         }, error = function(e){
+#           error <- paste("\nSite:",
+#                          sites[i,1],
+#                          "at index",
+#                          i,
+#                          "failed:",
+#                          e)
+#           .stop(error , config = config)
+#       })
+#         
     }
   
   StopCluster(cluster = cluster, config = config)
