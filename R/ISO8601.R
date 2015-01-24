@@ -5,13 +5,13 @@
   gettextf("%.0f", seconds)
 }
 
-.ParseISO8601Duration <- function(period) {
+.ParseISO8601Duration <- function(duration) {
   
-  period <- toupper(period)
+  duration <- toupper(duration)
   
   struct <- "P(([0-9]*)Y)?(([0-9]*)M)?(([0-9]*)W)?(([0-9]*)D)?(T(([0-9]*)H)?(([0-9]*)M)?(([0-9]*)S)?)?"
   
-  parsed <- stringr::str_match(period, struct)
+  parsed <- stringr::str_match(duration, struct)
   
   lubridate::new_period(
     year   = ifelse(parsed[, 3] == "", 0, as.numeric(parsed[,3])),
@@ -38,6 +38,8 @@
     minute = minute)
   
 }
+
+
 
 
 
