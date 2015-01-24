@@ -62,7 +62,7 @@
 .StageURL <- function(config = config, url = url) {
   
   query <- paste("INSERT INTO ", 
-                 config$tables$staging,
+                 config$tables$url.stash,
                  "(url) values ('",
                  url,
                  "') RETURNING id;",
@@ -83,7 +83,7 @@
   if (is.null(url)){
     
     query <- paste("delete from only ",
-                   config$tables$staging,
+                   config$tables$url.stash,
                    " where id = ",
                    id,
                    ";",
@@ -92,7 +92,7 @@
   } else {
     
     query <- paste("delete from only ",
-                   config$tables$staging,
+                   config$tables$url.stash,
                    "where url = '",
                    url,
                    "';",
