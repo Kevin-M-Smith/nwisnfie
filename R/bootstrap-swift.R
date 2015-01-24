@@ -10,7 +10,7 @@ BootstrapSwift <- function(config) {
  
 dates <- c("a", "b")
 
-  pb <- txtProgressBar(min = 1, max = nrow(sites) * length(dates), style = 3, width = 20)
+#  pb <- txtProgressBar(min = 1, max = nrow(sites) * length(dates), style = 3, width = 20)
   
   cc <-  foreach(j = 1:length(dates)) %:% foreach(i = 1:nrow(sites)) %dopar% {
 #        setTxtProgressBar(pb, i*j)
