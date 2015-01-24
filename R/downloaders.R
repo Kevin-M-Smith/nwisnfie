@@ -69,7 +69,8 @@
                  sep = "")
   
   cc <- RunQuery(conn = conn2, 
-                 query = query, 
+                 query = query,
+                 quietly = TRUE,
                  config = config)
   
 }

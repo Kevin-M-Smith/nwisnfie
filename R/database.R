@@ -64,14 +64,17 @@ TestDBConnection <- function(config){
 #'  print(result)
 #'  EndDBConnection(conn)
 #' }
-RunQuery <- function(conn, query, config){
+RunQuery <- function(conn, query, quietly = FALSE, config){
   if (missing(query)){
     .stop("No query specified for .RunQuery.", config = config)
   }
   
-  .message("Successfully ran query: ", config = config)
-  .message(query, config = config)
   res <- RPostgreSQL::dbGetQuery(conn, query)
+  
+  if (!is.null(res) & !quietly){
+    .message("Successfully ran query: ", config = config)
+    .message(query, config = config)
+  }
 }
 
 #' Checks which tables exist. 

@@ -13,7 +13,7 @@ This page lists the files and respective functions in the `nwisnfie` package und
 ## [database.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/database.R)
 #### Exported: 
 * RunDBDiagnostics(config)
-* RunQuery(conn, query, config)
+* RunQuery(conn, query, quietly = FALSE, config)
 * TestDBConnection(config)
 * StopDBConnection(conn, config)
 * StartDBConnection(config)
