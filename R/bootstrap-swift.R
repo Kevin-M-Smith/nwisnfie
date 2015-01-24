@@ -13,7 +13,7 @@ BootstrapSwift <- function(config) {
   cc <- 
     foreach(j = 1:length(dates)) %:% 
       foreach(i = 1:nrow(sites)) %dopar% {
-        setTxtProgressBar(pb, i)
+        setTxtProgressBar(pb, i*j)
       
         result = tryCatch({
           .DownloadDataFromNWIS(site = sites[i,1],
