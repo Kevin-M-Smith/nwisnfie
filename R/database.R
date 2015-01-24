@@ -75,6 +75,8 @@ RunQuery <- function(conn, query, quietly = FALSE, config){
     .message("Successfully ran query: ", config = config)
     .message(query, config = config)
   }
+  
+  res
 }
 
 #' Checks which tables exist. 
