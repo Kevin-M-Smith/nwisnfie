@@ -14,14 +14,14 @@ BootstrapSwift <- function(config) {
         setTxtProgressBar(pb, i*j)
       
 #         result = tryCatch({
-          .DownloadDataFromNWIS(site = sites[i,1],
-                                params = config$collections$params,
-                                startDate = dates[j],
-                                endDate = dates[j],
-                                period = NULL,
-                                offset = config$time$midnight.offset.standard, 
-                                stage = TRUE,
-                                config = config)
+#           .DownloadDataFromNWIS(site = sites[i,1],
+#                                 params = config$collections$params,
+#                                 startDate = dates[j],
+#                                 endDate = dates[j],
+#                                 period = NULL,
+#                                 offset = config$time$midnight.offset.standard, 
+#                                 stage = TRUE,
+#                                 config = config)
 #         
 #         
 #         }, warning = function(w) {
