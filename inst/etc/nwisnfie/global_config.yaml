@@ -8,12 +8,25 @@ time:
  utc.offset : -06:00
 
 collections:
- params: 00060,00065,00045,00095,00010,00062,00054,00036,00035
- lookback: P5W
+ params : 00060,00065,00045,00095,00010,00062,00054,00036,00035
+ lookback : P5W
+ 
+netcdf:
+  national : "/data/netcdf/iv/daily/national"
+  # 2 DIGIT HUC
+  huc_l1 : "/data/netcdf/iv/daily/huc_l1"
+  # 4 DIGIT HUC
+  huc_l2 : "/data/netcdf/iv/huc_l2"
+  # 6 DIGIT HUC
+  huc_l3 : "/data/netcdf/iv/huc_l3"
+  # 8 DIGIT HUC
+  huc_l4 : "/data/netcdf/iv/huc_l4"
+  # NFIE-HYDRO
+  nfie_hydro : "/data/netcdf/iv/nfie_hydro"
 
 tables:
  data : data
- staging : staging
+ staging : staging_
  site.metadata : site_metadata
  param.metadata : param_metadata
  active.sites : active_sites
@@ -23,9 +36,9 @@ tables:
  url.stash : url_stash
 
 parallel:
- max.cores: NONE
+ max.cores : NONE
 
 logging:
- level: INFO
+ level : INFO
  time.stamp.format : "[%Y-%m-%d %H:%M:%S]"
- file: NULL
+ file : NULL

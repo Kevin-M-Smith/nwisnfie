@@ -8,8 +8,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   }
   
   # output file
-  #file <- paste(tempdir(), "name23", sep = "/")
-  file <- "~/Desktop/test2.nc"
+  # file <- paste(tempdir(), "name23", sep = "/")
+  file <- name
   
   siteMetadata <- .GetSiteMetadata(conn = conn, config = config)
   

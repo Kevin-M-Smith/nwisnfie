@@ -32,3 +32,13 @@ Sample24H <- function(config) {
   
   return(data)
 }
+
+Upgrade <- function(){
+  
+  detach("package:nwisnfie", unload=TRUE)
+  remove.packages("nwisnfie")
+  
+  library(devtools)
+  install_github("Kevin-M-Smith/nwisnfie", ref = "swift")
+  library(nwisnfie)
+}

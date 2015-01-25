@@ -53,26 +53,39 @@ BootstrapSwift <- function(config) {
     lapply(dates, DownloadWrapper)
   }
   
-  cc <- foreach(i = 1:length(dates)) %dopar% {
+  
+  stagingTable <- "staging_2014-12-20"
+  
+  
+#   cc <- foreach(i = 1:length(dates)) %dopar% {
+#     
+#     stagingTable <- paste0(config$tables$staging, dates[i])
     
-    query <- paste0("select * from \"", 
-                    paste0(config$tables$staging, 
-                           dates[i]),
+    query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
+                    stagingTable,
                     "\"",
                     ";")
     
-    data <- RunQuery(conn = conn2,
+    data <- RunQuery(conn = conn,
              query = query,
              config = config)
     
-    print(head(data))
+#     .message(head(data), config = config)
+#     
+#   }
+  
+  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = "2014-12-20", config = config, conn = conn)
+  
+
+  cc <- foreach(i = 1:nrow(queue)) %dopar% {
+    familyids <- RunQuery(conn = conn2,
+                          query = queue$query[i],
+                          config = config)
+    
+    sub <- subset(data, subset = familyid %in% familyids[,1])
+    
+    BuildNetCDF(data = sub, name = queue$name[i], config, conn = conn2)
   }
-  
-  
-  
-  
-  
-  
   
   
   StopCluster(cluster = cluster, config = config)
