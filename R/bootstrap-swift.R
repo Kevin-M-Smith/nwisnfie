@@ -26,7 +26,7 @@ BootstrapSwift <- function(config) {
       
       table <- paste0(config$tables$staging, date)
             
-      DisableAutovacuum(conn = conn2, table = table, config = config)
+      DisableAutovacuum(table = table, config = config)
       
     }
     
