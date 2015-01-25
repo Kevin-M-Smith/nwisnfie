@@ -17,8 +17,8 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * TestDBConnection(config)
 * StopDBConnection(conn, config)
 * StartDBConnection(config)
-* EnableAutoVacuum(conn, config)
-* DisableAutoVacuum(conn, config)
+* EnableAutoVacuum(table, config)
+* DisableAutoVacuum(table, config)
 
 #### Non-Exported:
 * .WhichTablesExist(conn, config, quietly = FALSE)

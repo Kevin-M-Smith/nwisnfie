@@ -150,59 +150,51 @@ RunDBDiagnostics <- function(config){
 NULL
 
 #' @rdname Autovacuum
-EnableAutoVacuum <- function(conn, config){
+EnableAutoVacuum <- function(table, config){
   conn <- StartDBConnection(config)
   
-  .message(paste("Enabling autovacuum for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
+  .message(paste("Enabling autovacuum for table \"", 
+                 config$tables$data, "\"",
                  sep = ""), 
            config = config)
   
-  query <- paste("ALTER TABLE",
-                config$tables$data,
-                "SET (autovacuum_enabled = true);")
+  query <- paste0("ALTER TABLE \"",
+                table,
+                "\" SET (autovacuum_enabled = true);")
   
   cc <- RunQuery(conn = conn, 
                  query = query, 
                  config = config)
   
   .message(paste("Succesfully enabled autovacuum for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
+                 table,
                  sep = ""), 
            config = config)
+  
+  StopDBConnection(conn = conn, config = config)
 }
 
 #' @rdname Autovacuum
-DisableAutovacuum <- function(config){
+DisableAutovacuum <- function(table, config){
   conn <- StartDBConnection(config)
   
   .message(paste("Disabling autovacuum for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
+                 table,
                  sep = ""), 
            config = config)
   
-  query <- paste("ALTER TABLE",
-                 config$tables$data,
-                 "SET (autovacuum_enabled = false);")
+  query <- paste0("ALTER TABLE \"",
+                 table,
+                 "\" SET (autovacuum_enabled = false);")
   
   cc <- RunQuery(conn = conn, 
                  query = query, 
                  config = config)
   
   .message(paste("Succesfully disabled autovacuum for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
+                 table,
                  sep = ""), 
            config = config)
+  
+  StopDBConnection(conn = conn, config = config)
 }
