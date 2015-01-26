@@ -6,10 +6,19 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   HUCL4 <- .GetUniqueSubsets(config, subsetName = "huc_cd", conn = conn)
   NFIEHydro <- .GetUniqueSubsets(config, subsetName = "nfie_hydro_region_num", conn = conn)
   
-  NationalName <- paste0(config$netcdf$national, 
-                         "_", 
-                         suffix,
-                         ".nc")
+  
+  prefix <- paste0(config$netcdf$national, "/", suffix)
+  
+  dir.create(prefix, showWarnings = FALSE)
+  
+
+  
+  NationalName <-   paste0(prefix,
+                           "/",
+                           "national",,
+                           "_",
+                           suffix,
+                           ".nc")
   
   HUCL1Names <- .BuildUniqueNames(config = config, 
                                   subset = HUCL1, 
