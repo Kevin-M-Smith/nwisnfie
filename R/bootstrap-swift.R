@@ -64,7 +64,7 @@ BootstrapSwift <- function(config) {
     query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
                     stagingTable,
                     "\"",
-                    "where paramcd = '00065';")
+                    " where paramcd = '00065';")
     
     data <- RunQuery(conn = conn,
              query = query,
@@ -77,7 +77,7 @@ BootstrapSwift <- function(config) {
   queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = "2014-12-20", config = config, conn = conn)
   
 
-  cc <- foreach(i = 1:10) %dopar% {
+  cc <- foreach(i = 1:nrow(queue)) %dopar% {
     familyids <- RunQuery(conn = conn2,
                           query = queue$query[i],
                           config = config)
