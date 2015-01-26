@@ -79,21 +79,21 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
 
   AllNames <- mapply(c, 
                      NationalName,
+                     NFIEHydroNames,
                      HUCL1Names,
                      HUCL2Names,
                      HUCL3Names,
                      HUCL4Names,
-                     NFIEHydroNames,
                      SIMPLIFY = FALSE)
   
   
   AllSiteQueries <- mapply(c, 
                     NationalSites,
+                    NFIEHydroSites,
                      HUCL1Sites,
                      HUCL2Sites,
                      HUCL3Sites,
                      HUCL4Sites,
-                     NFIEHydroSites,
                      SIMPLIFY = FALSE)
   
   data.frame(name = unlist(AllNames, recursive = FALSE), 

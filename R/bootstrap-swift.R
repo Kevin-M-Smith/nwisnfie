@@ -77,14 +77,15 @@ BootstrapSwift <- function(config) {
   queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = "2014-12-20", config = config, conn = conn)
   
 
-  cc <- foreach(i = 1:nrow(queue)) %dopar% {
+  cc <- foreach(i = 1) %dopar% {
     familyids <- RunQuery(conn = conn2,
                           query = queue$query[i],
                           config = config)
     
     sub <- subset(data, subset = familyid %in% familyids[,1])
     
-    BuildNetCDF(data = sub, name = queue$name[i], config, conn = conn2)
+    head(sub)
+    #BuildNetCDF(data = sub, name = queue$name[i], config, conn = conn2)
   }
   
   
