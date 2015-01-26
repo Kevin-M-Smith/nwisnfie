@@ -476,6 +476,9 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
              config = config)
     
     
+    .message(capture.output(sum(duplicated(data[,1:2]))))
+    .message(capture.output(sum(duplicated(sub[,1:2]))))
+    
     sub <- merge(x = padded, y = sub, all.x = TRUE, by = c("ts", "familyid"))
     
     
