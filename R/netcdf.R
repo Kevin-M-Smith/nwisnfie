@@ -90,6 +90,16 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                        params = params, 
                        config = config)
   
+  ncdf4::ncatt_put(nc             = ncdf, 
+                   varid          = "v00060_value", 
+                   attname        = "long_name", 
+                   attval         = "Discharge measured in cubic feet per second.")
+  
+  ncdf4::ncatt_put(nc             = ncdf, 
+                   varid          = "v00060_value", 
+                   attname        = "units", 
+                   attval         = "ft3/s")
+  
   .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
 

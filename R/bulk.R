@@ -13,26 +13,31 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
   HUCL1Names <- .BuildUniqueNames(config = config, 
                                   subset = HUCL1, 
+                                  subsetName = "huc_l1",
                                   prefix = config$netcdf$huc_l1, 
                                   suffix = suffix)
   
   HUCL2Names <- .BuildUniqueNames(config = config, 
                                   subset = HUCL2, 
+                                  subsetName = "huc_l2",
                                   prefix = config$netcdf$huc_l2, 
                                   suffix = suffix)
   
   HUCL3Names <- .BuildUniqueNames(config = config, 
                                   subset = HUCL3, 
+                                  subsetName = "huc_l3",
                                   prefix = config$netcdf$huc_l3, 
                                   suffix = suffix)
   
   HUCL4Names <- .BuildUniqueNames(config = config, 
-                                  subset = HUCL4, 
+                                  subset = HUCL4,
+                                  subsetName = "huc_l4",
                                   prefix = config$netcdf$huc_l4, 
                                   suffix = suffix)
   
   NFIEHydroNames <- .BuildUniqueNames(config = config, 
                                       subset = NFIEHydro, 
+                                      subsetName = "nfie_hydro_region_num",
                                       prefix = config$netcdf$nfie_hydro,
                                       suffix = suffix)
   
@@ -88,10 +93,17 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
 }
 
-.BuildUniqueNames <- function(config, subset, prefix, suffix) {
+.BuildUniqueNames <- function(config, subsetName, subset, prefix, suffix) {
   
   NameBuilder <- function(sub) {
-    paste0(prefix, 
+    
+    prefix <- paste0(prefix, "/", suffix)
+    
+    dir.create(prefix, showWarnings = FALSE)
+    
+    paste0(prefix,
+           "/",
+           subsetName,
            "_",
            sub,
            "_",
