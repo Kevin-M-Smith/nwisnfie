@@ -1,9 +1,9 @@
 .ISO8601ToEpochTime <- function(ISO8601) {
-  time1 <- as.POSIXct(ISO8601)
-  time0 <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
-  seconds <- as.numeric(difftime(time1, time0, units="secs"))
-  res <- gettextf("%.0f", seconds)
-  print(paste0(ISO8601, res))
+  time1 <- base::as.POSIXct(ISO8601)
+  time0 <- base::as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
+  seconds <- as.numeric(base::difftime(time1, time0, units="secs"))
+  res <- base::gettextf("%.0f", seconds)
+  print(paste0(ISO8601, " ->", res))
   res
 }
 
