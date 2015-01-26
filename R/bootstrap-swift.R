@@ -69,6 +69,8 @@ BootstrapSwift <- function(config) {
     data <- RunQuery(conn = conn,
              query = query,
              config = config)
+
+    .message(dim(data), config = config)
     
 #     .message(head(data), config = config)
 #     
