@@ -21,7 +21,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   layers <- sort(unique(data$familyid))
   layerDim <- .BuildLayerDim(layers = layers, config = config)
-  
+  .message(unique(data$ts), config = config)
   data$ts <- .ISO8601ToEpochTime(data$ts)
   times <- sort(unique(data$ts))  
   .message(times, config = config)
