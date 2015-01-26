@@ -466,9 +466,10 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
+    
     sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
     
-    .message(str(sub), config = config)
+    .message(capture.output(str(sub)), config = config)
     
     name = paste("v", paramcd, "_value", sep = "")
     
@@ -480,16 +481,14 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
-    
-    
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     
-    .message(capture.output(head(val)), config = config)
+    .message(capture.output(str(val)), config = config)
     
     
     val <- data.matrix(val[, -1])
     
-    .message(capture.output(head(val)), config = config)
+    .message(capture.output(str(val)), config = config)
    
   
     .message(paste("Adding data for ",
