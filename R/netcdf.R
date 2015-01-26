@@ -474,11 +474,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
-   # val <- data.frame(reshape2::dcast(sub, familyid ~ ts, value.var = "value"))[, -1]
-    
-    .message(str(reshape2::dcast(sub, familyid ~ ts, value.var = "value")[, -1]), config = config)
-    .message(head(reshape2::dcast(sub, familyid ~ ts, value.var = "value")[, -1]), config = config)
-   
+    val <- data.matrix(reshape2::dcast(sub, familyid ~ ts, value.var = "value")[, -1])
    
     
     .message(paste("Adding data for ",
