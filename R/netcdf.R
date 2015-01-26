@@ -31,6 +31,15 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   timeDim <- .BuildTimeDim(times = times, config = config)
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
   
+  
+  .message(paste0("There are ",
+                  length(times), 
+                  " time dimensions and ",
+                  length(layers),
+                  " with total dimensionality ",
+                  length(times) * length(layers), "."),s
+                  config = config)
+  
   params <- unique(data$paramcd)
   
   siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
@@ -472,7 +481,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     
     # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
     
-    .message(capture.output(str(sub)), config = config)
     
     name = paste("v", paramcd, "_value", sep = "")
     
@@ -486,14 +494,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     
-    .message(capture.output(str(val)), config = config)
-    
-    
     val <- data.matrix(val[, -1])
     
-    .message(capture.output(str(val)), config = config)
-   
-  
     .message(paste("Adding data for ",
                    name,
                    " into NetCDF File. Total R memory usage: ", 
