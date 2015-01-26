@@ -70,6 +70,7 @@ BootstrapSwift <- function(config) {
              query = query,
              config = config)
 
+    data$value <- as.numeric(data$value)
     
 #     .message(head(data), config = config)
 #     
