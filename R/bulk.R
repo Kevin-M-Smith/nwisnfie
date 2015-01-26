@@ -15,7 +15,7 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
   NationalName <-   paste0(prefix,
                            "/",
-                           "national",,
+                           "national",
                            "_",
                            suffix,
                            ".nc")
