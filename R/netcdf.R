@@ -480,6 +480,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
+    
+    .message(capture.output(head(val)), config = config)
    
   
     .message(paste("Adding data for ",
