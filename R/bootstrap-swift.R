@@ -70,6 +70,8 @@ BootstrapSwift <- function(config) {
              query = query,
              config = config)
 
+    .message(unique(data$ts), config = config)
+
     .message(dim(data), config = config)
     
 #     .message(head(data), config = config)
