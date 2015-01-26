@@ -24,7 +24,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   
   .message(length(unique(data$ts)), config = config)
   data$ts <- .ISO8601ToEpochTime(data$ts)
-  .message(length(unique(data$ts)))
+  .message(length(unique(data$ts)), config = config)
   
   times <- sort(unique(data$ts))  
   .message(times, config = config)

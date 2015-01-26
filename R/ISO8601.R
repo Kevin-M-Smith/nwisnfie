@@ -2,7 +2,9 @@
   time1 <- as.POSIXct(ISO8601)
   time0 <- as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
   seconds <- as.numeric(difftime(time1, time0, units="secs"))
-  gettextf("%.0f", seconds)
+  res <- gettextf("%.0f", seconds)
+  print(paste0(ISO8601, res))
+  res
 }
 
 .ParseISO8601Duration <- function(duration) {
