@@ -468,6 +468,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     
     sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
     
+    .message(str(sub), config = config)
+    
     name = paste("v", paramcd, "_value", sep = "")
     
     .message(paste("Properly casting data for ",
@@ -478,7 +480,13 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
+    
+    
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
+    
+    .message(capture.output(head(val)), config = config)
+    
+    
     val <- data.matrix(val[, -1])
     
     .message(capture.output(head(val)), config = config)
