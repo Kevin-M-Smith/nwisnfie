@@ -37,7 +37,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                   " time dimensions and ",
                   length(layers),
                   " with total dimensionality ",
-                  length(times) * length(layers), "."),s
+                  length(times) * length(layers), "."),
                   config = config)
   
   params <- unique(data$paramcd)
@@ -80,7 +80,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
                                            times = times,
                                            config = config)
-  
+    
   .AddTimeVars(ncdf = ncdf,
                times = times,
                config = config)
