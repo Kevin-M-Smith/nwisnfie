@@ -2,7 +2,7 @@ BootstrapSwift <- function(config) {
   conn <- StartDBConnection(config)
   cluster <- StartCluster(config)
   
-  sites <- .GetAllSites(conn = conn, config = config)
+ # sites <- .GetAllSites(conn = conn, config = config)
   
   startDate <- lubridate::floor_date(lubridate::now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P5W"), "day")
   endDate   <- lubridate::floor_date(lubridate::now(tz="utc") + .ParseISO8601Offset("-06:00") - .ParseISO8601Duration("P1D"), "day")
