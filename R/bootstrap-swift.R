@@ -64,7 +64,7 @@ BootstrapSwift <- function(config) {
     query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
                     stagingTable,
                     "\"",
-                    " where paramcd = '00065';")
+                    " where paramcd = '00060';")
     
     data <- RunQuery(conn = conn,
              query = query,
