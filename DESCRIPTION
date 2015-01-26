@@ -8,5 +8,5 @@ Maintainer: Kevin Smith <Kevin.Smith@tufts.edu>
 Description: 
 License: GPL (>= 2)
 Suggests: testthat
-Imports: RPostgreSQL, ncdf4, dataRetrieval, yaml, foreach, doParallel, plyr, RCurl, XML, pryr, reshape2, lubridate
+Imports: RPostgreSQL, ncdf4, dataRetrieval, yaml, foreach, doParallel, plyr, RCurl, XML, pryr, reshape2, lubridate, data.table
 Description: Facilitates data harvest from USGS National Water Information System and subsequent publication of data in NetCDF format. 
