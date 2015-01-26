@@ -467,7 +467,10 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
              config = config)
     
     
-    sub <- merge(x = padded, y = sub, all.y = TRUE, by = c("ts", "familyid"))
+    sub <- merge(x = padded, y = sub, all.x = TRUE, by = c("ts", "familyid"))
+    
+    
+    # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
     
     .message(capture.output(str(sub)), config = config)
     
