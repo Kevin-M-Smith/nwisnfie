@@ -474,9 +474,10 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
-    val <- data.matrix(reshape2::dcast(sub, familyid ~ ts, value.var = "value")[, -1])
+    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
+    val <- data.matrix(val[, -1])
    
-    
+  
     .message(paste("Adding data for ",
                    name,
                    " into NetCDF File. Total R memory usage: ", 
@@ -505,8 +506,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
-    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
-    val <- data.matrix(val)[, -1]
+    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
+    val <- data.matrix(val[, -1])
     
     .message(paste("Adding data for ",
                    name,
