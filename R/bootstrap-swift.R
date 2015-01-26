@@ -86,8 +86,8 @@ BootstrapSwift <- function(config) {
     
     sub <- subset(data, subset = familyid %in% familyids[,1])
     
-    .message(unique(sub$ts), config = config)
-    .message(dim(sub), config = config)
+    #.message(unique(sub$ts), config = config)
+    #.message(dim(sub), config = config)
     BuildNetCDF(data = sub, name = queue$name[i], config, conn = conn2)
   }
   
