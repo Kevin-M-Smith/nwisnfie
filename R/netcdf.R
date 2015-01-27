@@ -31,11 +31,14 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   ##############################
   #   CONFIGURE SUBSETS
   ##############################
-  xx <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
   
-  .debug(paste0("queue: ", capture.output(head(xx))), config = config)
+ # .debug(paste0("queue: ", capture.output(head(xx))), config = config)
   
-  parallel::clusterExport(cl = cluster, varlist = "xx")  
+ # parallel::clusterExport(cl = cluster, varlist = "xx") 
+ 
+  parallel:clusterEvalQ(cluster, {
+    queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn2)
+  })
   
   ##############################
   #   LOAD WITH 'SMALL' DATA
