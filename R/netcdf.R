@@ -92,13 +92,13 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     .AddSensorMetadataVars(ncdf = ncdf,
                            sensorMetadata = sensorMetadataSubset,
-                           layers = layersSubset,
+                           layers = familyids[,1],
                            params = params,
                            config = config)
     
     .AddSiteMetadataVars(ncdf = ncdf, 
                          siteMetadata = siteMetadataSubset, 
-                         layers = layersSubset, 
+                         layers = familyids[,1], 
                          params = params, 
                          config = config)
     
