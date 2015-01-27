@@ -137,6 +137,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
     val <- data.matrix(val[, -1])
     
     queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
+    .debug("queue!", config = config)
     
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
