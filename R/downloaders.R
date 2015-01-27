@@ -152,118 +152,101 @@
     }
   }
   
-  .message(url, config = config)
-  Sys.sleep(50)
- 
-  g <- RCurl::basicTextGatherer()
-  
-  xml <- RCurl::curlPerform(url = url, 
-                            writefunction = g$update, 
-                            httpheader = c(AcceptEncoding="gzip,deflate"),
-                            failonerror = TRUE) 
-  
-  doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
-  doc <- XML::xmlRoot(doc)
-  
-  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
-  now <- format(Sys.time(), "%FT%T%z") 
-  
-  
   # id <- .StageURL(url = url, config = config)
   
   # .message(paste("Staged", url, "with id", id),
   #           config = config)
   
-#  g <- RCurl::basicTextGatherer()
+ g <- RCurl::basicTextGatherer()
   
-#   for(i in 1:5) {
-#     t <- tryCatch({
+  for(i in 1:5) {
+    t <- tryCatch({
       
-#      responseCode <- RCurl::curlPerform(url = url, 
-#                                         writefunction = g$update, 
-#                                         httpheader = c(AcceptEncoding="gzip,deflate")) 
+     responseCode <- RCurl::curlPerform(url = url, 
+                                        writefunction = g$update, 
+                                        httpheader = c(AcceptEncoding="gzip,deflate")) 
 
-#       if(responseCode == 0){
-#         break
-#       } else {
-#         Sys.sleep(1)
-#       }
-#       
-#     }, COULDNT_RESOLVE_HOST = function(e) { 
-#       .warning(paste0("Couldn't resolve url: ", 
-#                       url,
-#                       "\n",
-#                       5-i,
-#                       " attempts remaining."), 
-#                config = config)
-#       
-#       Sys.sleep(1)
-#     },
-#     error = function(e) {
-#       .warning(paste0(e, 
-#                       "\n Trouble with url: ",
-#                       url,
-#                       "\n",
-#                       5-i,
-#                       " attempts remaining."),
-#                config = config)
-#       
-#       Sys.sleep(1)
-#     })
-#   }
-#   
-#   if(responseCode == 0){
-#     #.message("Successful download.", config = config)
-#   } else {
-#     .warning(paste0("Url failed permanently: ",
-#                     url,
-#                     "."),
-#              config = config)
-#     
-#     return(NULL)
-#   }
+      if(responseCode == 0){
+        break
+      } else {
+        Sys.sleep(1)
+      }
+      
+    }, COULDNT_RESOLVE_HOST = function(e) { 
+      .warning(paste0("Couldn't resolve url: ", 
+                      url,
+                      "\n",
+                      5-i,
+                      " attempts remaining."), 
+               config = config)
+      
+      Sys.sleep(1)
+    },
+    error = function(e) {
+      .warning(paste0(e, 
+                      "\n Trouble with url: ",
+                      url,
+                      "\n",
+                      5-i,
+                      " attempts remaining."),
+               config = config)
+      
+      Sys.sleep(1)
+    })
+  }
   
-#   t <- tryCatch({
-#     doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
-#   }, XMLError = function(e) {
-#     .warning(paste0("There was an error in the XML at line", 
-#                     e$line, 
-#                     "column", 
-#                     e$col, 
-#                     "\n",
-#                     e$message, 
-#                     "\n for URL :",
-#                     url, "."),
-#              config = config)
-#     
-#   }, warning = function(e) { 
-#     error(e) 
-#   }, error = function(e) {
-#     .warning(paste0(e, 
-#                     "\n Trouble with xml from ",
-#                     url,
-#                     "."),
-#              config = config)
-#     
-#     return(NULL)
-#   }) 
+  if(responseCode == 0){
+    #.message("Successful download.", config = config)
+  } else {
+    .warning(paste0("Url failed permanently: ",
+                    url,
+                    "."),
+             config = config)
+    
+    return(NULL)
+  }
   
-#  doc <- XML::xmlRoot(doc)
+  t <- tryCatch({
+    doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  }, XMLError = function(e) {
+    .warning(paste0("There was an error in the XML at line", 
+                    e$line, 
+                    "column", 
+                    e$col, 
+                    "\n",
+                    e$message, 
+                    "\n for URL :",
+                    url, "."),
+             config = config)
+    
+  }, warning = function(e) { 
+    error(e) 
+  }, error = function(e) {
+    .warning(paste0(e, 
+                    "\n Trouble with xml from ",
+                    url,
+                    "."),
+             config = config)
+    
+    return(NULL)
+  }) 
   
-  #   t <- tryCatch({
-  #     xpath <- "//ns1:timeSeries"
-  #     vars <- XML::xpathApply(doc = doc, path = xpath) 
-  #   }, error = function(e) {
-  #     .message(paste0("Error attempting xpathApply on", 
-  #                     xpath), 
-  #              config = config)
-  #     return(NULL)
-  #   })
+ doc <- XML::xmlRoot(doc)
+  
+    t <- tryCatch({
+      xpath <- "//ns1:timeSeries"
+      vars <- XML::xpathApply(doc = doc, path = xpath) 
+    }, error = function(e) {
+      .message(paste0("Error attempting xpathApply on", 
+                      xpath), 
+               config = config)
+      return(NULL)
+    })
   
   
- # vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+ vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
   
-#  now <- format(Sys.time(), "%FT%T%z") 
+ now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
     if(x == "P") 0 else 1
