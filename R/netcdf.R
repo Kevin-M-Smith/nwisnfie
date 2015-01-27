@@ -33,6 +33,10 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   ##############################
   queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
   
+  
+  cluster <- StartCluster(config)
+  
+  
   ##############################
   #   LOAD WITH 'SMALL' DATA
   ##############################
@@ -212,6 +216,8 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
 #                    attval         = "ft3/s")
 #
 #  .CloseNetCDF(ncdf = ncdf, file = file, config = config)
+StopCluster(cluster = cluster, config = config)
+
 }
 
 

@@ -78,14 +78,14 @@ quick <- function(config, date = "2015-01-01") {
   #####################################
   #     Build All Subsets
   #####################################
-  
+StopCluster(cluster = cluster, config = config)
+
   BuildAllNetCDFSubsets(data = data, suffix = date, config = config, conn = conn)
     
   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
   .DropDataTable(conn = conn, config = config, tableName = tableName)
   
-  StopCluster(cluster = cluster, config = config)
-  StopDBConnection(conn = conn, config = config)
+StopDBConnection(conn = conn, config = config)
 }
 
 
