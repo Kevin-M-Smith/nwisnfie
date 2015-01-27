@@ -26,6 +26,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   data$ts <- .ISO8601ToEpochTime(data$ts)
   #.debug(length(unique(data$ts)), config = config)
   
+  data$value[data$value == -999999] <- NA
+  
   times <- sort(unique(data$ts))  
   #.debug(times, config = config)
   timeDim <- .BuildTimeDim(times = times, config = config)
@@ -112,11 +114,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    varid          = "v00060_value", 
                    attname        = "units", 
                    attval         = "ft3/s")
-  
-  ncdf4::ncatt_put(nc             = ncdf, 
-                   varid          = "v00060_value", 
-                   attname        = "_FillValue", 
-                   attval         = "-999999.0")
   
   .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
@@ -258,7 +255,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
         if(varTypes[metadataVar] == 'double'){
           var <- ncdf4::ncvar_def(metadataVar, 
                                   units = "", 
-                                  dim = list(layerDim), 
+                                  dim = list(layerDim),
+                                  missval = NA,
                                   prec = 'double',
                                   compression = 9)
         } else {
@@ -486,6 +484,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     
     sub <- merge(x = padded, y = sub, all.x = TRUE, by = c("ts", "familyid"))
     
+    rm(padded)
     
     # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
     
@@ -501,7 +500,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
              config = config)
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
-    
     val <- data.matrix(val[, -1])
     
     .message(paste("Adding data for ",
