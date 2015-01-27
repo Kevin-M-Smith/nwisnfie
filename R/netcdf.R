@@ -46,6 +46,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
     layersSubset <- familyids
     #layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
     
+    
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
     
@@ -76,6 +77,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
     ncdf
   }
 
+  .debug("Closing out files. ", config = config)
   ##############################
   #   CLOSE OUT FILES
   ##############################
