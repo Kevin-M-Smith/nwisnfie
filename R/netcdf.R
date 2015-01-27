@@ -1,11 +1,11 @@
 BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
-  if (is.null(conn)){
-    logoutOnCompletion = TRUE
-    conn <- StartDBConnection(config)
-  } else {
-    logoutOnCompletion = FALSE
-  }
+#   if (is.null(conn)){
+#     logoutOnCompletion = TRUE
+#     conn <- StartDBConnection(config)
+#   } else {
+#     logoutOnCompletion = FALSE
+#   }
   
   ##############################
   #   PREPARE SHARED DATA
@@ -20,9 +20,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   siteMetadata <- .GetSiteMetadata(conn = conn, config = config)
   sensorMetadata <- .GetSensorMetadata(conn = conn, config = config)
   
-  if (logoutOnCompletion == TRUE){
-    StopDBConnection(conn = conn, config = config)
-  } 
+#   if (logoutOnCompletion == TRUE){
+#     StopDBConnection(conn = conn, config = config)
+#   } 
   
   paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
                                            times = times,
@@ -50,7 +50,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   ##############################
   ncdfs <- foreach(i = 1:5) %dopar% {
     
-    familyids <- RunQuery(conn = conn,
+    familyids <- RunQuery(conn = conn2,
                           query = queue$query[i],
                           config = config)
     
