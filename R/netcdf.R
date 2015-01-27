@@ -116,7 +116,7 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   ncdf4::ncatt_put(nc             = ncdf, 
                    varid          = "v00060_value", 
                    attname        = "_FillValue", 
-                   attval         = "-999999.0f")
+                   attval         = "-999999.0")
   
   .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
