@@ -234,7 +234,7 @@
   
   t <- tryCatch({
     xpath <- "//ns1:timeSeries"
-    vars <- XML::xpathApply(doc, xpath) 
+    vars <- XML::xpathApply(doc = doc, path = xpath) 
   }, error = function(e) {
     .message(paste0("Error attempting xpathApply on", 
                     xpath), 
