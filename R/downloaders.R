@@ -281,7 +281,10 @@
             
             colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
             
-            table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
+            table <- ifelse(stage, 
+                            paste0(config$tables$staging.prefix, 
+                                   gsub(pattern = "-", replacement = "_", date)), 
+                            config$tables$data)
             
             cc <- RPostgreSQL::dbWriteTable(conn2, 
                                             name = table, 
