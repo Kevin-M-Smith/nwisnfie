@@ -37,7 +37,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
  # parallel::clusterExport(cl = cluster, varlist = "xx") 
  
   parallel::clusterEvalQ(cluster, {
-    queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn2)
+    queue <- nwisnfie::BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn2)
   })
   
   ##############################
