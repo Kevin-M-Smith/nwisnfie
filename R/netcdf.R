@@ -55,8 +55,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                           siteMetadata = siteMetadataSubset,
                           sensorMetadata = sensorMetadataSubset,
                           file = queue$name[i], 
-                          config = config, 
-                          conn = conn2)
+                          config = config)
         
     .AddTimeVars(ncdf = ncdf,
                  times = times,
