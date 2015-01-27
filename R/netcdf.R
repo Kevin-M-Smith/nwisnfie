@@ -204,6 +204,8 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       .debug("SUBSET!", config = config)
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2, verbose = TRUE)
+  
+      .debug("GOOD!", config = config)
       
       ncdf4::nc_close(ncdf)
     }
