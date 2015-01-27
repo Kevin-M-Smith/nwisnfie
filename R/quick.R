@@ -44,7 +44,7 @@ quick <- function(config, date = "2014-12-21") {
                             endDate = date,
                             period = NULL,
                             offset = config$time$utc.offset, 
-                            stage = TRUE,
+                            tableName = tableName,
                             config = config)
     } else {
       .DownloadDataFromNWIS(site = map[[i]],
@@ -53,7 +53,7 @@ quick <- function(config, date = "2014-12-21") {
                             endDate = date,
                             period = NULL,
                             offset = config$time$utc.offset, 
-                            stage = TRUE,
+                            tableName = tableName,
                             config = config)
     }
   }
