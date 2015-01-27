@@ -62,7 +62,7 @@ quick <- function(config, date = "2014-12-21") {
 
   query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
                 tableName,
-                "\;")
+                "\";")
 
   data <- RunQuery(conn = conn,
                  query = query,
