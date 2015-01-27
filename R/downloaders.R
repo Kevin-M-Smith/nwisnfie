@@ -232,16 +232,17 @@
   
   doc <- XML::xmlRoot(doc)
   
-  t <- tryCatch({
-    xpath <- "//ns1:timeSeries"
-    vars <- XML::xpathApply(doc = doc, path = xpath) 
-  }, error = function(e) {
-    .message(paste0("Error attempting xpathApply on", 
-                    xpath), 
-             config = config)
-    return(NULL)
-  })
-  
+#   t <- tryCatch({
+#     xpath <- "//ns1:timeSeries"
+#     vars <- XML::xpathApply(doc = doc, path = xpath) 
+#   }, error = function(e) {
+#     .message(paste0("Error attempting xpathApply on", 
+#                     xpath), 
+#              config = config)
+#     return(NULL)
+#   })
+  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+
   now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
