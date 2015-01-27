@@ -195,6 +195,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       val2 <- data.matrix(subset(val, subset = familyid %in% familyids[,1])[,-1])
       rm(val)
+      .debug(capture.output(print(dim(val2))), config = config)
       
    #   .debug(capture.output(print(val2[,1])))
       
