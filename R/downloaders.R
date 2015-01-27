@@ -151,20 +151,34 @@
       }
     }
   }
+ 
+  g <- RCurl::basicTextGatherer()
+  
+  xml <- RCurl::curlPerform(url = url, 
+                            writefunction = g$update, 
+                            httpheader = c(AcceptEncoding="gzip,deflate")) 
+  
+  doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  doc <- XML::xmlRoot(doc)
+  
+  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+  now <- format(Sys.time(), "%FT%T%z") 
+  
   
   # id <- .StageURL(url = url, config = config)
   
   # .message(paste("Staged", url, "with id", id),
   #           config = config)
   
-  g <- RCurl::basicTextGatherer()
+#  g <- RCurl::basicTextGatherer()
   
 #   for(i in 1:5) {
 #     t <- tryCatch({
       
-      responseCode <- RCurl::curlPerform(url = url, 
-                                         writefunction = g$update, 
-                                         httpheader = c(AcceptEncoding="gzip,deflate")) 
+#      responseCode <- RCurl::curlPerform(url = url, 
+#                                         writefunction = g$update, 
+#                                         httpheader = c(AcceptEncoding="gzip,deflate")) 
+
 #       if(responseCode == 0){
 #         break
 #       } else {
@@ -206,7 +220,7 @@
 #   }
   
 #   t <- tryCatch({
-     doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+#     doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
 #   }, XMLError = function(e) {
 #     .warning(paste0("There was an error in the XML at line", 
 #                     e$line, 
@@ -230,7 +244,7 @@
 #     return(NULL)
 #   }) 
   
-  doc <- XML::xmlRoot(doc)
+#  doc <- XML::xmlRoot(doc)
   
   #   t <- tryCatch({
   #     xpath <- "//ns1:timeSeries"
@@ -243,9 +257,9 @@
   #   })
   
   
-  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+ # vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
   
-  now <- format(Sys.time(), "%FT%T%z") 
+#  now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
     if(x == "P") 0 else 1
