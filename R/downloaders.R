@@ -159,7 +159,8 @@
   
   xml <- RCurl::curlPerform(url = url, 
                             writefunction = g$update, 
-                            httpheader = c(AcceptEncoding="gzip,deflate")) 
+                            httpheader = c(AcceptEncoding="gzip,deflate"),
+                            failonerror = TRUE) 
   
   doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
   doc <- XML::xmlRoot(doc)
