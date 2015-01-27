@@ -159,51 +159,51 @@
   
   xml <- RCurl::basicTextGatherer()
   
-  for(i in 1:5) {
-    t <- tryCatch({
+#   for(i in 1:5) {
+#     t <- tryCatch({
       
       responseCode <- RCurl::curlPerform(url = url, 
                                          writefunction = xml$update, 
                                          httpheader = c(AcceptEncoding="gzip,deflate")) 
-      if(responseCode == 0){
-        break
-      } else {
-        Sys.sleep(1)
-      }
-      
-    }, COULDNT_RESOLVE_HOST = function(e) { 
-      .warning(paste0("Couldn't resolve url: ", 
-                      url,
-                      "\n",
-                      5-i,
-                      " attempts remaining."), 
-               config = config)
-      
-      Sys.sleep(1)
-    },
-    error = function(e) {
-      .warning(paste0(e, 
-                      "\n Trouble with url: ",
-                      url,
-                      "\n",
-                      5-i,
-                      " attempts remaining."),
-               config = config)
-      
-      Sys.sleep(1)
-    })
-  }
-  
-  if(responseCode == 0){
-    #.message("Successful download.", config = config)
-  } else {
-    .warning(paste0("Url failed permanently: ",
-                    url,
-                    "."),
-             config = config)
-    
-    return(NULL)
-  }
+#       if(responseCode == 0){
+#         break
+#       } else {
+#         Sys.sleep(1)
+#       }
+#       
+#     }, COULDNT_RESOLVE_HOST = function(e) { 
+#       .warning(paste0("Couldn't resolve url: ", 
+#                       url,
+#                       "\n",
+#                       5-i,
+#                       " attempts remaining."), 
+#                config = config)
+#       
+#       Sys.sleep(1)
+#     },
+#     error = function(e) {
+#       .warning(paste0(e, 
+#                       "\n Trouble with url: ",
+#                       url,
+#                       "\n",
+#                       5-i,
+#                       " attempts remaining."),
+#                config = config)
+#       
+#       Sys.sleep(1)
+#     })
+#   }
+#   
+#   if(responseCode == 0){
+#     #.message("Successful download.", config = config)
+#   } else {
+#     .warning(paste0("Url failed permanently: ",
+#                     url,
+#                     "."),
+#              config = config)
+#     
+#     return(NULL)
+#   }
   
 #   t <- tryCatch({
      doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
