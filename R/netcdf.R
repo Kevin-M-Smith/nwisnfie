@@ -36,7 +36,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   ##############################
   #   LOAD WITH 'SMALL' DATA
   ##############################
-  netcdfs <- foreach(i = 1:5) %dopar% {
+  ncdfs <- foreach(i = 1:5) %dopar% {
     
     familyids <- RunQuery(conn = conn2,
                           query = queue$query[i],
