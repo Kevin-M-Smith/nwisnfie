@@ -251,8 +251,8 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                           vars = c(list(timeVar),
                                    siteMetadataVars,
                                    sensorMetadataVars,
-#                                   valueVars,
-#                                   validatedVars),
+                                  valueVars,
+                                  validatedVars),
                           config = config)
   
 }
