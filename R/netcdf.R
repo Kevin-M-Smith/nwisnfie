@@ -22,12 +22,12 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
   layers <- sort(unique(data$familyid))
   layerDim <- .BuildLayerDim(layers = layers, config = config)
   
-  .message(length(unique(data$ts)), config = config)
+  #.debug(length(unique(data$ts)), config = config)
   data$ts <- .ISO8601ToEpochTime(data$ts)
-  .message(length(unique(data$ts)), config = config)
+  #.debug(length(unique(data$ts)), config = config)
   
   times <- sort(unique(data$ts))  
-  .message(times, config = config)
+  #.debug(times, config = config)
   timeDim <- .BuildTimeDim(times = times, config = config)
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
   
@@ -103,15 +103,15 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                        params = params, 
                        config = config)
   
-#   ncdf4::ncatt_put(nc             = ncdf, 
-#                    varid          = "v00060_value", 
-#                    attname        = "long_name", 
-#                    attval         = "Discharge measured in cubic feet per second.")
-#   
-#   ncdf4::ncatt_put(nc             = ncdf, 
-#                    varid          = "v00060_value", 
-#                    attname        = "units", 
-#                    attval         = "ft3/s")
+  ncdf4::ncatt_put(nc             = ncdf, 
+                   varid          = "v00060_value", 
+                   attname        = "long_name", 
+                   attval         = "Discharge measured in cubic feet per second.")
+  
+  ncdf4::ncatt_put(nc             = ncdf, 
+                   varid          = "v00060_value", 
+                   attname        = "units", 
+                   attval         = "ft3/s")
   
   .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
@@ -476,8 +476,8 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
              config = config)
     
     
-    .message(capture.output(sum(duplicated(data[,1:2]))), config = config)
-    .message(capture.output(sum(duplicated(sub[,1:2]))), config = config)
+    #.debug(capture.output(sum(duplicated(data[,1:2]))), config = config)
+    #.debug(capture.output(sum(duplicated(sub[,1:2]))), config = config)
     
     sub <- merge(x = padded, y = sub, all.x = TRUE, by = c("ts", "familyid"))
     
