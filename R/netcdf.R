@@ -230,6 +230,9 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   timeDim <- .BuildTimeDim(times = times, config = config)
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
   
+  .debug(paste0("prepping netcdf metadata"), config = config)
+  
+  
   siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
                                              config = config)
   
@@ -247,6 +250,9 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                                                  layerDim = layerDim,
                                                  config = config)
   
+  .debug(paste0("prepping value and validated vars"), config = config)
+  
+  
   valueVars <- .BuildValueVars(params = params,
                                layerDim = layerDim,
                                timeDim = timeDim,
@@ -257,6 +263,8 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                                        timeDim = timeDim,
                                        config = config)  
   
+  .debug(paste0("init ncdf"), config = config)
+  
   ncdf <- .InitializeNCDF(file = file,
                           vars = c(list(timeVar),
                                    siteMetadataVars,
@@ -265,6 +273,9 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                                   validatedVars),
                           config = config)
   
+  .debug(paste0("complete ncdf"), config = config)
+  
+  ncdf
 }
 
 .GetSiteMetadata <- function(conn, config) {
