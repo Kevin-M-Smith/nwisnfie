@@ -209,10 +209,11 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
 
 PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
   
+  .debug(paste0("prepping netcdf"), config = config)
   
   layers <- sort(layers)
   times <- sort(times)
-  
+    
   #   .message(paste0("There are ",
   #                   length(times), 
   #                   " time dimensions and ",
