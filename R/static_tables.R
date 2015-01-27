@@ -151,8 +151,7 @@ RepopulateStaticTables <- function(config) {
                  "with active sites."), 
            config = config)
   
-  .message(paste("Active sites are defined as sites with instantanous values that have
-                 been updated within the lookback period: ",
+  .message(paste("Active sites are defined as sites with instantaneous values that have been updated within the lookback period: ",
                  config$collections$lookback, ".", sep = ""), 
            config = config)
   
