@@ -250,7 +250,7 @@
   }
   
   if(length(vars) > 0){
-#    tryCatch({
+    tryCatch({
       for (i in 1:length(vars)){ 
         parent <- XML::xmlDoc(vars[[i]]) 
         parent <- XML::xmlRoot(parent) 
@@ -292,15 +292,15 @@
           }
         }
       }    
-#    }, error = function(e){
-  #    .warning(paste0(e, 
-  #                    "\nEncountered a problem parsing XML from:", 
-  #                    url,
- #                     "."),
-#               config = config)
+   }, error = function(e){
+     .warning(paste0(e, 
+                     "\nEncountered a problem parsing XML from:", 
+                     url,
+                     "."),
+              config = config)
       
-#      return(NULL)
-#    })
+     return(NULL)
+   })
   } 
   #  .UnstageURL(id = id, config = config)
 }
