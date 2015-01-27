@@ -29,11 +29,11 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                                            config = config)
 
   dataFile <- tempfile("data")
-  save(data, file = dataFile)
+  save(data, file = dataFile,  envir = environment())
   rm(data)  
 
   paddedDataTableFile <- tempfile("padded")
-  save(padedDataTable, file = paddedDataTableFile)
+  save(padedDataTable, file = paddedDataTableFile, envir = environment())
   rm(paddedDataTable)
 
   ##############################
@@ -163,7 +163,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     
     subfile <- tempfile("sub")
-    save(sub, file = subfile)
+    save(sub, file = subfile, envir = environment())
     rm(sub)
     
     #  val <- data.matrix(val[, -1])
