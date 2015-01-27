@@ -223,11 +223,14 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   #            config = config)
   
   # file <- paste(tempdir(), "temp", sep = "/")
+  .debug(paste0("prepping layerdim"), config = config)
   
   layerDim <- .BuildLayerDim(layers = layers, config = config)
   
-  #.debug(times, config = config)
+  .debug(paste0("prepping time dim"), config = config)
   timeDim <- .BuildTimeDim(times = times, config = config)
+  
+  .debug(paste0("prepping time var"), config = config)
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
   
   .debug(paste0("prepping netcdf metadata"), config = config)
