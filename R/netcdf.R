@@ -35,7 +35,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   .debug(paste0("queue: ", capture.output(head(queue))), config = config)
   
-  parallel::clusterExport(cl = cluster, varlist = "queue", envir = .GlobalEnv)  
+  parallel::clusterExport(cl = cluster, varlist = "queue")  
   
   ##############################
   #   LOAD WITH 'SMALL' DATA
