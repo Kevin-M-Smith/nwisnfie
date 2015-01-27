@@ -79,7 +79,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                          params = params, 
                          config = config)
     
-    close(ncdf)
+    ncdf4::nc_close(ncdf)
     .debug("Success close.", config = config)
   }
 
