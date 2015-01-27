@@ -14,7 +14,8 @@ quick <- function(config, date = "2014-12-21") {
   ##############################
   #      SETUP TABLE
   ##############################
-  tableName <- paste0(config$tables$staging.prefix, date)
+  tableName <- paste0(config$tables$staging.prefix, 
+                      gsub(pattern = "-", replacement = "_", date))
   
   .CreateDataTable(conn = conn, config = config, tableName = tableName)
   .CreateDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
@@ -61,7 +62,7 @@ quick <- function(config, date = "2014-12-21") {
 
   query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
                 tableName,
-                "\";")
+                "\;")
 
   data <- RunQuery(conn = conn,
                  query = query,
