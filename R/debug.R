@@ -39,6 +39,6 @@ Upgrade <- function(){
   remove.packages("nwisnfie")
   
   library(devtools)
-  install_github("Kevin-M-Smith/nwisnfie", ref = "better-moustrap")
+  install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
   library(nwisnfie)
 }
