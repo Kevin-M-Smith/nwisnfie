@@ -198,7 +198,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
-      val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1])
+      val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1]
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2)
       
