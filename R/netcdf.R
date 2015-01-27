@@ -204,9 +204,14 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   #    val2[is.na(val2)] <- -999999.0
         # data$value[data$value == -999999] <- NA
         
+  test<- RunQuery(conn = conn2,
+                        query = queue$query[i],
+                        config = config)
+  
       .debug("SUBSET!", config = config)
       .debug(queue$name[i], config = config)
       .debug(queue$query[i], config = config)
+      .debug(length(test[,1]), config = config)
       ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2, verbose = TRUE)
   
       .debug("GOOD!", config = config)
