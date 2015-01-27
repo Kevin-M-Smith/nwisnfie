@@ -148,9 +148,6 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
     
-    queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn2)
-    .debug("queue!", config = config)
-    
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
                      queue$name[i],
