@@ -119,7 +119,7 @@
                                   period = NULL, 
                                   offset = NULL,
                                   url = NULL,
-                                  stage = FALSE,
+                                  tableName = config$tables$data,
                                   config){
   
   if (is.null(url)) {
@@ -277,14 +277,9 @@
             ) 
             
             colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
-            
-            table <- ifelse(stage, 
-                            paste0(config$tables$staging.prefix, 
-                                   gsub(pattern = "-", replacement = "_", date)), 
-                            config$tables$data)
-            
+                        
             cc <- RPostgreSQL::dbWriteTable(conn2, 
-                                            name = table, 
+                                            name = tableName, 
                                             value = result, 
                                             append = TRUE, 
                                             row.names = FALSE, 
@@ -302,5 +297,9 @@
      return(NULL)
    })
   } 
+
+
+
+
   #  .UnstageURL(id = id, config = config)
 }
