@@ -19,7 +19,7 @@ quick <- function(config, date = "2014-12-21") {
   
   .CreateDataTable(conn = conn, config = config, tableName = tableName)
   .CreateDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
-  DisableAutoVacuum(table = tableName, config = config)
+  DisableAutovacuum(table = tableName, config = config)    
   
   ##############################
   #      SPLIT SITES INTO MAP
