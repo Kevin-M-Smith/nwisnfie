@@ -214,8 +214,10 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   .debug(paste0("times ",  head(times)), config= config)
   layers <- sort(layers)
   
-  .debug(paste0("prepping times"), config = config)
+  .debug(paste0("prepping times", head(times)), config = config)
   times <- sort(times)
+  .debug(paste0("prepped times", head(times)), config = config)
+  
     
   #   .message(paste0("There are ",
   #                   length(times), 
