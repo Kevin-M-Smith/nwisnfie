@@ -63,8 +63,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                           config = config)
     
     
-    layersSubset <- familyids
-    #layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
+    #layersSubset <- familyids
+    
+    layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
     
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
@@ -190,7 +191,6 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE, suppress_dimvals = TRUE)
       .debug("NETCDF OPENED!", config = config)
-      
       
       
       val2 <- data.matrix(subset(val, subset = familyid %in% familyids[,1])[,-1])
