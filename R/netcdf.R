@@ -11,7 +11,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   #   PREPARE SHARED DATA
   ##############################
   data$ts <- .ISO8601ToEpochTime(data$ts)
-  data$value[data$value == -999999] <- NA
+ # data$value[data$value == -999999] <- NA
   
   layers <- sort(unique(data$familyid))
   times <- sort(unique(data$ts))  
@@ -194,6 +194,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1]
       rm(val)
+      val2[is.na(val2)] <- -999999.0
+        # data$value[data$value == -999999] <- NA
+        
       .debug("SUBSET!", config = config)
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2, verbose = TRUE)
