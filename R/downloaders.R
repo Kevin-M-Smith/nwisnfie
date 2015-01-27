@@ -151,6 +151,9 @@
       }
     }
   }
+  
+  .message(url, config = config)
+  Sys.sleep(50)
  
   g <- RCurl::basicTextGatherer()
   
