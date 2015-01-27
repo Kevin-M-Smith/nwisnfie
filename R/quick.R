@@ -85,6 +85,9 @@ quick <- function(config, date = "2014-12-21") {
 
    .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
    .DropDataTable(conn = conn, config = config, tableName = tableName)
+  
+  StopCluster(cluster = cluster, config = config)
+  StopDBConnection(conn = conn, config = config)
 }
 
 

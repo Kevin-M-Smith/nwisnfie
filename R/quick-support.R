@@ -21,6 +21,15 @@
   
 }
 
+.DropTable <- function(tableName, conn, config){
+  query <- paste0("drop table ", tableName)
+  
+  RunQuery(query = query,
+           conn = conn,
+           config = config)
+  
+}
+
 .CreateDataTableUpsertTrigger <- function(conn, config, tableName) {
   
   .message(paste0("Setting upsert trigger on table ", tableName, "."), config = config)
