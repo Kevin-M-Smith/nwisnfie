@@ -162,6 +162,10 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     
+    valFile <- tempfile("val")
+    save(val, file = valFile,  envir = environment())
+    rm(val)  
+    
     subfile <- tempfile("sub")
     save(sub, file = subfile, envir = environment())
     rm(sub)
@@ -169,6 +173,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     #  val <- data.matrix(val[, -1])
     
     cc <- foreach(i = 1:5) %dopar% {
+      
+      load(valFile)
+      
       .message(paste("Adding data for ",
                      queue$name[i],
                      " into NetCDF File. Total R memory usage: ", 
@@ -183,7 +190,11 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       .debug("NETCDF OPENED!", config = config)
+      
+      
       val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1]
+      rm(val)
+      .debug("SUBSET!")
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2)
       
