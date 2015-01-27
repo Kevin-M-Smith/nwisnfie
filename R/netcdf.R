@@ -211,6 +211,7 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   
   .debug(paste0("prepping layers"), config = config)
   .debug(paste0("layers ", head(layers)), config = config)
+  .debug(paste0("times ",  head(times)), config= config)
   layers <- sort(layers)
   
   .debug(paste0("prepping times"), config = config)
