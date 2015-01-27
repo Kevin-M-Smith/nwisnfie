@@ -27,7 +27,15 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
                                            times = times,
                                            config = config)
-  
+
+  dataFile <- tempfile("data")
+  save("data", file = dataFile)
+  rm(data)  
+
+  paddedDataTableFile <- tempfile("padded")
+  save("padedDataTable", file = paddedDataTableFile)
+  rm(paddedDataTable)
+
   ##############################
   #   CONFIGURE SUBSETS
   ##############################
@@ -95,6 +103,8 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     .debug("Success close.", config = config)
   }
 
+  rm(sensorMetadata, siteMetadata)
+
   #.debug("Closing out files. ", config = config)
   ##############################
   #   CLOSE OUT FILES
@@ -117,7 +127,10 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
+    load(file = dataFile, verbose = TRUE)    
     sub <- subset(data, paramcd == paramcd)
+    rm(data)  
+    
     sub <- sub[c("ts", "familyid", "value", "validated")]
     
     .message(paste("Merging subsetted data for ",
@@ -131,7 +144,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     #.debug(capture.output(sum(duplicated(data[,1:2]))), config = config)
     #.debug(capture.output(sum(duplicated(sub[,1:2]))), config = config)
     
+    load(file = paddedDataTableFile, verbose = TRUE)    
     sub <- merge(x = paddedDataTable, y = sub, all.x = TRUE, by = c("ts", "familyid"))
+    rm(paddedDataTable)  
     
     # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
     
@@ -146,7 +161,12 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
              config = config)
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
-  #  val <- data.matrix(val[, -1])
+    
+    subfile <- tempfile("sub")
+    save("sub", file = subfile)
+    rm(sub)
+    
+    #  val <- data.matrix(val[, -1])
     
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
@@ -180,7 +200,10 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                    sep = ""), 
              config = config)
     
+    load(file = subfile)
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
+    rm(sub)
+    
    # val <- data.matrix(val[, -1])
     
     cc <- foreach(i = 1:5) %dopar% {
