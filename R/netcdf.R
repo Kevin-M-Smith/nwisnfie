@@ -42,14 +42,15 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                           query = queue$query[i],
                           config = config)
     
-    layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
-    timesSubset  <- subset(times,  subset = familyid %in% familyids[,1])
+    
+    layersSubset <- familyids
+    #layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
     
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
     
     ncdf <- PrepareNetCDF(layers = layersSubset, 
-                          times = timesSubset, 
+                          times = times, 
                           params = params,
                           siteMetadata = siteMetadataSubset,
                           sensorMetadata = sensorMetadataSubset,

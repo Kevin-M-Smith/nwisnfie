@@ -59,6 +59,22 @@
   invisible()
 }
 
+.debug <- function(..., config, domain = NULL, appendLF = TRUE) {
+  args <- list(...)
+  is.condition <- length(args) == 1L && inherits(args[[1L]], "condition")
+  if (is.condition) {
+    # bypass the logger if a condition is supplied or if loglevel is set to "NONE"
+    base::message(..., domain = domain, appendLF = appendLF)
+  } else {
+    # if loglevel is set to INFO, then print log message, else do nothing
+    
+    if (config$logging$level == "INFO") {
+      .PrintLogMessage("[DEBUG] ", config = config, ...)
+    }
+  }
+  invisible()
+}
+
 .stop <- function(..., config, call. = TRUE, domain = NULL) {
   args <- list(...)
   is.condition <- length(args) == 1L && inherits(args[[1L]], "condition")
