@@ -1,4 +1,4 @@
-BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
+BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   
   if (is.null(conn)){
     logoutOnCompletion = TRUE
@@ -31,7 +31,7 @@ BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
   ##############################
   #   CONFIGURE SUBSETS
   ##############################
-  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = date, config = config, conn = conn)
+  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
   
   ##############################
   #   LOAD WITH 'SMALL' DATA
@@ -251,8 +251,8 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                           vars = c(list(timeVar),
                                    siteMetadataVars,
                                    sensorMetadataVars,
-                                   valueVars,
-                                   validatedVars),
+#                                   valueVars,
+#                                   validatedVars),
                           config = config)
   
 }
