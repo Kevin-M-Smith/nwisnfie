@@ -146,7 +146,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
              config = config)
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
-    val <- data.matrix(val[, -1])
+  #  val <- data.matrix(val[, -1])
     
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
@@ -164,7 +164,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, 
-                       vals = subset(val, subset = familyid %in% familyids[,1]))
+                       vals = subset(val, subset = familyid %in% familyids[,1])[, -1])
       
       ncdf4::nc_close(ncdf)
     }
@@ -180,7 +180,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
              config = config)
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
-    val <- data.matrix(val[, -1])
+   # val <- data.matrix(val[, -1])
     
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
@@ -198,7 +198,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
       ncdf4::ncvar_put(nc = ncdf, varid = name, 
-                       vals = subset(val, subset = familyid %in% familyids[,1]))
+                       vals = subset(val, subset = familyid %in% familyids[,1])[, -1])
       
       ncdf4::nc_close(ncdf)
     }
