@@ -25,7 +25,7 @@
   
   .message(paste0("Setting upsert trigger on table ", tableName, "."), config = config)
   
-  query = paste0("CREATE OR REPLACE FUNCTION \"", tableName,"_upsert()\" RETURNS TRIGGER AS $$
+  query = paste0("CREATE OR REPLACE FUNCTION ", tableName,"_upsert() RETURNS TRIGGER AS $$
                 BEGIN
                 IF (SELECT COUNT(ts) FROM ", tableName, 
                 " WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
