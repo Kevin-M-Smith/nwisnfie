@@ -79,7 +79,8 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                          params = params, 
                          config = config)
     
-    ncdf
+    close(ncdf)
+    .debug("Success close.", config = config)
   }
 
   .debug("Closing out files. ", config = config)
@@ -88,9 +89,9 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   ##############################
   .debug(paste0(capture.output(typeof(ncdfs))), config = config)
   
-  lapply(ncdfs, function(x) .message(capture.output(typeof(x)), config = config))
+  #lapply(ncdfs, function(x) .message(capture.output(typeof(x)), config = config))
   #lapply(ncdfs, str)
-  lapply(ncdfs, ncdf4::nc_close)
+  #lapply(ncdfs, ncdf4::nc_close)
   
   BulkAddValueAndValidatedVar <- function(paramcd){
     
