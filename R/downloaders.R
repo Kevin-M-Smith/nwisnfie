@@ -157,13 +157,13 @@
   # .message(paste("Staged", url, "with id", id),
   #           config = config)
   
-  xml <- RCurl::basicTextGatherer()
+  g <- RCurl::basicTextGatherer()
   
 #   for(i in 1:5) {
 #     t <- tryCatch({
       
       responseCode <- RCurl::curlPerform(url = url, 
-                                         writefunction = xml$update, 
+                                         writefunction = g$update, 
                                          httpheader = c(AcceptEncoding="gzip,deflate")) 
 #       if(responseCode == 0){
 #         break
@@ -206,7 +206,7 @@
 #   }
   
 #   t <- tryCatch({
-     doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+     doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
 #   }, XMLError = function(e) {
 #     .warning(paste0("There was an error in the XML at line", 
 #                     e$line, 
