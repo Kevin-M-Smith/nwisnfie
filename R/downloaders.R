@@ -205,30 +205,30 @@
     return(NULL)
   }
   
-  t <- tryCatch({
-    doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
-  }, XMLError = function(e) {
-    .warning(paste0("There was an error in the XML at line", 
-                    e$line, 
-                    "column", 
-                    e$col, 
-                    "\n",
-                    e$message, 
-                    "\n for URL :",
-                    url, "."),
-             config = config)
-    
-  }, warning = function(e) { 
-    error(e) 
-  }, error = function(e) {
-    .warning(paste0(e, 
-                    "\n Trouble with xml from ",
-                    url,
-                    "."),
-             config = config)
-    
-    return(NULL)
-  }) 
+#   t <- tryCatch({
+     doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+#   }, XMLError = function(e) {
+#     .warning(paste0("There was an error in the XML at line", 
+#                     e$line, 
+#                     "column", 
+#                     e$col, 
+#                     "\n",
+#                     e$message, 
+#                     "\n for URL :",
+#                     url, "."),
+#              config = config)
+#     
+#   }, warning = function(e) { 
+#     error(e) 
+#   }, error = function(e) {
+#     .warning(paste0(e, 
+#                     "\n Trouble with xml from ",
+#                     url,
+#                     "."),
+#              config = config)
+#     
+#     return(NULL)
+#   }) 
   
   doc <- XML::xmlRoot(doc)
   
@@ -241,9 +241,7 @@
   #              config = config)
   #     return(NULL)
   #   })
-  .message()
   
-  Sys.sleep(60)
   
   vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
   
