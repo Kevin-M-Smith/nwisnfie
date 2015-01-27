@@ -33,7 +33,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   ##############################
   queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
   
-  .debug(paste0("queue: ", capture.output(head(queue)))
+  .debug(paste0("queue: ", capture.output(head(queue))), config = config)
   
   parallel::clusterExport(cl = cluster, varlist = "queue", envir = .GlobalEnv)  
   
