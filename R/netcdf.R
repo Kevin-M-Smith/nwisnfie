@@ -1,4 +1,4 @@
-BuildNetCDF <- function(data, name, config, conn = NULL) {
+BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
   
   if (is.null(conn)){
     logoutOnCompletion = TRUE
@@ -7,42 +7,218 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
     logoutOnCompletion = FALSE
   }
   
-  # output file
-  # file <- paste(tempdir(), "name23", sep = "/")
-  file <- name
+  ##############################
+  #   PREPARE SHARED DATA
+  ##############################
+  data$ts <- .ISO8601ToEpochTime(data$ts)
+  data$value[data$value == -999999] <- NA
+  
+  layers <- sort(unique(data$familyid))
+  times <- sort(unique(data$ts))  
+  params <- unique(data$paramcd)
   
   siteMetadata <- .GetSiteMetadata(conn = conn, config = config)
-  
   sensorMetadata <- .GetSensorMetadata(conn = conn, config = config)
   
   if (logoutOnCompletion == TRUE){
     StopDBConnection(conn = conn, config = config)
   } 
   
-  layers <- sort(unique(data$familyid))
+  paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
+                                           times = times,
+                                           config = config)
+  
+  ##############################
+  #   CONFIGURE SUBSETS
+  ##############################
+  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = date, config = config, conn = conn)
+  
+  ##############################
+  #   LOAD WITH 'SMALL' DATA
+  ##############################
+  netcdfs <- foreach(i = 1) %dopar% {
+    
+    familyids <- RunQuery(conn = conn2,
+                          query = queue$query[i],
+                          config = config)
+    
+    layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
+    timesSubset  <- subset(times,  subset = familyid %in% familyids[,1])
+    
+    siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
+    sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
+    
+    ncdf <- PrepareNetCDF(layers = layersSubset, 
+                          times = timesSubset, 
+                          params = params,
+                          siteMetadata = siteMetadataSubset,
+                          sensorMetadata = sensorMetadataSubset,
+                          file = queue$name[i], 
+                          config = config, 
+                          conn = conn2)
+        
+    .AddTimeVars(ncdf = ncdf,
+                 times = times,
+                 config = config)
+    
+    .AddSensorMetadataVars(ncdf = ncdf,
+                           sensorMetadata = sensorMetadataSubset,
+                           layers = layersSubset,
+                           params = params,
+                           config = config)
+    
+    .AddSiteMetadataVars(ncdf = ncdf, 
+                         siteMetadata = siteMetadataSubset, 
+                         layers = layersSubset, 
+                         params = params, 
+                         config = config)
+    
+    ncdf
+  }
+
+  ##############################
+  #   CLOSE OUT FILES
+  ##############################
+  lapply(ncdfs, ncdf4::nc_close)
+  
+  BulkAddValueAndValidatedVar <- function(paramcd){
+    
+    .message(paste("Subsetting data for ", 
+                   paramcd,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    sub <- subset(data, paramcd == paramcd)
+    sub <- sub[c("ts", "familyid", "value", "validated")]
+    
+    .message(paste("Merging subsetted data for ",
+                   paramcd,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    #.debug(capture.output(sum(duplicated(data[,1:2]))), config = config)
+    #.debug(capture.output(sum(duplicated(sub[,1:2]))), config = config)
+    
+    sub <- merge(x = paddedDataTable, y = sub, all.x = TRUE, by = c("ts", "familyid"))
+    
+    # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
+    
+    name = paste("v", paramcd, "_value", sep = "")
+    
+    .message(paste("Properly casting data for ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
+    val <- data.matrix(val[, -1])
+    
+    cc <- foreach(i = 1) %dopar% {
+      .message(paste("Adding data for ",
+                     queue$name[i],
+                     " into NetCDF File. Total R memory usage: ", 
+                     capture.output(pryr::mem_used()),
+                     ".",
+                     sep = ""), 
+               config = config)
+      
+      familyids <- RunQuery(conn = conn2,
+                            query = queue$query[i],
+                            config = config)
+      
+      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
+      
+      ncdf4::ncvar_put(nc = ncdf, varid = name, 
+                       vals = subset(val, subset = familyid %in% familyids[,1]))
+      
+      ncdf4::nc_close(ncdf)
+    }
+    
+    name = paste("v", paramcd, "_validated", sep = "")
+    
+    .message(paste("Properly casting data for ",
+                   name,
+                   ". Total R memory usage: ", 
+                   capture.output(pryr::mem_used()),
+                   ".",
+                   sep = ""), 
+             config = config)
+    
+    val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
+    val <- data.matrix(val[, -1])
+    
+    cc <- foreach(i = 1) %dopar% {
+      .message(paste("Adding data for ",
+                     queue$name[i],
+                     " into NetCDF File. Total R memory usage: ", 
+                     capture.output(pryr::mem_used()),
+                     ".",
+                     sep = ""), 
+               config = config)
+      
+      familyids <- RunQuery(conn = conn2,
+                            query = queue$query[i],
+                            config = config)
+      
+      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
+      
+      ncdf4::ncvar_put(nc = ncdf, varid = name, 
+                       vals = subset(val, subset = familyid %in% familyids[,1]))
+      
+      ncdf4::nc_close(ncdf)
+    }
+    
+    lapply(params, BulkAddValueAndValidatedVar)
+    
+  }
+  
+  
+
+  
+#   ncdf4::ncatt_put(nc             = ncdf, 
+#                    varid          = "v00060_value", 
+#                    attname        = "long_name", 
+#                    attval         = "Discharge measured in cubic feet per second.")
+#   
+#   ncdf4::ncatt_put(nc             = ncdf, 
+#                    varid          = "v00060_value", 
+#                    attname        = "units", 
+#                    attval         = "ft3/s")
+#
+#  .CloseNetCDF(ncdf = ncdf, file = file, config = config)
+}
+
+
+PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
+  
+  
+  layers <- sort(layers)
+  times <- sort(times)
+  
+  #   .message(paste0("There are ",
+  #                   length(times), 
+  #                   " time dimensions and ",
+  #                   length(layers),
+  #                   " with total dimensionality ",
+  #                   length(times) * length(layers), "."),
+  #            config = config)
+  
+  # file <- paste(tempdir(), "temp", sep = "/")
+  
   layerDim <- .BuildLayerDim(layers = layers, config = config)
   
-  #.debug(length(unique(data$ts)), config = config)
-  data$ts <- .ISO8601ToEpochTime(data$ts)
-  #.debug(length(unique(data$ts)), config = config)
-  
-  data$value[data$value == -999999] <- NA
-  
-  times <- sort(unique(data$ts))  
   #.debug(times, config = config)
   timeDim <- .BuildTimeDim(times = times, config = config)
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
-  
-  
-  .message(paste0("There are ",
-                  length(times), 
-                  " time dimensions and ",
-                  length(layers),
-                  " with total dimensionality ",
-                  length(times) * length(layers), "."),
-                  config = config)
-  
-  params <- unique(data$paramcd)
   
   siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
                                              config = config)
@@ -79,43 +255,6 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                                    validatedVars),
                           config = config)
   
-  paddedDataTable <- .BuildPaddedDataTable(layers = layers, 
-                                           times = times,
-                                           config = config)
-    
-  .AddTimeVars(ncdf = ncdf,
-               times = times,
-               config = config)
-  
-  .AddValueAndValidatedVars(ncdf = ncdf,
-                            padded = paddedDataTable,
-                            data = data,
-                            params = params,
-                            config = config)
-  
-  .AddSensorMetadataVars(ncdf = ncdf,
-                         sensorMetadata = sensorMetadata,
-                         layers = layers,
-                         params = params,
-                         config = config)
-  
-  .AddSiteMetadataVars(ncdf = ncdf, 
-                       siteMetadata = siteMetadata, 
-                       layers = layers, 
-                       params = params, 
-                       config = config)
-  
-  ncdf4::ncatt_put(nc             = ncdf, 
-                   varid          = "v00060_value", 
-                   attname        = "long_name", 
-                   attval         = "Discharge measured in cubic feet per second.")
-  
-  ncdf4::ncatt_put(nc             = ncdf, 
-                   varid          = "v00060_value", 
-                   attname        = "units", 
-                   attval         = "ft3/s")
-  
-  .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
 
 .GetSiteMetadata <- function(conn, config) {

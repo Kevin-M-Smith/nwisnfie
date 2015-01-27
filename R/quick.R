@@ -1,4 +1,4 @@
-quick <- function(config, date = "2014-12-27") {
+quick <- function(config, date = "2015-01-01") {
   
   ##############################
   #      SETUP CONNECTION
@@ -21,9 +21,9 @@ quick <- function(config, date = "2014-12-27") {
   .CreateDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
   DisableAutovacuum(table = tableName, config = config)    
   
-  ##############################
-  #      SPLIT SITES INTO MAP
-  ##############################
+  #####################################
+  #      SPLIT SITES FOR DOWNLOAD
+  #####################################
   # map.size controls how many sites are downloaded in a single REST call
   map.size = 100
   map <- unlist(lapply(sites, as.character))
@@ -33,6 +33,9 @@ quick <- function(config, date = "2014-12-27") {
   
   pb <- txtProgressBar(min = 1, max = length(map), style = 3, width = 20)
   
+  #####################################
+  #      Download
+  #####################################
   cc <- foreach(i = 1:length(map)) %dopar% {
     setTxtProgressBar(pb, i)
     
@@ -57,7 +60,11 @@ quick <- function(config, date = "2014-12-27") {
                             config = config)
     }
   }
+  cat("\n")
 
+  #####################################
+  #      Prepare Bulk NetCDF Build
+  #####################################
   .message(paste0("Building NetCDF Files for ", date, "..."), config = config)
 
   query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
@@ -67,24 +74,15 @@ quick <- function(config, date = "2014-12-27") {
   data <- RunQuery(conn = conn,
                  query = query,
                  config = config)
-
-  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = date, config = config, conn = conn)
-
-  cc <- foreach(i = 1) %dopar% {
-    
-    familyids <- RunQuery(conn = conn2,
-                          query = queue$query[i],
-                          config = config)
-    
-    sub <- subset(data, subset = familyid %in% familyids[,1])
-    
-    BuildNetCDF(data = sub, name = queue$name[i], config, conn = conn2)
   
-  }
-
-
-   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
-   .DropDataTable(conn = conn, config = config, tableName = tableName)
+  #####################################
+  #     Build All Subsets
+  #####################################
+  
+  BuildAllNetCDFSubsets(data, name, config, conn = conn)
+    
+  .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
+  .DropDataTable(conn = conn, config = config, tableName = tableName)
   
   StopCluster(cluster = cluster, config = config)
   StopDBConnection(conn = conn, config = config)
