@@ -152,21 +152,96 @@
     }
   }
   
- # id <- .StageURL(url = url, config = config)
+  # id <- .StageURL(url = url, config = config)
   
- # .message(paste("Staged", url, "with id", id),
- #           config = config)
+  # .message(paste("Staged", url, "with id", id),
+  #           config = config)
   
-  g <- RCurl::basicTextGatherer()
+  xml <- RCurl::basicTextGatherer()
   
-  xml <- RCurl::curlPerform(url = url, 
-                           writefunction = g$update, 
-                           httpheader = c(AcceptEncoding="gzip,deflate")) 
+  for(i in 1:5) {
+    t <- tryCatch({
+      
+      responseCode <- RCurl::curlPerform(url = url, 
+                                         writefunction = xml$update, 
+                                         httpheader = c(AcceptEncoding="gzip,deflate")) 
+      if(responseCode == 0){
+        break
+      } else {
+        Sys.sleep(1)
+      }
+      
+    }, COULDNT_RESOLVE_HOST = function(e) { 
+      .warning(paste0("Couldn't resolve url: ", 
+                      url,
+                      "\n",
+                      5-i,
+                      " attempts remaining."), 
+               config = config)
+      
+      Sys.sleep(1)
+    },
+    error = function(e) {
+      .warning(paste0(e, 
+                      "\n Trouble with url: ",
+                      url,
+                      "\n",
+                      5-i,
+                      " attempts remaining."),
+               config = config)
+      
+      Sys.sleep(1)
+    })
+  }
   
-  doc <- XML::xmlTreeParse(g$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  if(responseCode == 0){
+    #.message("Successful download.", config = config)
+  } else {
+    .warning(paste0("Url failed permanently: ",
+                    url,
+                    "."),
+             config = config)
+    
+    return(NULL)
+  }
+  
+  t <- tryCatch({
+    doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
+  }, XMLError = function(e) {
+    .warning(paste0("There was an error in the XML at line", 
+                    e$line, 
+                    "column", 
+                    e$col, 
+                    "\n",
+                    e$message, 
+                    "\n for URL :",
+                    url, "."),
+             config = config)
+    
+  }, warning = function(e) error(e) {
+    
+  }, error = function(e) {
+    .warning(paste0(e, 
+                    "\n Trouble with xml from ",
+                    url,
+                    "."),
+             config = config)
+    
+    return(NULL)
+  }) 
+  
   doc <- XML::xmlRoot(doc)
   
-  vars <- XML::xpathApply(doc, "//ns1:timeSeries") 
+  t <- tryCatch({
+    xpath <- "//ns1:timeSeries"
+    vars <- XML::xpathApply(doc, xpath) 
+  }, error = function(e) {
+    .message(paste0("Error attempting xpathApply on", 
+                    xpath), 
+             config = config)
+    return(NULL)
+  })
+  
   now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
@@ -174,44 +249,54 @@
   }
   
   if(length(vars) > 0){
-    for (i in 1:length(vars)){ 
-      parent <- XML::xmlDoc(vars[[i]]) 
-      parent <- XML::xmlRoot(parent) 
-      parentName <- unlist(XML::xpathApply(parent, "//ns1:timeSeries/@name")) 
-      sensors <- XML::xpathApply(parent, "//ns1:values") 
-      parameter <- XML::xpathApply(parent, "//ns1:variableCode", XML::xmlValue)
-      familyName <- paste(unlist(strsplit(parentName, ":", fixed = TRUE))[-3], collapse = ":")
-      for (j in 1:length(sensors)){ 
-        child <- XML::xmlDoc(sensors[[j]]) 
-        child <- XML::xmlRoot(child) 
-        if(!is.null(unlist(XML::xpathApply(child, "//@dateTime")))){
-          childName <- unlist(XML::xpathApply(child, "//ns1:method/@methodID")) 
-          childName <- formatC(strtoi(childName), width = 5, format = "d", flag = "0")  
-          
-          result <- data.frame( 
-            unlist(XML::xpathApply(child, "//@dateTime")), 
-            paste(parentName, ":", childName, sep = ""), 
-            paste(familyName, ":", childName, sep = ""),
-            unlist(XML::xpathApply(child, "//ns1:value", XML::xmlValue)),
-            parameter, 
-            unlist(lapply(XML::xpathApply(child, "//@qualifiers"), IsDataValidated)), 
-            now, 
-            now 
-          ) 
-          
-          colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
-          
-          table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
-          
-          cc <- RPostgreSQL::dbWriteTable(conn2, 
-                                          name = table, 
-                                          value = result, 
-                                          append = TRUE, 
-                                          row.names = FALSE, 
-                                          overwrite = FALSE) 
+    tryCatch({
+      for (i in 1:length(vars)){ 
+        parent <- XML::xmlDoc(vars[[i]]) 
+        parent <- XML::xmlRoot(parent) 
+        parentName <- unlist(XML::xpathApply(parent, "//ns1:timeSeries/@name")) 
+        sensors <- XML::xpathApply(parent, "//ns1:values") 
+        parameter <- XML::xpathApply(parent, "//ns1:variableCode", XML::xmlValue)
+        familyName <- paste(unlist(strsplit(parentName, ":", fixed = TRUE))[-3], collapse = ":")
+        for (j in 1:length(sensors)){ 
+          child <- XML::xmlDoc(sensors[[j]]) 
+          child <- XML::xmlRoot(child) 
+          if(!is.null(unlist(XML::xpathApply(child, "//@dateTime")))){
+            childName <- unlist(XML::xpathApply(child, "//ns1:method/@methodID")) 
+            childName <- formatC(strtoi(childName), width = 5, format = "d", flag = "0")  
+            
+            result <- data.frame( 
+              unlist(XML::xpathApply(child, "//@dateTime")), 
+              paste(parentName, ":", childName, sep = ""), 
+              paste(familyName, ":", childName, sep = ""),
+              unlist(XML::xpathApply(child, "//ns1:value", XML::xmlValue)),
+              parameter, 
+              unlist(lapply(XML::xpathApply(child, "//@qualifiers"), IsDataValidated)), 
+              now, 
+              now 
+            ) 
+            
+            colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
+            
+            table <- ifelse(stage, paste0(config$tables$staging, startDate), config$tables$data)
+            
+            cc <- RPostgreSQL::dbWriteTable(conn2, 
+                                            name = table, 
+                                            value = result, 
+                                            append = TRUE, 
+                                            row.names = FALSE, 
+                                            overwrite = FALSE) 
+          }
         }
-      }
-    }
+      }    
+    }, error = function(e){
+      .warning(paste0(e, 
+                      "\nEncountered a problem parsing XML from:", 
+                      url,
+                      "."),
+               config = config)
+      
+      return(NULL)
+    })
   } 
-#  .UnstageURL(id = id, config = config)
+  #  .UnstageURL(id = id, config = config)
 }

@@ -102,38 +102,38 @@ RebuildDynamicTables <- function(config) {
   .BuildDataIndices(conn = conn, config = config)
 }
 
-.CreateDataTable <- function(conn, config) {
-  .message(paste("Building table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-  
-  query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$data,"
-(ts timestamp with time zone NOT NULL,
-seriesId text NOT NULL, 
-familyId text, 
-value numeric, 
-paramcd text, 
-validated integer, 
-imported timestamp with time zone, 
-updated timestamp with time zone, 
-PRIMARY KEY(ts, seriesId) );")
-  
-  cc <- RunQuery(conn = conn, 
-                 query = query, 
-                 config = config)
-  
-  .message(paste("Successfully built table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-}
+# .CreateDataTable <- function(conn, config) {
+#   .message(paste("Building table ", 
+#                  config$tables$data, 
+#                  "(",
+#                  names(config$tables$data),
+#                  ").",
+#                  sep = ""), 
+#            config = config)
+#   
+#   query <- paste("CREATE TABLE IF NOT EXISTS", config$tables$data,"
+# (ts timestamp with time zone NOT NULL,
+# seriesId text NOT NULL, 
+# familyId text, 
+# value numeric, 
+# paramcd text, 
+# validated integer, 
+# imported timestamp with time zone, 
+# updated timestamp with time zone, 
+# PRIMARY KEY(ts, seriesId) );")
+#   
+#   cc <- RunQuery(conn = conn, 
+#                  query = query, 
+#                  config = config)
+#   
+#   .message(paste("Successfully built table ", 
+#                  config$tables$data, 
+#                  "(",
+#                  names(config$tables$data),
+#                  ").",
+#                  sep = ""), 
+#            config = config)
+# }
 
 .CreateStagingTable <- function(conn, config) {
   .message(paste("Building table ", 
@@ -160,44 +160,44 @@ PRIMARY KEY(ts, seriesId) );")
            config = config)
 }
 
-.SetDataTriggers <- function(conn, config) {
-  
-  .message(paste("Setting triggers on table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-  
-  query = paste("CREATE OR REPLACE FUNCTION ", config$tables$data,"_upsert() RETURNS TRIGGER AS $$
-BEGIN
-  IF (SELECT COUNT(ts) FROM ", config$tables$data, 
-                " WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
-    UPDATE ", config$tables$data, " SET 
-      updated = NEW.updated,
-      validated = NEW.validated,
-      value = NEW.value
-      WHERE ts = NEW.ts AND seriesid = NEW.seriesid;
-    RETURN NULL;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-CREATE TRIGGER ", config$tables$data, "_data_merge BEFORE INSERT ON ", config$tables$data, " FOR EACH ROW EXECUTE PROCEDURE ", config$tables$data, "_upsert();", sep = "")
-  
-  cc <- RunQuery(conn = conn, 
-                 query = query, 
-                 config = config)
-  
-  .message(paste("Triggers set for table ", 
-                 config$tables$data, 
-                 "(",
-                 names(config$tables$data),
-                 ").",
-                 sep = ""), 
-           config = config)
-}
+# .SetDataTriggers <- function(conn, config) {
+#   
+#   .message(paste("Setting triggers on table ", 
+#                  config$tables$data, 
+#                  "(",
+#                  names(config$tables$data),
+#                  ").",
+#                  sep = ""), 
+#            config = config)
+#   
+#   query = paste("CREATE OR REPLACE FUNCTION ", config$tables$data,"_upsert() RETURNS TRIGGER AS $$
+# BEGIN
+#   IF (SELECT COUNT(ts) FROM ", config$tables$data, 
+#                 " WHERE ts = NEW.ts AND seriesid = NEW.seriesid) = 1 THEN
+#     UPDATE ", config$tables$data, " SET 
+#       updated = NEW.updated,
+#       validated = NEW.validated,
+#       value = NEW.value
+#       WHERE ts = NEW.ts AND seriesid = NEW.seriesid;
+#     RETURN NULL;
+#   END IF;
+#   RETURN NEW;
+# END;
+# $$ LANGUAGE plpgsql;
+# CREATE TRIGGER ", config$tables$data, "_data_merge BEFORE INSERT ON ", config$tables$data, " FOR EACH ROW EXECUTE PROCEDURE ", config$tables$data, "_upsert();", sep = "")
+#   
+#   cc <- RunQuery(conn = conn, 
+#                  query = query, 
+#                  config = config)
+#   
+#   .message(paste("Triggers set for table ", 
+#                  config$tables$data, 
+#                  "(",
+#                  names(config$tables$data),
+#                  ").",
+#                  sep = ""), 
+#            config = config)
+# }
 
 .BuildDataIndices <- function(conn, config) {
   
