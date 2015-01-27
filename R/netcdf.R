@@ -50,6 +50,8 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
     
+    .debug(capture.output(head(siteMetadataSubset)), config = config)
+    
     ncdf <- PrepareNetCDF(layers = layersSubset, 
                           times = times, 
                           params = params,
