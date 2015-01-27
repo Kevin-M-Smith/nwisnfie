@@ -281,7 +281,7 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   ncdf <- .InitializeNCDF(file = file,
                           vars = c(list(timeVar),
                                    siteMetadataVars,
-                                   sensorMetadataVars
+                                   sensorMetadataVars,
                                   valueVars,
                                   validatedVars),
                           config = config)
