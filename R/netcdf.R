@@ -33,7 +33,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   rm(data)  
 
   paddedDataTableFile <- tempfile("padded")
-  save(padedDataTable, file = paddedDataTableFile, envir = environment())
+  save(paddedDataTable, file = paddedDataTableFile, envir = environment())
   rm(paddedDataTable)
 
   ##############################
