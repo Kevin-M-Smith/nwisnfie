@@ -48,7 +48,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   ##############################
   ncdfs <- foreach(i = 1:5) %dopar% {
     
-    familyids <- RunQuery(conn = conn2,
+    familyids <- RunQuery(conn = conn,
                           query = queue$query[i],
                           config = config)
     
