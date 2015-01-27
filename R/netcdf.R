@@ -192,9 +192,13 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       .debug("NETCDF OPENED!", config = config)
       
       
-      val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1]
+      
+      val2 <- data.matrix(subset(val, subset = familyid %in% familyids[,1])[,-1])
       rm(val)
-      val2[is.na(val2)] <- -999999.0
+      
+   #   .debug(capture.output(print(val2[,1])))
+      
+  #    val2[is.na(val2)] <- -999999.0
         # data$value[data$value == -999999] <- NA
         
       .debug("SUBSET!", config = config)
