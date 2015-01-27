@@ -62,17 +62,19 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                           query = queue$query[i],
                           config = config)
     
+        
+    .debug(paste0("file: ", queue$name[i]) ,config = config)
+    .debug(paste0("query: ", queue$query[i]), config = config)
+    .debug(paste0("#lay: ", length(familyids[,1])), config = config)
     
-    #layersSubset <- familyids
-    
-    layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
+    #layersSubset <- subset(layers, subset = familyid %in% familyids[,1])
     
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% familyids[,1])
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% familyids[,1])
     
     .debug(paste0("metadata subset | i: ", i ), config = config)
     
-    ncdf <- PrepareNetCDF(layers = layersSubset, 
+    ncdf <- PrepareNetCDF(layers = familyids[,1], 
                           times = times, 
                           params = params,
                           siteMetadata = siteMetadataSubset,
