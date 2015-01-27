@@ -113,6 +113,11 @@ BuildNetCDF <- function(data, name, config, conn = NULL) {
                    attname        = "units", 
                    attval         = "ft3/s")
   
+  ncdf4::ncatt_put(nc             = ncdf, 
+                   varid          = "v00060_value", 
+                   attname        = "_FillValue", 
+                   attval         = "-999999.0f")
+  
   .CloseNetCDF(ncdf = ncdf, file = file, config = config)
 }
 
