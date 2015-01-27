@@ -162,9 +162,10 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             config = config)
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
+      .debug("NETCDF OPENED!", config = config)
+      val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1]
       
-      ncdf4::ncvar_put(nc = ncdf, varid = name, 
-                       vals = subset(val, subset = familyid %in% familyids[,1])[, -1])
+      ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2)
       
       ncdf4::nc_close(ncdf)
     }
@@ -197,8 +198,9 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
-      ncdf4::ncvar_put(nc = ncdf, varid = name, 
-                       vals = subset(val, subset = familyid %in% familyids[,1])[, -1])
+      val2 <- subset(val, subset = familyid %in% familyids[,1])[, -1])
+      
+      ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2)
       
       ncdf4::nc_close(ncdf)
     }
