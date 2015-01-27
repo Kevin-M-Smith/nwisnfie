@@ -190,10 +190,10 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
       
       ncdf4::nc_close(ncdf)
     }
-    
-    lapply(params, BulkAddValueAndValidatedVar)
-    
+      
   }
+  
+  lapply(params, BulkAddValueAndValidatedVar)
   
   
 
