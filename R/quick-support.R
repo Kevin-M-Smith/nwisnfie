@@ -54,8 +54,8 @@
   
   .message(paste0("Dropping upsert trigger on table ", tableName, "."), config = config)
   
-  query = paste0("DROP TRIGGER ", tableName,"_upsert();")
-  
+  query = paste0("DROP TRIGGER ", tableName,"_data_merge;")
+
   cc <- RunQuery(conn = conn, 
                  query = query, 
                  config = config)
