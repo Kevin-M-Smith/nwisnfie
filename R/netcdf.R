@@ -136,6 +136,8 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
     
+    queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
+    
     cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
                      queue$name[i],
@@ -672,6 +674,7 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
                    sep = ""), 
              config = config)
     
+    .debug()
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
     
