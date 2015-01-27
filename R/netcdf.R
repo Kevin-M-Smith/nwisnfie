@@ -188,7 +188,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             query = queue$query[i],
                             config = config)
       
-      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
+      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE, suppress_dimvals = TRUE)
       .debug("NETCDF OPENED!", config = config)
       
       
@@ -196,7 +196,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       rm(val)
       .debug("SUBSET!", config = config)
       
-      ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2)
+      ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val2, verbose = TRUE)
       
       ncdf4::nc_close(ncdf)
     }
