@@ -36,7 +36,7 @@ BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
   ##############################
   #   LOAD WITH 'SMALL' DATA
   ##############################
-  netcdfs <- foreach(i = 1) %dopar% {
+  netcdfs <- foreach(i = 1:5) %dopar% {
     
     familyids <- RunQuery(conn = conn2,
                           query = queue$query[i],
@@ -122,7 +122,7 @@ BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
     
-    cc <- foreach(i = 1) %dopar% {
+    cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
                      queue$name[i],
                      " into NetCDF File. Total R memory usage: ", 
@@ -156,7 +156,7 @@ BuildAllNetCDFSubsets <- function(data, name, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
     val <- data.matrix(val[, -1])
     
-    cc <- foreach(i = 1) %dopar% {
+    cc <- foreach(i = 1:5) %dopar% {
       .message(paste("Adding data for ",
                      queue$name[i],
                      " into NetCDF File. Total R memory usage: ", 
