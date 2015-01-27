@@ -152,7 +152,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                      sep = ""), 
                config = config)
       
-      familyids <- RunQuery(conn = conn2,
+      familyids <- RunQuery(conn = conn,
                             query = queue$query[i],
                             config = config)
       
@@ -186,7 +186,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
                      sep = ""), 
                config = config)
       
-      familyids <- RunQuery(conn = conn2,
+      familyids <- RunQuery(conn = conn,
                             query = queue$query[i],
                             config = config)
       
