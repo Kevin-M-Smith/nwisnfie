@@ -86,6 +86,8 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   ##############################
   #   CLOSE OUT FILES
   ##############################
+  lapply(ncdfs, typeof)
+  lapply(ncdfs, str)
   lapply(ncdfs, ncdf4::nc_close)
   
   BulkAddValueAndValidatedVar <- function(paramcd){
