@@ -218,8 +218,8 @@
                     url, "."),
              config = config)
     
-  }, warning = function(e) error(e) {
-    
+  }, warning = function(e) { 
+    error(e) 
   }, error = function(e) {
     .warning(paste0(e, 
                     "\n Trouble with xml from ",
