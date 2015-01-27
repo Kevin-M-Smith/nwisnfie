@@ -211,7 +211,10 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   
   .debug(paste0("prepping netcdf"), config = config)
   
+  .debug(paste0("prepping layers"), config = config)
   layers <- sort(layers)
+  
+  .debug(paste0("prepping times"), config = config)
   times <- sort(times)
     
   #   .message(paste0("There are ",
