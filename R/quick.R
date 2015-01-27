@@ -79,7 +79,7 @@ quick <- function(config, date = "2015-01-01") {
   #     Build All Subsets
   #####################################
   
-  BuildAllNetCDFSubsets(data, name, config, conn = conn)
+  BuildAllNetCDFSubsets(data = data, suffix = date, config = config, conn = conn)
     
   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
   .DropDataTable(conn = conn, config = config, tableName = tableName)
