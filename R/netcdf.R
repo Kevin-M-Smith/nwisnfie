@@ -86,6 +86,7 @@ BuildAllNetCDFSubsets <- function(data, suffix, config, conn = NULL) {
   ##############################
   #   CLOSE OUT FILES
   ##############################
+  .debug(paste0(capture.output(typeof(ncdfs))), config = config)
   
   lapply(ncdfs, function(x) .message(capture.output(typeof(x)), config = config))
   #lapply(ncdfs, str)
