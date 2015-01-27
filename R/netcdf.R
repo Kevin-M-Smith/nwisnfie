@@ -478,7 +478,7 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
           var <- ncdf4::ncvar_def(metadataVar, 
                                   units = "", 
                                   dim = list(layerDim),
-                                  missval = NA,
+                              #    missval = NULL,
                                   prec = 'double',
                                   compression = 9)
         } else {
