@@ -31,7 +31,9 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   #	  (NO PARAMETER DATA YET)
   #
   ###############################
+  pb <- txtProgressBar(min = 1, max = length(map), style = 3, width = 20)
   cc <- foreach(i = 1:nrow(queue)) %dopar% {
+    setTxtProgressBar(pb, i)
     
     layersInSubset <- RunQuery(conn = conn2,
                                query = queue$query[i],
@@ -69,9 +71,10 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                          config = config)                    
     
     ncdf4::nc_close(ncdf)
-    }
     
+    }    
   }
+  cat("\n")
   
   ##############################
   #   
@@ -93,8 +96,11 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                                        value.var = "value")
     
     name = paste("v", paramcd, "_value", sep = "")
+    .message(paste0("Adding data for ", name, " into NetCDF Files..."), config = config)
     
+    pb <- txtProgressBar(min = 1, max = nrow(queue), style = 3, width = 20)
     cc <- foreach(i = 1:nrow(queue)) %dopar% {
+      setTxtProgressBar(pb, i)
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
@@ -119,6 +125,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
       ncdf4::nc_close(ncdf)
       }
     }
+    cat("\n")
     
     paddedParamCast <- reshape2::dcast(paddedParamFlat, 
                                        familyid ~ ts, 
@@ -126,7 +133,11 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     name = paste("v", paramcd, "_validated", sep = "")
     
+    .message(paste0("Adding data for ", name, " into NetCDF Files..."), config = config)
+    
+    pb <- txtProgressBar(min = 1, max = nrow(queue), style = 3, width = 20)
     cc <- foreach(i = 1:nrow(queue)) %dopar% {
+      setTxtProgressBar(pb, i)
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
@@ -153,6 +164,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
       ncdf4::nc_close(ncdf)
       }
     }
+    cat("\n")
   }
     
   lapply(params, BulkAddValueAndValidatedVar)

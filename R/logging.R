@@ -52,7 +52,7 @@
   } else {
     # if loglevel is set to INFO, then print log message, else do nothing
     
-    if (config$logging$level == "INFO") {
+    if (config$logging$level %in% c("INFO", "DEBUG")) {
       .PrintLogMessage("[INFO] ", config = config, ...)
     }
   }
@@ -66,9 +66,9 @@
     # bypass the logger if a condition is supplied or if loglevel is set to "NONE"
     base::message(..., domain = domain, appendLF = appendLF)
   } else {
-    # if loglevel is set to INFO, then print log message, else do nothing
+    # if loglevel is set to DEBUG, then print log message, else do nothing
     
-    if (config$logging$level == "INFO") {
+    if (config$logging$level == "DEBUG") {
       .PrintLogMessage("[DEBUG] ", config = config, ...)
     }
   }
@@ -90,7 +90,7 @@
   is.condition <- length(args) == 1L && inherits(args[[1L]], "condition")
   if (!is.condition) {
     # if loglevel is set to INFO or WARN, then print log message
-    if (config$logging$level %in% c("INFO", "WARN")) {
+    if (config$logging$level %in% c("INFO", "WARN", "DEBUG")) {
       .PrintLogMessage("[WARN] ", config = config, ...)
     }
     # always collect warnings when printing log messages

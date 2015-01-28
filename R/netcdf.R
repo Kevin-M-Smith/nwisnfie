@@ -434,7 +434,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                           prec = 'integer',
                           compression = 9)
   
-  .message(paste("Time variable ", 
+  .debug(paste("Time variable ", 
                  name, 
                  " built succesfully.", sep = ""),
            config = config)
@@ -442,7 +442,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .BuildSiteMetadataDims <- function(siteMetadata, config) {
-  .message("Building site metadata dimensions... ", config = config)
+  .debug("Building site metadata dimensions... ", config = config)
   
   varTypes <- lapply(siteMetadata, typeof)
   
@@ -457,7 +457,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             vals = 1:maxChar, 
                             create_dimvar = FALSE)
     
-    .message(paste("Site metadata dimension ",
+    .debug(paste("Site metadata dimension ",
                    name,
                    " built succesfully.",
                    sep = ""),
@@ -473,7 +473,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .BuildSiteMetadataVars <- function(siteMetadata, siteMetadataDims, layerDim, config) {
   
-  .message("Building site metadata variables... ", config = config)
+  .debug("Building site metadata variables... ", config = config)
   
   varTypes <- lapply(siteMetadata, typeof)
   stringVars <- names(siteMetadata)[which(varTypes == "character")]
@@ -511,7 +511,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
         }
       }
     }
-    .message(paste("Site metadata variable ", 
+    .debug(paste("Site metadata variable ", 
                    metadataVar,
                    " built succesfully.",
                    sep = ""),
@@ -525,7 +525,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .BuildValueVars <- function(params, layerDim, timeDim, config) {
   
-  .message("Building value variables... ", config = config)
+  .debug("Building value variables... ", config = config)
   
   BuildValueVar <- function(paramcd) {
     
@@ -537,7 +537,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             prec = "double",
                             compression = 9)
     
-    .message(paste("Value variable ",
+    .debug(paste("Value variable ",
                    name,
                    " built succesfully.",
                    sep = ""),
@@ -551,7 +551,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .BuildValidatedVars <- function(params, layerDim, timeDim, config) {
   
-  .message("Building validated variables... ", config = config)
+  .debug("Building validated variables... ", config = config)
   
   BuildValidatedVar <- function(paramcd) {
     
@@ -563,7 +563,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             prec = "double",
                             compression = 9)
     
-    .message(paste("Validated variable ",
+    .debug(paste("Validated variable ",
                    name,
                    " built succesfully.",
                    sep = ""),
@@ -577,7 +577,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .BuildSensorMetadataDims <- function(params, sensorMetadata, config) {
   
-  .message("Building sensor metadata dimensions... ", config = config)
+  .debug("Building sensor metadata dimensions... ", config = config)
   
   BuildSensorMetadataDim <- function(paramcd) {
     
@@ -591,7 +591,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             vals = 1:maxChar, 
                             create_dimvar = FALSE)
     
-    .message(paste("Sensor metadata dimension ",
+    .debug(paste("Sensor metadata dimension ",
                    name,
                    " built succesfully",
                    sep = ""),
@@ -605,7 +605,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .BuildSensorMetadataVars <- function(params, sensorMetadataDims, layerDim, config) {
   
-  .message("Building sensor metadata variables... ", config = config)
+  .debug("Building sensor metadata variables... ", config = config)
   
   BuildSensorMetadataVar <- function(paramcd) {
     
@@ -625,7 +625,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                             prec = 'char',
                             compression = 9)
     
-    .message("Sensor metadata variable ", 
+    .debug("Sensor metadata variable ", 
              name, 
              " built successfully.",
              sep = "",
@@ -637,7 +637,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .InitializeNCDF <- function(file, vars, config) {
-  .message(paste("Initializing empty NetCDF file (",
+  .debug(paste("Initializing empty NetCDF file (",
                  file, 
                  ").",
                  sep = ""),
@@ -645,7 +645,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   ncdf <- ncdf4::nc_create(file = file, vars = vars, force_v4 = TRUE)
   
-  .message(paste("Successfully initialized empty NetCDF file (",
+  .debug(paste("Successfully initialized empty NetCDF file (",
                  file, 
                  ").",
                  sep = ""),
@@ -655,7 +655,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .BuildPaddedDataTable <- function(times, layers, config) {
-  .message(paste("Building padded data table. Total R memory usage: ", 
+  .debug(paste("Building padded data table. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -663,7 +663,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   padded <- data.table::CJ(ts = times, familyid = layers)
   
-  .message(paste("Successfully built padded data table. Total R memory usage: ",
+  .debug(paste("Successfully built padded data table. Total R memory usage: ",
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""),
@@ -674,7 +674,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .AddTimeVars <- function(ncdf, times, config) {
-  .message(paste("Adding variable time to NetCDF file. Total R memory usage: ", 
+  .debug(paste("Adding variable time to NetCDF file. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -683,7 +683,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   ncdf4::ncvar_put(ncdf, "time", times)
   
-  .message(paste("Variable time added succesfully. Total R memory usage: ", 
+  .debug(paste("Variable time added succesfully. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -693,7 +693,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 .AddValueAndValidatedVars <- function(ncdf, padded, data, params, config) {
   
   
-  .message(paste("Adding value and validated variables to NetCDF file... Total R memory usage: ", 
+  .debug(paste("Adding value and validated variables to NetCDF file... Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -701,7 +701,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   AddValueAndValidatedVar <- function(paramcd){
     
-    .message(paste("Subsetting data for ", 
+    .debug(paste("Subsetting data for ", 
                    paramcd,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -712,7 +712,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     sub <- subset(data, paramcd == paramcd)
     sub <- sub[c("ts", "familyid", "value", "validated")]
     
-    .message(paste("Merging subsetted data for ",
+    .debug(paste("Merging subsetted data for ",
                    paramcd,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -733,7 +733,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     name = paste("v", paramcd, "_value", sep = "")
     
-    .message(paste("Properly casting data for ",
+    .debug(paste("Properly casting data for ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -745,7 +745,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
     val <- data.matrix(val[, -1])
     
-    .message(paste("Adding data for ",
+    .debug(paste("Adding data for ",
                    name,
                    " into NetCDF File. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -755,7 +755,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val)
     
-    .message(paste("Succesfully added ",
+    .debug(paste("Succesfully added ",
                    name,
                    " to NetCDF File. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -765,7 +765,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     name = paste("v", paramcd, "_validated", sep = "")
     
-    .message(paste("Properly casting data for ",
+    .debug(paste("Properly casting data for ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -776,7 +776,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "validated")
     val <- data.matrix(val[, -1])
     
-    .message(paste("Adding data for ",
+    .debug(paste("Adding data for ",
                    name,
                    " into NetCDF File. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -786,7 +786,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     ncdf4::ncvar_put(nc = ncdf, varid = name, vals = val)
     
-    .message(paste("Succesfully added ",
+    .debug(paste("Succesfully added ",
                    name,
                    " to NetCDF File. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -798,7 +798,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   lapply(params, AddValueAndValidatedVar)
   
-  .message(paste("Added value and validated variables to NetCDF file. Total R memory usage: ", 
+  .debug(paste("Added value and validated variables to NetCDF file. Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -806,7 +806,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .AddSensorMetadataVars <- function(ncdf, sensorMetadata, layers, params, config) {
-  .message(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
+  .debug(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -816,7 +816,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     name = paste("v", paramcd, "_description", sep = "")
     
-    .message(paste("Adding sensor metadata to ",
+    .debug(paste("Adding sensor metadata to ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -831,7 +831,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                      varid = name,
                      vals = sub$loc_web_ds)
     
-    .message(paste("Successfully added sensor metadata to ",
+    .debug(paste("Successfully added sensor metadata to ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -846,7 +846,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 .AddSensorMetadataVars <- function(ncdf, sensorMetadata, layers, params, config) {
-  .message(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
+  .debug(paste("Adding sensor metadata variables to NetCDF file... Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -856,7 +856,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     name = paste("v", paramcd, "_description", sep = "")
     
-    .message(paste("Adding sensor metadata to ",
+    .debug(paste("Adding sensor metadata to ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -871,7 +871,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                      varid = name,
                      vals = sub$loc_web_ds)
     
-    .message(paste("Successfully added sensor metadata to ",
+    .debug(paste("Successfully added sensor metadata to ",
                    name,
                    ". Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -887,7 +887,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .AddSiteMetadataVars <- function(ncdf, siteMetadata, layers, params, config) {
   
-  .message(paste("Adding site metadata variables to NetCDF file... Total R memory usage: ", 
+  .debug(paste("Adding site metadata variables to NetCDF file... Total R memory usage: ", 
                  capture.output(pryr::mem_used()),
                  ".",
                  sep = ""), 
@@ -899,7 +899,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
   
   AddSiteMetadataVar <- function(name) {
     
-    .message(paste("Adding site metadata variable ",
+    .debug(paste("Adding site metadata variable ",
                    name,
                    " to NetCDF file. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -911,7 +911,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                     varid = name,
                     vals = unlist(siteMetadata[name]))
     
-    .message(paste("Successfully added site metadata variable ",
+    .debug(paste("Successfully added site metadata variable ",
                    name,
                    " to NetCDF file. Total R memory usage: ", 
                    capture.output(pryr::mem_used()),
@@ -929,7 +929,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 
 .CloseNetCDF <- function(ncdf, file, config){
   ncdf4::nc_close(ncdf)
-  .message(paste("Succesfully closed out NetCDF file (",
+  .debug(paste("Succesfully closed out NetCDF file (",
            file,
            ").",
            sep = ""),
