@@ -85,6 +85,8 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   paddedParamCast <- reshape2::dcast(paddedParamFlat, 
   									familyid ~ ts, 
   									value.var = "value")
+  
+  .debug(print(paddedParamCast[1,1:4]), config = config)
   									
   name = paste("v", paramcd, "_value", sep = "")
 
