@@ -31,13 +31,17 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   #
   ###############################
   cc <- foreach(i = 1:5) %dopar% {
-  	
+  	.debug("BUILD", config = config)
+    
   	layersInSubset <- RunQuery(conn = conn2,
                           query = queue$query[i],
                           config = config)[,1]
 
-layersInSubset <- layersInSubset[layers %in% layersInSubset]
+    .debug(length(layersInSubset), config = config)
+    
+    layersInSubset <- layersInSubset[layers %in% layersInSubset]
 
+    .debug(length(layersInSubset), config = config)
 	
 	siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
   sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
@@ -79,6 +83,8 @@ layersInSubset <- layersInSubset[layers %in% layersInSubset]
   ###############################
 	
   BulkAddValueAndValidatedVar <- function(paramcd){
+    
+  .debug("BULK", config = config)
   
   .debug(capture.output(dim(paddedDataTable)), config = config)
   
