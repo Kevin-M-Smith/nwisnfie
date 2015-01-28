@@ -187,15 +187,15 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
                      sep = ""), 
                config = config)
       
-      familyids <- RunQuery(conn = conn2,
+      subsetElements <- RunQuery(conn = conn2,
                             query = queue$query[i],
                             config = config)
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE, suppress_dimvals = TRUE)
       .debug("NETCDF OPENED!", config = config)
+      .debug(length(subsetElements[,1]))
       
-      
-      val2 <- data.matrix(subset(val, subset = familyid %in% familyids[,1])[,-1])
+      val2 <- data.matrix(subset(val, subset = familyid %in% subsetElements[,1])[,-1])
       rm(val)
       .debug(capture.output(print(dim(val2))), config = config)
       
