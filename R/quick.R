@@ -1,4 +1,4 @@
-quick <- function(config, date = "2015-01-01") {
+quick <- function(config, date = "2015-01-05") {
   
   ##############################
   #      SETUP CONNECTION
