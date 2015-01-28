@@ -42,6 +42,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     layersInSubset <- layersInSubset[layers %in% layersInSubset]
 
     .debug(length(layersInSubset), config = config)
+    .debug("BUILDDD", config = config)
 	
 	siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
   sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
