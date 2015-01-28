@@ -165,7 +165,8 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
              config = config)
     
     val <- reshape2::dcast(sub, familyid ~ ts, value.var = "value")
-    
+    .debug(paste("dim val: ", dim(val)), config = config)
+  
     valFile <- tempfile("val")
     save(val, file = valFile,  envir = environment())
     rm(val)  
