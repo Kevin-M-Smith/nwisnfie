@@ -149,6 +149,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
     
     load(file = paddedDataTableFile, verbose = TRUE)    
     sub <- merge(x = paddedDataTable, y = sub, all.x = TRUE, by = c("ts", "familyid"))
+    .debug(paste("dim sub: ", dim(sub)), config = config)
     rm(paddedDataTable)  
     
     # dim(sub)[1] should be equal to length(unique(data$ts)) * length(unique(data$familyid))
