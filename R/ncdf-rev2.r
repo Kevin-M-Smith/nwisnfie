@@ -37,7 +37,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                           config = config)[,1]
 	
 	siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
-    sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
+  sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
 	
 	ncdf <- PrepareNetCDF(layers = layersInSubset, 
                           times = times, 
@@ -53,13 +53,13 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
         
     .AddSensorMetadataVars(ncdf = ncdf,
                            sensorMetadata = sensorMetadataSubset,
-                           layers = familyids[,1],
+                           layers = layersInSubset,
                            params = params,
                            config = config)
     
     .AddSiteMetadataVars(ncdf = ncdf, 
                          siteMetadata = siteMetadataSubset, 
-                         layers = familyids[,1], 
+                         layers = layersInSubset, 
                          params = params, 
                          config = config)                    
     
