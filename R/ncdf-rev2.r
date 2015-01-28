@@ -111,8 +111,8 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
         ncdf4::nc_close(ncdf)
    }
 
-   lapply(params, BulkAddValueAndValidatedVar)
 
   }
-  
+ lapply(params, BulkAddValueAndValidatedVar)
+ 
 }
