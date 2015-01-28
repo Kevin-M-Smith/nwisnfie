@@ -281,84 +281,84 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
 }
 
 
-PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
-  
-  .debug(paste0("prepping netcdf"), config = config)
-  
-
-  layers <- sort(layers)
-  
-  .debug(paste0("prepping times", head(times)), config = config)
-  times <- sort(times)
-  .debug(paste0("prepped times", head(times)), config = config)
-  
-    
-  #   .message(paste0("There are ",
-  #                   length(times), 
-  #                   " time dimensions and ",
-  #                   length(layers),
-  #                   " with total dimensionality ",
-  #                   length(times) * length(layers), "."),
-  #            config = config)
-  
-  # file <- paste(tempdir(), "temp", sep = "/")
-  .debug(paste0("prepping layerdim"), config = config)
-  
-  layerDim <- .BuildLayerDim(layers = layers, config = config)
-  
-  .debug(paste0("prepping time dim"), config = config)
-  timeDim <- .BuildTimeDim(times = times, config = config)
-  
-  .debug(paste0("prepping time var"), config = config)
-  timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
-  
-  .debug(paste0("prepping netcdf metadata"), config = config)
-  
-  
-  siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
-                                             config = config)
-  
-  siteMetadataVars <- .BuildSiteMetadataVars(siteMetadata = siteMetadata,
-                                             siteMetadataDims = siteMetadataDims,
-                                             layerDim = layerDim,
-                                             config = config)
-  
-  sensorMetadataDims <- .BuildSensorMetadataDims(params = params,
-                                                 sensorMetadata = sensorMetadata,
-                                                 config = config)
-  
-  sensorMetadataVars <- .BuildSensorMetadataVars(params = params,
-                                                 sensorMetadataDims = sensorMetadataDims,
-                                                 layerDim = layerDim,
-                                                 config = config)
-  
-  .debug(paste0("prepping value and validated vars"), config = config)
-  
-  
-  valueVars <- .BuildValueVars(params = params,
-                               layerDim = layerDim,
-                               timeDim = timeDim,
-                               config = config)
-  
-  validatedVars <- .BuildValidatedVars(params = params,
-                                       layerDim = layerDim,
-                                       timeDim = timeDim,
-                                       config = config)  
-  
-  .debug(paste0("init ncdf"), config = config)
-  
-  ncdf <- .InitializeNCDF(file = file,
-                          vars = c(list(timeVar),
-                                   siteMetadataVars,
-                                   sensorMetadataVars,
-                                  valueVars,
-                                  validatedVars),
-                          config = config)
-  
-  .debug(paste0("complete ncdf"), config = config)
-  
-  ncdf
-}
+# PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
+#   
+#   .debug(paste0("prepping netcdf"), config = config)
+#   
+# 
+#   layers <- sort(layers)
+#   
+#   .debug(paste0("prepping times", head(times)), config = config)
+#   times <- sort(times)
+#   .debug(paste0("prepped times", head(times)), config = config)
+#   
+#     
+#   #   .message(paste0("There are ",
+#   #                   length(times), 
+#   #                   " time dimensions and ",
+#   #                   length(layers),
+#   #                   " with total dimensionality ",
+#   #                   length(times) * length(layers), "."),
+#   #            config = config)
+#   
+#   # file <- paste(tempdir(), "temp", sep = "/")
+#   .debug(paste0("prepping layerdim"), config = config)
+#   
+#   layerDim <- .BuildLayerDim(layers = layers, config = config)
+#   
+#   .debug(paste0("prepping time dim"), config = config)
+#   timeDim <- .BuildTimeDim(times = times, config = config)
+#   
+#   .debug(paste0("prepping time var"), config = config)
+#   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
+#   
+#   .debug(paste0("prepping netcdf metadata"), config = config)
+#   
+#   
+#   siteMetadataDims <- .BuildSiteMetadataDims(siteMetadata = siteMetadata,
+#                                              config = config)
+#   
+#   siteMetadataVars <- .BuildSiteMetadataVars(siteMetadata = siteMetadata,
+#                                              siteMetadataDims = siteMetadataDims,
+#                                              layerDim = layerDim,
+#                                              config = config)
+#   
+#   sensorMetadataDims <- .BuildSensorMetadataDims(params = params,
+#                                                  sensorMetadata = sensorMetadata,
+#                                                  config = config)
+#   
+#   sensorMetadataVars <- .BuildSensorMetadataVars(params = params,
+#                                                  sensorMetadataDims = sensorMetadataDims,
+#                                                  layerDim = layerDim,
+#                                                  config = config)
+#   
+#   .debug(paste0("prepping value and validated vars"), config = config)
+#   
+#   
+#   valueVars <- .BuildValueVars(params = params,
+#                                layerDim = layerDim,
+#                                timeDim = timeDim,
+#                                config = config)
+#   
+#   validatedVars <- .BuildValidatedVars(params = params,
+#                                        layerDim = layerDim,
+#                                        timeDim = timeDim,
+#                                        config = config)  
+#   
+#   .debug(paste0("init ncdf"), config = config)
+#   
+#   ncdf <- .InitializeNCDF(file = file,
+#                           vars = c(list(timeVar),
+#                                    siteMetadataVars,
+#                                    sensorMetadataVars,
+#                                   valueVars,
+#                                   validatedVars),
+#                           config = config)
+#   
+#   .debug(paste0("complete ncdf"), config = config)
+#   
+#   ncdf
+# }
 
 .GetSiteMetadata <- function(conn, config) {
   query <- paste("select * from", config$tables$site.metadata)
@@ -396,35 +396,35 @@ PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, f
   
 }
 
-.BuildLayerDim <- function(layers, config) {
-  name = "layer_dim"
-  dim <- ncdf4::ncdim_def(name = name, 
-                          units = "", 
-                          vals = 1:length(layers), 
-                          create_dimvar = FALSE)
-  
-  .message(paste("Layer dim", 
-                 name,
-                 "built succesfully."),
-           config = config)
-  
-  dim
-}
-
-.BuildTimeDim <- function(times, config)  { 
-  name <- "ts_dim"
-  
-  dim <- ncdf4::ncdim_def(name = name, 
-                          units = "", 
-                          vals = 1:length(times), 
-                          create_dimvar = FALSE)
-  
-  .message(paste("Time dimension", 
-                 name, 
-                 "built succesfully."), 
-           config = config)
-  dim
-}
+# .BuildLayerDim <- function(layers, config) {
+#   name = "layer_dim"
+#   dim <- ncdf4::ncdim_def(name = name, 
+#                           units = "", 
+#                           vals = 1:length(layers), 
+#                           create_dimvar = FALSE)
+#   
+#   .message(paste("Layer dim", 
+#                  name,
+#                  "built succesfully."),
+#            config = config)
+#   
+#   dim
+# }
+# 
+# .BuildTimeDim <- function(times, config)  { 
+#   name <- "ts_dim"
+#   
+#   dim <- ncdf4::ncdim_def(name = name, 
+#                           units = "", 
+#                           vals = 1:length(times), 
+#                           create_dimvar = FALSE)
+#   
+#   .message(paste("Time dimension", 
+#                  name, 
+#                  "built succesfully."), 
+#            config = config)
+#   dim
+# }
 
 .BuildTimeVar <- function(timeDim, config) {
   name <- "time"

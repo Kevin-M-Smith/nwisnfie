@@ -39,7 +39,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
 
     .debug(length(layersInSubset), config = config)
     
-    layersInSubset <- layersInSubset[layers %in% layersInSubset]
+    layersInSubset <- layersInSubset[layersInSubset %in% layers]
 
     .debug(length(layersInSubset), config = config)
     .debug("BUILDDD", config = config)
@@ -117,7 +117,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                           query = queue$query[i],
                           config = config)[,1]
     
-    layersInSubset <- layersInSubset[layers %in% layersInSubset]
+    layersInSubset <- layersInSubset[layersInSubset %in% layers]
                           
         subsetPaddedParamCast <- subset(paddedParamCast,
         								subset = familyid %in% layersInSubset)[, -1]
