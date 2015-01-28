@@ -29,11 +29,11 @@
 }
 
 
-PrepareNetCDF <- function(Nlayers, Ntimes, params, siteMetadata, sensorMetadata, file, config){
+PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
   
-  layerDim <- .BuildLayerDim(Nlayers = Nlayers, config = config)
+  layerDim <- .BuildLayerDim(layers = layers, config = config)
   
-  timeDim <- .BuildTimeDim(Ntimes = Ntimes, config = config)
+  timeDim <- .BuildTimeDim(times = times, config = config)
   
   timeVar <- .BuildTimeVar(timeDim = timeDim, config = config)
     
