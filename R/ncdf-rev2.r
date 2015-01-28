@@ -77,15 +77,19 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
 	
   BulkAddValueAndValidatedVar <- function(paramcd){
   
+  .debug(dim(paddedDataTable), config = config)
   paddedParamFlat <- merge(x = paddedDataTable, 
     			 	y = subset(data, paramcd == paramcd), 
     			 	all.x = TRUE, 
     			 	by = c("ts", "familyid"))
   
+  .debug(dim(paddedParamFlat), config = config)
+  
   paddedParamCast <- reshape2::dcast(paddedParamFlat, 
   									familyid ~ ts, 
   									value.var = "value")
   
+  .debug(dim(paddedParamFlat), config = config)
   .debug(print(paddedParamCast[1,1:4]), config = config)
   									
   name = paste("v", paramcd, "_value", sep = "")
