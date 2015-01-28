@@ -89,8 +89,8 @@ layersInSubset <- layersInSubset[layers %in% layersInSubset]
   
   .debug(capture.output(dim(paddedParamFlat)), config = config)
   
-  .debug(sum(duplicated(paddedParamFlat)), 
-         config = config)
+ # .debug(sum(duplicated(paddedParamFlat)), 
+#         config = config)
   
   paddedParamCast <- reshape2::dcast(paddedParamFlat, 
   									familyid ~ ts, 
@@ -98,7 +98,7 @@ layersInSubset <- layersInSubset[layers %in% layersInSubset]
   
   .debug(dim(paddedParamFlat), config = config)
   
-  .debug(print(paddedParamCast[1,1:5]), config = config)
+  #.debug(print(paddedParamCast[1,1:5]), config = config)
   									
   name = paste("v", paramcd, "_value", sep = "")
 
