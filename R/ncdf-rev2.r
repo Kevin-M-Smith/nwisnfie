@@ -31,7 +31,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   #	  (NO PARAMETER DATA YET)
   #
   ###############################
-  cc <- foreach(i = 1:5) %dopar% {
+  cc <- foreach(i = 1:nrow(queue)) %dopar% {
     
     layersInSubset <- RunQuery(conn = conn2,
                                query = queue$query[i],
@@ -91,7 +91,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     name = paste("v", paramcd, "_value", sep = "")
     
-    cc <- foreach(i = 1:5) %dopar% {
+    cc <- foreach(i = 1:nrow(queue)) %dopar% {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
@@ -120,7 +120,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     name = paste("v", paramcd, "_validated", sep = "")
     
-    cc <- foreach(i = 1:5) %dopar% {
+    cc <- foreach(i = 1:nrow(queue)) %dopar% {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
