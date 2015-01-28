@@ -37,6 +37,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     layersInSubset <- RunQuery(conn = conn2,
                                query = queue$query[i],
+                               quietly = TRUE,
                                config = config)[,1]
     
     layersInSubset <- layersInSubset[layersInSubset %in% layers]
@@ -104,6 +105,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
+                                 quietly = TRUE,
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]
@@ -141,6 +143,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
+                                 quietly = TRUE,
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]
