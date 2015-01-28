@@ -14,8 +14,8 @@ quick <- function(config, date = "2015-01-05") {
 #   ##############################
 #   #      SETUP TABLE
 #   ##############################
-#   tableName <- paste0(config$tables$staging.prefix, 
-#                       gsub(pattern = "-", replacement = "_", date))
+   tableName <- paste0(config$tables$staging.prefix, 
+                       gsub(pattern = "-", replacement = "_", date))
 # #   
 #    .CreateDataTable(conn = conn, config = config, tableName = tableName)
 #    .CreateDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
