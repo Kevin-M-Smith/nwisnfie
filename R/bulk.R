@@ -1,5 +1,5 @@
 BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
-    
+  
   HUCL1 <- .GetUniqueSubsets(config, subsetName = "huc_l1", conn = conn)
   HUCL2 <- .GetUniqueSubsets(config, subsetName = "huc_l2", conn = conn)
   HUCL3 <- .GetUniqueSubsets(config, subsetName = "huc_l3", conn = conn)
@@ -11,7 +11,7 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
   dir.create(prefix, showWarnings = FALSE)
   
-
+  
   
   NationalName <-   paste0(prefix,
                            "/",
@@ -73,32 +73,32 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
                                 conn = conn)
   
   NFIEHydroSites <- .GetSubsetSites(config, 
-                               subset = NFIEHydro,
-                               subsetName = "nfie_hydro_region_num", 
-                               conn = conn)
-
+                                    subset = NFIEHydro,
+                                    subsetName = "nfie_hydro_region_num", 
+                                    conn = conn)
+  
   AllNames <- mapply(c, 
                      NationalName,
                      NFIEHydroNames,
-     #                HUCL1Names,
-    #               HUCL2Names,
-    #                 HUCL3Names,
-     #                HUCL4Names,
+                     HUCL1Names,
+                     HUCL2Names,
+                     HUCL3Names,
+                     HUCL4Names,
                      SIMPLIFY = FALSE)
   
   
   AllSiteQueries <- mapply(c, 
-                    NationalSites,
-                    NFIEHydroSites,
-#                     HUCL1Sites,
-#                     HUCL2Sites,
-#                     HUCL3Sites,
-#                     HUCL4Sites,
-                    SIMPLIFY = FALSE)
-   
+                           NationalSites,
+                           NFIEHydroSites,
+                           HUCL1Sites,
+                           HUCL2Sites,
+                           HUCL3Sites,
+                           HUCL4Sites,
+                           SIMPLIFY = FALSE)
+  
   data.frame(name = unlist(AllNames, recursive = FALSE), 
-        query = unlist(AllSiteQueries, recursive = FALSE),
-        stringsAsFactors = FALSE)
+             query = unlist(AllSiteQueries, recursive = FALSE),
+             stringsAsFactors = FALSE)
   
 }
 
@@ -119,9 +119,9 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
            suffix,
            ".nc")
   }
-
+  
   lapply(subset, NameBuilder)
-
+  
 }
 
 .GetUniqueSubsets <- function(config, subsetName, conn) {
