@@ -31,7 +31,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   #	  (NO PARAMETER DATA YET)
   #
   ###############################
-  pb <- txtProgressBar(min = 1, max = length(map), style = 3, width = 20)
+  pb <- txtProgressBar(min = 1, max = nrow(queue), style = 3, width = 20)
   cc <- foreach(i = 1:nrow(queue)) %dopar% {
     setTxtProgressBar(pb, i)
     
