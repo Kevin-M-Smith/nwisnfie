@@ -30,42 +30,42 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
   #	  (NO PARAMETER DATA YET)
   #
   ###############################
-  cc <- foreach(i = 1:5) %dopar% {
-  	
-  	layersInSubset <- RunQuery(conn = conn2,
-                          query = queue$query[i],
-                          config = config)[,1]
-	
-	siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
-  sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
-	
-	ncdf <- PrepareNetCDF(layers = layersInSubset, 
-                          times = times, 
-                          params = params,
-                          siteMetadata = siteMetadataSubset,
-                          sensorMetadata = sensorMetadataSubset,
-                          file = queue$name[i], 
-                          config = config)
-                          
-    .AddTimeVars(ncdf = ncdf,
-                 times = times,
-                 config = config)
-        
-    .AddSensorMetadataVars(ncdf = ncdf,
-                           sensorMetadata = sensorMetadataSubset,
-                           layers = layersInSubset,
-                           params = params,
-                           config = config)
-    
-    .AddSiteMetadataVars(ncdf = ncdf, 
-                         siteMetadata = siteMetadataSubset, 
-                         layers = layersInSubset, 
-                         params = params, 
-                         config = config)                    
-    
-    ncdf4::nc_close(ncdf)
-    
-	}
+#   cc <- foreach(i = 1:5) %dopar% {
+#   	
+#   	layersInSubset <- RunQuery(conn = conn2,
+#                           query = queue$query[i],
+#                           config = config)[,1]
+# 	
+# 	siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
+#   sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
+# 	
+# 	ncdf <- PrepareNetCDF(layers = layersInSubset, 
+#                           times = times, 
+#                           params = params,
+#                           siteMetadata = siteMetadataSubset,
+#                           sensorMetadata = sensorMetadataSubset,
+#                           file = queue$name[i], 
+#                           config = config)
+#                           
+#     .AddTimeVars(ncdf = ncdf,
+#                  times = times,
+#                  config = config)
+#         
+#     .AddSensorMetadataVars(ncdf = ncdf,
+#                            sensorMetadata = sensorMetadataSubset,
+#                            layers = layersInSubset,
+#                            params = params,
+#                            config = config)
+#     
+#     .AddSiteMetadataVars(ncdf = ncdf, 
+#                          siteMetadata = siteMetadataSubset, 
+#                          layers = layersInSubset, 
+#                          params = params, 
+#                          config = config)                    
+#     
+#     ncdf4::nc_close(ncdf)
+#     
+# 	}
 	
   ##############################
   #   
