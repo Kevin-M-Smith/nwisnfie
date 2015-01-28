@@ -193,7 +193,7 @@ BuildAllNetCDFSubsets <- function(data, cluster, suffix, config, conn = NULL) {
       
       ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE, suppress_dimvals = TRUE)
       .debug("NETCDF OPENED!", config = config)
-      .debug(length(subsetElements[,1]))
+      .debug(length(subsetElements[,1]), config = config)
       
       val2 <- data.matrix(subset(val, subset = familyid %in% subsetElements[,1])[,-1])
       rm(val)
