@@ -82,8 +82,8 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
                      NFIEHydroNames,
                      HUCL1Names,
                      HUCL2Names,
-                     HUCL3Names,
-                     HUCL4Names,
+                  #  HUCL3Names,
+                  #  HUCL4Names,
                      SIMPLIFY = FALSE)
   
   
@@ -92,8 +92,8 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
                            NFIEHydroSites,
                            HUCL1Sites,
                            HUCL2Sites,
-                           HUCL3Sites,
-                           HUCL4Sites,
+                  #         HUCL3Sites,
+                  #         HUCL4Sites,
                            SIMPLIFY = FALSE)
   
   data.frame(name = unlist(AllNames, recursive = FALSE), 

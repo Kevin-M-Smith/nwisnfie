@@ -39,6 +39,8 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     layersInSubset <- layersInSubset[layersInSubset %in% layers]
     
+    if(length(layersInSubset) >= 1) {
+    
     siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
     sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
     
@@ -67,6 +69,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                          config = config)                    
     
     ncdf4::nc_close(ncdf)
+    }
     
   }
   
@@ -93,18 +96,20 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
     
     cc <- foreach(i = 1:nrow(queue)) %dopar% {
       
-      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
-      
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]
       
+      if(length(layersInSubset) >= 1) {
+        
       subsetPaddedParamCast <- subset(paddedParamCast,
                                       subset = familyid %in% layersInSubset)[, -1]
       
       subsetPaddedParamCast <- data.matrix(subsetPaddedParamCast)
+      
+      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
       ncdf4::ncvar_put(nc = ncdf, 
                        varid = name, 
@@ -112,28 +117,33 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                        verbose = FALSE)  
       
       ncdf4::nc_close(ncdf)
+      }
     }
     
     paddedParamCast <- reshape2::dcast(paddedParamFlat, 
                                        familyid ~ ts, 
-                                       value.var = "value")
+                                       value.var = "validated")
     
     name = paste("v", paramcd, "_validated", sep = "")
     
     cc <- foreach(i = 1:nrow(queue)) %dopar% {
       
-      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
-      
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]
       
+      if(length(layersInSubset) >= 1) {
+        
+        
+        
       subsetPaddedParamCast <- subset(paddedParamCast,
                                       subset = familyid %in% layersInSubset)[, -1]
       
       subsetPaddedParamCast <- data.matrix(subsetPaddedParamCast)
+      
+      ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
       
       ncdf4::ncvar_put(nc = ncdf, 
                        varid = name, 
@@ -141,6 +151,7 @@ BuildAllNetCDFSubsets2 <- function(data, cluster, suffix, config, conn) {
                        verbose = FALSE)  
       
       ncdf4::nc_close(ncdf)
+      }
     }
   }
     
