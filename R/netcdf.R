@@ -254,10 +254,17 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
 }
 
 .BuildLayerDim <- function(layers, config) {
+  
+  if(is.null(layers) || length(layers) < 1){
+    n = 1
+  } else {
+    n = length(layers)
+  }
+  
   name = "layer_dim"
   dim <- ncdf4::ncdim_def(name = name, 
                           units = "", 
-                          vals = 1:length(layers), 
+                          vals = 1:n), 
                           create_dimvar = FALSE)
   
   .debug(paste("Layer dim", 
@@ -269,11 +276,18 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
 }
 
 .BuildTimeDim <- function(times, config)  { 
-  name <- "ts_dim"
   
+  if(is.null(times) || length(times) < 1){
+    n = 1
+  } else {
+    n = length(times)
+  }
+  
+  name <- "ts_dim"
+
   dim <- ncdf4::ncdim_def(name = name, 
                           units = "", 
-                          vals = 1:length(times), 
+                          vals = 1:n, 
                           create_dimvar = FALSE)
   
   .debug(paste("Time dimension", 
@@ -307,11 +321,17 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
     
     maxChar <- max(unlist(lapply(siteMetadata[name], nchar)))
     
+    if(is.null(maxChar) || maxChar < 1) {
+      n = 1
+    } else {
+      n = maxChar
+    }
+    
     name = paste(name, "Char", sep = "")
     
     dim <- ncdf4::ncdim_def(name = name, 
                             units = "", 
-                            vals = 1:maxChar, 
+                            vals = 1:n, 
                             create_dimvar = FALSE)
     
     .debug(paste("Site metadata dimension ",
@@ -439,13 +459,18 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   BuildSensorMetadataDim <- function(paramcd) {
     
     maxChar <- max(nchar(subset(sensorMetadata, parm_cd == paramcd)$loc_web_ds))
-    maxChar <- max(maxChar, 2)
+    
+    if(is.null(maxChar) || maxChar < 1) {
+      n = 1
+    } else {
+      n = maxChar
+    }
     
     name = paste("v", paramcd, "_descriptionChar", sep = "")
     
     dim <- ncdf4::ncdim_def(name = name, 
                             units = "", 
-                            vals = 1:maxChar, 
+                            vals = 1:n, 
                             create_dimvar = FALSE)
     
     .debug(paste("Sensor metadata dimension ",
