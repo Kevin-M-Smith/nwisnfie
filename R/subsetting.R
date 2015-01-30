@@ -82,8 +82,8 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
                      NFIEHydroNames,
                      HUCL1Names,
                      HUCL2Names,
-                    HUCL3Names,
-                    HUCL4Names,
+                     HUCL3Names,
+                     HUCL4Names,
                      SIMPLIFY = FALSE)
   
   
