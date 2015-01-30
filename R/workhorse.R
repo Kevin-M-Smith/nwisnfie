@@ -1,4 +1,4 @@
-DownloadAndBuildDay <- function(config, date = "2015-01-27") {
+DownloadAndBuildDay <- function(config, date = "2015-01-26") {
   
   ##############################
   #      SETUP CONNECTION
