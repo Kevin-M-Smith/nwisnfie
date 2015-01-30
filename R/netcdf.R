@@ -206,7 +206,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                                        timeDim = timeDim,
                                        config = config)  
   
-  
   ncdf <- .InitializeNCDF(file = file,
                           vars = c(list(timeVar),
                                    siteMetadataVars,
@@ -500,6 +499,9 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                  ").",
                  sep = ""),
            config = config)
+  
+  # Create parent directory if it does not exist.
+  dir.create(dirname(file), recursive = TRUE, showWarnings = FALSE)
   
   ncdf <- ncdf4::nc_create(file = file, vars = vars, force_v4 = TRUE)
   
