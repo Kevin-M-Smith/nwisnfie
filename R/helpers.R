@@ -58,6 +58,6 @@ LoadConfiguration <- function(configFile = "global_config.yaml") {
 # }
 
 
-#  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
+#  queue <- 
 
 

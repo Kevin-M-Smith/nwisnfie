@@ -1,4 +1,4 @@
-DownloadAndBuildDay <- function(config, date = "2015-01-21") {
+DownloadAndBuildDay <- function(config, date = "2015-01-25") {
   
   ##############################
   #      SETUP CONNECTION
@@ -78,7 +78,7 @@ DownloadAndBuildDay <- function(config, date = "2015-01-21") {
   #####################################
   #     Build All Subsets
   #####################################
-  queue <- 
+  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
   BuildNetCDF(data = data, queue = queue, cluster = cluster, suffix = date, config = config, conn = conn)
     
 #   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
