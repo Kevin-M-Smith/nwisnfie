@@ -46,15 +46,15 @@ LoadConfiguration <- function(configFile = "global_config.yaml") {
   
 }
 
-# Upgrade <- function(){
-#   
-#   detach("package:nwisnfie", unload=TRUE)
-#   remove.packages("nwisnfie")
-#   
-#   library(devtools)
-#   install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
-#   library(nwisnfie)
-# }
+Upgrade <- function(){
+  
+  detach("package:nwisnfie", unload=TRUE)
+  remove.packages("nwisnfie")
+  
+  library(devtools)
+  install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
+  library(nwisnfie)
+}
 
 
 #  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)

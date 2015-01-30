@@ -26,7 +26,7 @@ DownloadAndBuildDay <- function(config, date = "2015-01-25") {
     #####################################
  #  mapSize controls how many sites are downloaded in a single REST call
     mapSize = 100
-    map <- unlist(lapply(all.sites, as.character))
+    map <- unlist(lapply(allSites, as.character))
     map <- split(map, ceiling(seq_along(map)/mapSize))
    
     .message(paste0("Downloading data for ", date, "..."), config = config)
