@@ -264,7 +264,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   name = "layer_dim"
   dim <- ncdf4::ncdim_def(name = name, 
                           units = "", 
-                          vals = 1:n), 
+                          vals = 1:n, 
                           create_dimvar = FALSE)
   
   .debug(paste("Layer dim", 
