@@ -53,14 +53,16 @@ TestDBConnection <- function(config){
 #' Runs specified query.
 #' @param conn A RPostgreSQL connection object.
 #' @param query A charactor vector of a PostgreSQL query. 
+#' @param config Configuration object created by LoadConfiguration.
 #' @return Result of query. 
 #' @seealso To build a \code{conn} object, see \code{\link{StartDBConnection}}.
+#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
 #' @examples
 #' \dontrun{
 #'  library(nwisnfie)
 #'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
 #'  conn <- StartDBConnection(config)
-#'  result <- RunQuery(conn, "select * from data limit 1;")
+#'  result <- RunQuery(conn, query = "select * from data limit 1;", config = config)
 #'  print(result)
 #'  EndDBConnection(conn)
 #' }
@@ -141,6 +143,7 @@ RunDBDiagnostics <- function(config){
 #' Functions used to enable and disable autovacuum on the data table
 #' 
 #' @name Autovacuum
+#' @param table Character vector specifying the name of the table to modify.
 #' @param config Configuration object created by LoadConfiguration.
 #' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
 #' @details
@@ -153,7 +156,7 @@ EnableAutoVacuum <- function(table, config){
   conn <- StartDBConnection(config)
   
   .message(paste("Enabling autovacuum for table \"", 
-                 config$tables$data, "\"",
+                 table, "\"",
                  sep = ""), 
            config = config)
   

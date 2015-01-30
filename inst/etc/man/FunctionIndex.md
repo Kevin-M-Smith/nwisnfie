@@ -39,8 +39,7 @@ This page lists the files and respective functions in the `nwisnfie` package und
 ## [helpers.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/helpers.R)
 #### Exported:
 * LoadConfiguration(configFile = "global_config.yaml")
-* AssignLogFileToConfig(file, config)
-* Upgrade() __@TODO: Undocumented__
+* Upgrade() __@TODO: Unimplemented__
 
 #### Non-Exported:
 * .GetAllSites <- function(conn, config)              		__@TODO: Undocumented__
@@ -88,7 +87,10 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * StopCluster(cluster, config)
 * TestClusterSettings(config)
 
-## [logging.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/logging.R)              
+## [logging.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/logging.R)
+#### Exported:
+* AssignLogFileToConfig(file, config)
+              
 #### Non-Exported:                                         
 * .PrintLogMessage(..., config, domain = NULL, level) 
 * .debug(..., config, domain = NULL, appendLF = TRUE)

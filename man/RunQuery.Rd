@@ -4,12 +4,14 @@
 \alias{RunQuery}
 \title{Runs specified query.}
 \usage{
-RunQuery(conn, query, quietly = FALSE, config)
+RunQuery(conn, query, config)
 }
 \arguments{
 \item{conn}{A RPostgreSQL connection object.}
 
 \item{query}{A charactor vector of a PostgreSQL query.}
+
+\item{config}{Configuration object created by LoadConfiguration.}
 }
 \value{
 Result of query.
@@ -22,12 +24,14 @@ Runs specified query.
  library(nwisnfie)
  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
  conn <- StartDBConnection(config)
- result <- RunQuery(conn, "select * from data limit 1;")
+ result <- RunQuery(conn, query = "select * from data limit 1;", config = config)
  print(result)
  EndDBConnection(conn)
 }
 }
 \seealso{
 To build a \code{conn} object, see \code{\link{StartDBConnection}}.
+
+To build a \code{config} object, see \code{\link{LoadConfiguration}}.
 }
 

@@ -36,7 +36,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
     
     layersInSubset <- RunQuery(conn = conn2,
                                query = queue$query[i],
-                               quietly = TRUE,
                                config = config)[,1]
     
     layersInSubset <- layersInSubset[layersInSubset %in% layers]
@@ -104,7 +103,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
-                                 quietly = TRUE,
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]
@@ -142,7 +140,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       
       layersInSubset <- RunQuery(conn = conn2,
                                  query = queue$query[i],
-                                 quietly = TRUE,
                                  config = config)[,1]
       
       layersInSubset <- layersInSubset[layersInSubset %in% layers]

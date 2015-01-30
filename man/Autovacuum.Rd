@@ -11,6 +11,8 @@ EnableAutoVacuum(table, config)
 DisableAutovacuum(table, config)
 }
 \arguments{
+\item{table}{Character vector specifying the name of the table to modify.}
+
 \item{config}{Configuration object created by LoadConfiguration.}
 }
 \description{

@@ -15,20 +15,7 @@ LoadConfiguration <- function(configFile = "global_config.yaml") {
   config <- yaml::yaml.load_file(configFile)
 }
 
-#' Adds a log file to a \code{config} object. 
-#' 
-#' @param config Configuration object created by LoadConfiguration.
-#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
-#' @examples
-#' \dontrun{
-#'  library(nwisnfie)
-#'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
-#'  config <- AssignLogFileToConfig(file = "~/nwisnfie/logs/myLog.log", config = config)
-#' }
-AssignLogFileToConfig <- function(file, config) {
-  config$logging$file = file
-  return(config)
-}
+
 
 .GetAllSites <- function(conn, config){
   query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
@@ -60,15 +47,15 @@ AssignLogFileToConfig <- function(file, config) {
   
 }
 
-Upgrade <- function(){
-  
-  detach("package:nwisnfie", unload=TRUE)
-  remove.packages("nwisnfie")
-  
-  library(devtools)
-  install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
-  library(nwisnfie)
-}
+# Upgrade <- function(){
+#   
+#   detach("package:nwisnfie", unload=TRUE)
+#   remove.packages("nwisnfie")
+#   
+#   library(devtools)
+#   install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
+#   library(nwisnfie)
+# }
 
 
 #  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)

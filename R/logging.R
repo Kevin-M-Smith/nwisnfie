@@ -31,6 +31,22 @@
 # THE SOFTWARE.
 # 
 
+#' Adds a log file to a \code{config} object. 
+#' 
+#' @param file Character vector specifying path to log file. 
+#' @param config Configuration object created by LoadConfiguration.
+#' @seealso To build a \code{config} object, see \code{\link{LoadConfiguration}}.
+#' @examples
+#' \dontrun{
+#'  library(nwisnfie)
+#'  config <- LoadConfiguration("~/nwisnfie/global_config.yaml")
+#'  config <- AssignLogFileToConfig(file = "~/nwisnfie/logs/myLog.log", config = config)
+#' }
+AssignLogFileToConfig <- function(file, config) {
+  config$logging$file = file
+  return(config)
+}
+
 .PrintLogMessage <- function(..., config, domain = NULL, level) {
   
   pid <- paste("[PID: ", Sys.getpid(), "]", sep = "")

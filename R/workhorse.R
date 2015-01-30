@@ -9,7 +9,7 @@ DownloadAndBuildDay <- function(config, date = "2015-01-21") {
    ##############################
    #      GET SITES
    ##############################
-   sites <- .GetAllSites(conn = conn, config = config)
+   allSites <- .GetAllSites(conn = conn, config = config)
    
    ##############################
    #      SETUP TABLE
@@ -24,10 +24,10 @@ DownloadAndBuildDay <- function(config, date = "2015-01-21") {
     #####################################
     #      SPLIT SITES FOR DOWNLOAD
     #####################################
- #  map.size controls how many sites are downloaded in a single REST call
-    map.size = 100
-    map <- unlist(lapply(sites, as.character))
-    map <- split(map, ceiling(seq_along(map)/map.size))
+ #  mapSize controls how many sites are downloaded in a single REST call
+    mapSize = 100
+    map <- unlist(lapply(all.sites, as.character))
+    map <- split(map, ceiling(seq_along(map)/mapSize))
    
     .message(paste0("Downloading data for ", date, "..."), config = config)
    
