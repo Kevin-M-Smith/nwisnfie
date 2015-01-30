@@ -260,7 +260,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                           vals = 1:length(layers), 
                           create_dimvar = FALSE)
   
-  .message(paste("Layer dim", 
+  .debug(paste("Layer dim", 
                  name,
                  "built succesfully."),
            config = config)
@@ -276,7 +276,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                           vals = 1:length(times), 
                           create_dimvar = FALSE)
   
-  .message(paste("Time dimension", 
+  .debug(paste("Time dimension", 
                  name, 
                  "built succesfully."), 
            config = config)
