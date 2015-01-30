@@ -49,3 +49,28 @@ AssignLogFileToConfig <- function(file, config) {
          Alternatively, if you have no files you wish to save, use overwrite = TRUE.")
   }
 }
+
+
+.DropTable <- function(tableName, conn, config){
+  query <- paste0("drop table ", tableName)
+  
+  RunQuery(query = query,
+           conn = conn,
+           config = config)
+  
+}
+
+Upgrade <- function(){
+  
+  detach("package:nwisnfie", unload=TRUE)
+  remove.packages("nwisnfie")
+  
+  library(devtools)
+  install_github("Kevin-M-Smith/nwisnfie", ref = "better-mousetrap")
+  library(nwisnfie)
+}
+
+
+#  queue <- BuildFileNamesAndLayerQueriesForAllSubsets(suffix = suffix, config = config, conn = conn)
+
+

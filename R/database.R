@@ -64,15 +64,15 @@ TestDBConnection <- function(config){
 #'  print(result)
 #'  EndDBConnection(conn)
 #' }
-RunQuery <- function(conn, query, quietly = FALSE, config) {
+RunQuery <- function(conn, query, config) {
   if (missing(query)){
     .stop("No query specified for .RunQuery.", config = config)
   }
   
   res <- RPostgreSQL::dbGetQuery(conn, query)
   
-  if (!is.null(res) & !quietly){
-    .message(paste0("Successfully ran query: ", query), config = config)
+  if (!is.null(res)){
+    .debug(paste0("Successfully ran query: ", query), config = config)
   }
   
   res

@@ -2,14 +2,6 @@ This page lists the files and respective functions in the `nwisnfie` package und
 
 <hr>
 
-## [all_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/all_tables.R)
-#### Exported:
-* DropAllTables(config)         				__@TODO: Undocumented__
-
-## [bootstrap.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/bootstrap.R)
-#### Exported:
-* Bootstrap(config)						__@TODO: Undocumented__
-
 ## [database.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/database.R)
 #### Exported: 
 * RunDBDiagnostics(config)
@@ -23,46 +15,43 @@ This page lists the files and respective functions in the `nwisnfie` package und
 #### Non-Exported:
 * .WhichTablesExist(conn, config, quietly = FALSE)
 
-## [debug.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/debug.R)
-#### Exported:
-* DownloadOneSite(config)              			__@TODO: Undocumented__
-* Sample24H(config)					__@TODO: Undocumented__
-
 ## [downloaders.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/downloaders.R)
 #### Non-Exported: 
 * .DownloadAssetsForSites(sites, config)
 * .DownloadActiveSitesForState(state, config)
-* .DownloadDataFromNWIS(sites, params, startDate = NULL, endDate = NULL, period = NULL, offset = NULL, url = NULL, config)  
-* .RetryDownloadDataFromNWIS(config, url)			
+* .DownloadDataFromNWIS(sites, 
+                                  params, 
+                                  startDate = NULL, 
+                                  endDate = NULL, 
+                                  period = NULL, 
+                                  offset = NULL,
+                                  url = NULL,
+                                  tableName = config$tables$data,
+                                  config)  
 
 ## [dynamic_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/dynamic_tables.R)
-#### Exported:
-* DropDynamicTables(config)           
-* BuildDynamicTables(config)
-* RebuildDynamicTables(config)
+#### Non-Exported:
+.CreateDataTable(conn, config, tableName)
+.CreateDataTableUpsertTrigger(conn, config, tableName)
+.DropDataTableUpsertTrigger(conn, config, tableName)
 
-#### Non-Exported: 
-* .CreateDynamicTables(conn, config)
-* .SetDynamicTriggers(conn, config)
-* .BuildDynamicIndices(conn, config)
-* .CreateStagingTable(conn, config)
-* .SetDataTriggers(conn, config)
-* .BuildDataIndices(conn, config)
 
 ## [helpers.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/helpers.R)
 #### Exported:
 * LoadConfiguration(configFile = "global_config.yaml")
 * AssignLogFileToConfig(file, config)
+* Upgrade() __@TODO: Undocumented__
 
 #### Non-Exported:
 * .GetAllSites <- function(conn, config)              		__@TODO: Undocumented__
 * .ThrowErrorIfFileExists(file)
+* .DropTable(tableName, conn, config)
 
 ## [install.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/install.R)
 #### Exported:
 * InstallFiles(installDirectory, overwrite = FALSE)
 
-## ISO8601.R
+## [datetime.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/datetime.R)
 * .ISO8601ToEpochTime(ISO8601)
 * .ParseISO8601Duration(duration)
 * .ParseISO8601Offset(offset)
@@ -72,6 +61,7 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * BuildNetCDF(data, name, config, conn = NULL)                  __@TODO: Undocumented__
 
 #### Non-Exported:
+* .PrepareNetCDF(layers, times, params, siteMetadata, sensorMetadata, file, config)
 * .GetSiteMetadata(conn, config)
 * .GetSensorMetadata(conn, config)
 * .BuildLayerDim(layers, config)
@@ -101,6 +91,7 @@ This page lists the files and respective functions in the `nwisnfie` package und
 ## [logging.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/logging.R)              
 #### Non-Exported:                                         
 * .PrintLogMessage(..., config, domain = NULL, level) 
+* .debug(..., config, domain = NULL, appendLF = TRUE)
 * .message(..., config, domain = NULL, appendLF = TRUE)
 * .stop(..., config, call. = TRUE, domain = NULL)
 * .warning(..., config, call. = TRUE, immediate. = FALSE, domain = NULL)
@@ -120,6 +111,11 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * .PopulateSensorMetadata(conn, config)
 * .PopulateSiteMetadata(conn, config)
 
-## [sync.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/sync.R)
+##[subsetting.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/subsetting.R)
 #### Exported:
-* SyncDB(config, period)			 __@TODO Undocumented__
+* BuildFileNamesAndLayerQueriesForAllSubsets __@TODO: Undocumented__
+#### Non-Exported:
+* .BuildUniqueNames
+* .GetUniqueSubsets
+* .GetNationalSites
+* .GetSubsetSites

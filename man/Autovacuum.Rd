@@ -6,9 +6,9 @@
 \alias{EnableAutoVacuum}
 \title{Manage Autovacuum Settings}
 \usage{
-EnableAutoVacuum(conn, config)
+EnableAutoVacuum(table, config)
 
-DisableAutovacuum(config)
+DisableAutovacuum(table, config)
 }
 \arguments{
 \item{config}{Configuration object created by LoadConfiguration.}

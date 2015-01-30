@@ -57,61 +57,6 @@
   }
 }
 
-
-# @ return primary key
-.StageURL <- function(config = config, url = url) {
-  
-  query <- paste("INSERT INTO ", 
-                 config$tables$url.stash,
-                 "(url) values ('",
-                 url,
-                 "') RETURNING id;",
-                 sep = "")
-  
-  cc <- RunQuery(conn = conn2, 
-                 query = query,
-                 quietly = TRUE,
-                 config = config)
-  
-}
-
-.UnstageURL <- function(config = config, url = NULL, id = NULL) {
-  if (is.null(url) && is.null(id)){
-    .stop("Error attempting to unstage URL. Must specify either url or id.",
-          config = config)
-  } 
-  
-  if (is.null(url)){
-    
-    query <- paste("delete from only ",
-                   config$tables$url.stash,
-                   " where id = ",
-                   id,
-                   ";",
-                   sep = "")
-    
-  } else {
-    
-    query <- paste("delete from only ",
-                   config$tables$url.stash,
-                   "where url = '",
-                   url,
-                   "';",
-                   sep = "")
-    
-  }
-  
-  cc <- RunQuery(conn = conn2, 
-                 query = query, 
-                 config = config)
-  
-}
-
-
-.RetryDownloadDataFromNWIS <- function(config, url) {
-  .DownloadDataFromNWIS(sites = NULL, params = NULL, url = url, config = config)
-}
-
 .DownloadDataFromNWIS <- function(sites, 
                                   params, 
                                   startDate = NULL, 
@@ -152,20 +97,16 @@
     }
   }
   
-  # id <- .StageURL(url = url, config = config)
   
-  # .message(paste("Staged", url, "with id", id),
-  #           config = config)
-  
- xml <- RCurl::basicTextGatherer()
+  xml <- RCurl::basicTextGatherer()
   
   for(i in 1:5) {
     t <- tryCatch({
       
-     responseCode <- RCurl::curlPerform(url = url, 
-                                        writefunction = xml$update, 
-                                        httpheader = c(AcceptEncoding="gzip,deflate")) 
-
+      responseCode <- RCurl::curlPerform(url = url, 
+                                         writefunction = xml$update, 
+                                         httpheader = c(AcceptEncoding="gzip,deflate")) 
+      
       if(responseCode == 0){
         break
       } else {
@@ -196,7 +137,7 @@
   }
   
   if(responseCode == 0){
-    #.message("Successful download.", config = config)
+    
   } else {
     .warning(paste0("Url failed permanently: ",
                     url,
@@ -231,19 +172,19 @@
     return(NULL)
   }) 
   
- doc <- XML::xmlRoot(doc)
+  doc <- XML::xmlRoot(doc)
   
-    t <- tryCatch({
-      xpath <- "//ns1:timeSeries"
-      vars <- XML::xpathApply(doc = doc, path = xpath) 
-    }, error = function(e) {
-      .message(paste0("Error attempting xpathApply on", 
-                      xpath), 
-               config = config)
-      return(NULL)
-    })
-    
- now <- format(Sys.time(), "%FT%T%z") 
+  t <- tryCatch({
+    xpath <- "//ns1:timeSeries"
+    vars <- XML::xpathApply(doc = doc, path = xpath) 
+  }, error = function(e) {
+    .message(paste0("Error attempting xpathApply on", 
+                    xpath), 
+             config = config)
+    return(NULL)
+  })
+  
+  now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
     if(x == "P") 0 else 1
@@ -277,7 +218,7 @@
             ) 
             
             colnames(result) <- c("ts", "seriesid", "familyid", "value", "paramcd", "validated", "imported", "updated") 
-                        
+            
             cc <- RPostgreSQL::dbWriteTable(conn2, 
                                             name = tableName, 
                                             value = result, 
@@ -287,19 +228,14 @@
           }
         }
       }    
-   }, error = function(e){
-     .warning(paste0(e, 
-                     "\nEncountered a problem parsing XML from:", 
-                     url,
-                     "."),
-              config = config)
+    }, error = function(e){
+      .warning(paste0(e, 
+                      "\nEncountered a problem parsing XML from:", 
+                      url,
+                      "."),
+               config = config)
       
-     return(NULL)
-   })
+      return(NULL)
+    })
   } 
-
-
-
-
-  #  .UnstageURL(id = id, config = config)
 }
