@@ -26,7 +26,7 @@ netcdf:
 
 tables:
  data : data
- staging : staging_
+ staging.prefix : staging_
  site.metadata : site_metadata
  param.metadata : param_metadata
  active.sites : active_sites
