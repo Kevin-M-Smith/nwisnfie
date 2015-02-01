@@ -92,11 +92,9 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   ###############################
   
   BulkAddValueAndValidatedVar <- function(paramcd){
-    
-    sub <- subset(data, paramcd == paramcd)
-    
+        
     paddedParamFlat <- merge(x = paddedDataTable, 
-                             y = , 
+                             y = subset(data, paramcd == paramcd), 
                              all.x = TRUE, 
                              by = c("ts", "familyid"))
     
