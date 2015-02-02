@@ -67,36 +67,41 @@
                                   tableName = config$tables$data,
                                   config){
   
-  if (is.null(url)) {
-    url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
-    url = paste(url, "&sites=", sites, sep = "")  
-    url = paste(url, "&parameterCd=", params, sep = "")
-    
-    if (is.null(startDate) || is.null(endDate)){
-      if (is.null(period)){
-        .stop("A lookback period or a pair of start 
-            and end dates must be specified.", 
-              config = config)
-      } else {
-        url = paste(url, "&period=", period, sep = "")  
-      }
-    } else {
-      if (is.null(period)){
-        if (is.null(offset)){
-          url = paste(url, "&startDT=", startDate, "T00:00:00", sep = "")
-          url = paste(url, "&endDT=", endDate, "T23:59:59", sep = "")
-        } else {
-          url = paste(url, "&startDT=", startDate, "T00:00:00", offset, sep = "")
-          url = paste(url, "&endDT=", endDate, "T23:59:59", offset, sep = "")
-        }
-      } else {
-        .stop("Please choose either a lookback period or a pair of start 
-            and end dates, but not both.", 
-              config = config)
-      }
-    }
-  }
+#   if (is.null(url)) {
+#     url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
+#     url = paste(url, "&sites=", sites, sep = "")  
+#     url = paste(url, "&parameterCd=", params, sep = "")
+#     
+#     if (is.null(startDate) || is.null(endDate)){
+#       if (is.null(period)){
+#         .stop("A lookback period or a pair of start 
+#             and end dates must be specified.", 
+#               config = config)
+#       } else {
+#         url = paste(url, "&period=", period, sep = "")  
+#       }
+#     } else {
+#       if (is.null(period)){
+#         if (is.null(offset)){
+#           url = paste(url, "&startDT=", startDate, "T00:00:00", sep = "")
+#           url = paste(url, "&endDT=", endDate, "T23:59:59", sep = "")
+#         } else {
+#           url = paste(url, "&startDT=", startDate, "T00:00:00", offset, sep = "")
+#           url = paste(url, "&endDT=", endDate, "T23:59:59", offset, sep = "")
+#         }
+#       } else {
+#         .stop("Please choose either a lookback period or a pair of start 
+#             and end dates, but not both.", 
+#               config = config)
+#       }
+#     }
+#   }
+  print(sites)
+  print(params)
+  Sys.sleep(10)
   
+  url <- dataRetrieval::constructNWISURL(siteNumber = "01594440", parameterCd = c("00060"), startDate = startDate,
+                   endDate = endDate, service = "uv")
   
   xml <- RCurl::basicTextGatherer()
   

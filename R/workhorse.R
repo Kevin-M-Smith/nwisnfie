@@ -25,7 +25,7 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
     #      SPLIT SITES FOR DOWNLOAD
     #####################################
  #  mapSize controls how many sites are downloaded in a single REST call
-    mapSize = 100
+    mapSize = 50
     map <- unlist(lapply(allSites, as.character))
     map <- split(map, ceiling(seq_along(map)/mapSize))
    
@@ -46,7 +46,8 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
                               startDate = date,
                               endDate = date,
                               period = NULL,
-                              offset = config$time$utc.offset, 
+                              offset = NULL,
+                              #offset = config$time$utc.offset, 
                               tableName = tableName,
                               config = config)
       } else {
@@ -55,7 +56,8 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
                               startDate = date,
                               endDate = date,
                               period = NULL,
-                              offset = config$time$utc.offset, 
+                              offset = NULL,
+                              #offset = config$time$utc.offset, 
                               tableName = tableName,
                               config = config)
       }
