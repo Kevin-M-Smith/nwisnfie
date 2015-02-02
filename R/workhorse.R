@@ -41,8 +41,8 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
       
       if(length(map[[i]]) > 1){
         commaSeparated <- paste(map[[i]], collapse=',')
-        .DownloadDataFromNWIS(site = commaSeparated,
-                              params = config$collections$params,
+        .DownloadDataFromNWIS(site = map[[i]],
+                              params = strsplit(config$collections$params, split = ','),
                               startDate = date,
                               endDate = date,
                               period = NULL,
@@ -52,7 +52,7 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
                               config = config)
       } else {
         .DownloadDataFromNWIS(site = map[[i]],
-                              params = config$collections$params,
+                              params = strsplit(config$collections$params, split = ','),
                               startDate = date,
                               endDate = date,
                               period = NULL,

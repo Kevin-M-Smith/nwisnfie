@@ -96,22 +96,18 @@
 #       }
 #     }
 #   }
-  print(sites)
-  print(params)
-  Sys.sleep(10)
+
   
-  url <- dataRetrieval::constructNWISURL(siteNumber = "01594440", parameterCd = c("00060"), startDate = startDate,
+  url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
                    endDate = endDate, service = "uv")
+  
+  print(url)
   
   xml <- RCurl::basicTextGatherer()
   
   for(i in 1:5) {
- #   .message("TEST2", config = config)
     
     t <- tryCatch({
-      
-  #    .message("TEST", config = config)
-   #   .message(url, config = config)
       
       responseCode <- RCurl::curlPerform(url = url, 
                                          writefunction = xml$update, 
