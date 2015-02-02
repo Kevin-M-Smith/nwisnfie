@@ -149,14 +149,9 @@
     
     return(NULL)
   }
-  
-  .message(responseCode, config = config)
-  val <- xml$value()
-  
-  .message(val, config = config)
-  
+      
   t <- tryCatch({
-    doc <- XML::xmlTreeParse(val, getDTD = FALSE, useInternalNodes = TRUE) 
+    doc <- XML::xmlTreeParse(xml$value(), getDTD = FALSE, useInternalNodes = TRUE) 
   }, XMLError = function(e) {
     .warning(paste0("There was an error in the XML at line", 
                     e$line, 
