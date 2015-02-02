@@ -42,7 +42,7 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
       
       if(length(map[[i]]) > 1){
         commaSeparated <- paste(map[[i]], collapse=',')
-        .DownloadDataFromNWISTest(site = commaSeparated,
+        .DownloadDataFromNWIS(site = commaSeparated,
                               params = config$collections$params,
                               startDate = date,
                               endDate = date,
@@ -51,7 +51,7 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
                               tableName = tableName,
                               config = config)
       } else {
-        .DownloadDataFromNWISTest(site = map[[i]],
+        .DownloadDataFromNWIS(site = map[[i]],
                               params = config$collections$params,
                               startDate = date,
                               endDate = date,
@@ -75,9 +75,7 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
   data <- RunQuery(conn = conn,
                  query = query,
                  config = config)
- 
-  print(data)
-  
+   
   #####################################
   #     Build All Subsets
   #####################################
