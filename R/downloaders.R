@@ -97,7 +97,7 @@
 #     }
 #   }
   print(sites)
-  print(parameterCd)
+  print(params)
   
   url <- dataRetrieval::constructNWISURL(siteNumber = strsplit(sites, split = ','), parameterCd = strsplit(params, split = ','), startDate = startDate,
                    endDate = endDate, service = "uv")
