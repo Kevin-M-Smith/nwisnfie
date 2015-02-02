@@ -14,8 +14,6 @@ LoadConfiguration <- function(configFile = "global_config.yaml") {
   config <- yaml::yaml.load_file(configFile)
 }
 
-
-
 .GetAllSites <- function(conn, config){
   query <- paste("SELECT site_no from ", config$tables$active.sites, ";", sep = "")
   sites <- RunQuery(conn = conn, query = query, config = config)

@@ -48,8 +48,8 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
       
       # order
-      # siteMetadataSubset <- siteMetadataSubset[order(sensorMetadataSubset$familyid), ]
-      # sensorMetadataSubset <- siteMetadataSubset[order(sensorMetadataSubset$familyid), ]
+      siteMetadataSubset <- siteMetadataSubset[order(sensorMetadataSubset$familyid), ]
+      sensorMetadataSubset <- siteMetadataSubset[order(sensorMetadataSubset$familyid), ]
       
       layersInSubset <- sort(layersInSubset)
       

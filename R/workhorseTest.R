@@ -75,6 +75,8 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
   data <- RunQuery(conn = conn,
                  query = query,
                  config = config)
+ 
+  print(data)
   
   #####################################
   #     Build All Subsets
