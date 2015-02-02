@@ -101,7 +101,7 @@
   xml <- RCurl::basicTextGatherer()
   
   for(i in 1:5) {
-    .message("TEST2")
+    .message("TEST2", config = config)
     
     t <- tryCatch({
       
