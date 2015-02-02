@@ -27,7 +27,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   #   
   #    BUILD NCDF FILES
   #	  AND ADD TIME AND METADATA
-  #	  (NO PARAMETER DATA YET)
+  #	  (NO PARAMETER DATA YET)f
   #
   ###############################
   .message(paste0("Adding metadata to NetCDF File(s)..."), config = config)
@@ -118,7 +118,9 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       if(length(layersInSubset) >= 1) {
         
         subsetPaddedParamCast <- subset(paddedParamCast,
-                                        subset = familyid %in% layersInSubset)[, -1]
+                                        subset = familyid %in% layersInSubset)
+        
+        subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, layersInSubset)[, -1]
         
         subsetPaddedParamCast <- data.matrix(subsetPaddedParamCast)
         
