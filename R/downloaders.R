@@ -101,12 +101,12 @@
   xml <- RCurl::basicTextGatherer()
   
   for(i in 1:5) {
-    .message("TEST2", config = config)
+ #   .message("TEST2", config = config)
     
     t <- tryCatch({
       
-      .message("TEST", config = config)
-      .message(url, config = config)
+  #    .message("TEST", config = config)
+   #   .message(url, config = config)
       
       responseCode <- RCurl::curlPerform(url = url, 
                                          writefunction = xml$update, 
