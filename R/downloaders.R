@@ -97,7 +97,7 @@
 #     }
 #   }
   
-  url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
+  url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = strsplit(params, split = ','), startDate = startDate,
                    endDate = endDate, service = "uv")
   
   xml <- RCurl::basicTextGatherer()
