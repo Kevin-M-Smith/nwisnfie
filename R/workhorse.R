@@ -46,8 +46,7 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
                               startDate = date,
                               endDate = date,
                               period = NULL,
-                              offset = NULL,
-                              #offset = config$time$utc.offset, 
+                              offset = config$time$utc.offset, 
                               tableName = tableName,
                               config = config)
       } else {
@@ -56,8 +55,7 @@ DownloadAndBuildDay <- function(config, date = "2014-08-08") {
                               startDate = date,
                               endDate = date,
                               period = NULL,
-                              offset = NULL,
-                              #offset = config$time$utc.offset, 
+                              offset = config$time$utc.offset, 
                               tableName = tableName,
                               config = config)
       }

@@ -97,6 +97,9 @@
 #     }
 #   }
   
+  startDate = paste0(startDate, "T00:00:00", offset)
+  endDate   = paste0(  endDate, "T23:59:59", offset)
+  
   url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
                    endDate = endDate, service = "uv")  
   
