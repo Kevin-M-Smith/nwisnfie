@@ -44,6 +44,8 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
     
     if(length(layersInSubset) >= 1) {
       
+      layersInSubset <- sort(layersInSubset)
+      
       siteMetadataSubset   <- subset(siteMetadata,   subset = familyid %in% layersInSubset)
       sensorMetadataSubset <- subset(sensorMetadata, subset = familyid %in% layersInSubset)
       
@@ -51,8 +53,9 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       siteMetadataSubset <- plyr::arrange(siteMetadataSubset, familyid)
       sensorMetadataSubset <- plyr::arrange(sensorMetadataSubset, familyid)
       
-      layersInSubset <- sort(layersInSubset)
-      
+      print(sum(layersInSubset != siteMetadataSubset$familyid))
+      print(sum(layersInSubset != sensorMetadataSubset$familyid))
+            
       ncdf <- .PrepareNetCDF(layers = layersInSubset, 
                             times = times, 
                             params = params,
@@ -91,10 +94,10 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   #
   ###############################
   
-  BulkAddValueAndValidatedVar <- function(paramcd){
+  BulkAddValueAndValidatedVar <- function(parameterCode){
         
     paddedParamFlat <- merge(x = paddedDataTable, 
-                             y = subset(data, paramcd == paramcd), 
+                             y = subset(data, paramcd == parameterCode), 
                              all.x = TRUE, 
                              by = c("ts", "familyid"))
     
