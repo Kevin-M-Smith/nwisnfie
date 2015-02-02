@@ -10,7 +10,7 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
    #      GET SITES
    ##############################
    set.seed(100)
-   allSites <- sample(.GetAllSites(conn = conn, config = config))[1:10]
+   allSites <- sample(.GetAllSites(conn = conn, config = config)[,1])[1:10]
    
    ##############################
    #      SETUP TABLE
