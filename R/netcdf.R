@@ -123,7 +123,9 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
         subsetPaddedParamCast <- subset(paddedParamCast,
                                         subset = familyid %in% layersInSubset)
         
-        subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, layersInSubset)[, -1]
+        subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, layersInSubset)
+        
+        subsetPaddedParamCast <- subsetPaddedParamCast[, -1]
         
         subsetPaddedParamCast <- data.matrix(subsetPaddedParamCast)
         
