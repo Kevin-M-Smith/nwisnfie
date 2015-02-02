@@ -103,6 +103,7 @@
   for(i in 1:5) {
     t <- tryCatch({
       
+      .message("TEST", config = config)
       .message(url, config = config)
       
       responseCode <- RCurl::curlPerform(url = url, 
