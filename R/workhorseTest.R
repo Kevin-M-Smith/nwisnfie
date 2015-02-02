@@ -32,7 +32,7 @@ DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
    
     .message(paste0("Downloading data for ", date, "..."), config = config)
    
-     pb <- txtProgressBar(min = 1, max = length(map), style = 3, width = 20)
+     pb <- txtProgressBar(min = 0, max = length(map), style = 3, width = 20)
    
       #####################################
       #      Download
