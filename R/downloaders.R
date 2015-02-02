@@ -97,6 +97,7 @@
 #     }
 #   }
 
+  print(str(sites))
   
   url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
                    endDate = endDate, service = "uv")
