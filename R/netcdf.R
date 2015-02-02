@@ -105,7 +105,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                                        familyid ~ ts, 
                                        value.var = "value")
     
-    name = paste("v", paramcd, "_value", sep = "")
+    name = paste("v", parameterCode, "_value", sep = "")
     .message(paste0("Adding data for ", name, " to NetCDF File(s)..."), config = config)
     
     pb <- txtProgressBar(min = 1, max = nrow(queue), style = 3, width = 20)
@@ -143,7 +143,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                                        familyid ~ ts, 
                                        value.var = "validated")
     
-    name = paste("v", paramcd, "_validated", sep = "")
+    name = paste("v", parameterCode, "_validated", sep = "")
     
     .message(paste0("Adding data for ", name, " to NetCDF File(s)..."), config = config)
     
