@@ -99,8 +99,7 @@
   
   url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
                    endDate = endDate, service = "uv")
-  
-  print(url)
+
   
   xml <- RCurl::basicTextGatherer()
   
