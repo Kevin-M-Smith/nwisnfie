@@ -102,7 +102,6 @@
   print(params)
   print(startDate)
   print(endDate)
-  print("------")
   
   
   
@@ -110,6 +109,9 @@
   url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
                    endDate = endDate, service = "uv")
 
+  print(url)
+  print("------")
+  
   
   xml <- RCurl::basicTextGatherer()
   
