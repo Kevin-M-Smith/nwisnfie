@@ -125,9 +125,13 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
         
         subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, layersInSubset)
         
+        .message(layersInSubset, config = config)
+        
         subsetPaddedParamCast <- subsetPaddedParamCast[, -1]
         
         subsetPaddedParamCast <- data.matrix(subsetPaddedParamCast)
+        
+        .message(subsetPaddedParamCast, config = config)
         
         ncdf <- ncdf4::nc_open(queue$name[i], write = TRUE)
         
