@@ -79,7 +79,7 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
   AllNames <- mapply(c, 
                      NationalName,
-                     NFIEHydroNames,
+#                     NFIEHydroNames,
 #                      HUCL1Names,
 #                      HUCL2Names,
 #                      HUCL3Names,
@@ -89,7 +89,7 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
   AllSiteQueries <- mapply(c, 
                            NationalSites,
-                           NFIEHydroSites,
+#                           NFIEHydroSites,
 #                            HUCL1Sites,
 #                            HUCL2Sites,
 #                            HUCL3Sites,
