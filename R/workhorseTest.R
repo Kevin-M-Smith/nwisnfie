@@ -1,4 +1,4 @@
-DownloadAndBuildDayTest <- function(config, date = "2014-08-08") {
+DownloadAndBuildDayTest <- function(config, date = "2012-02-03") {
   
   ##############################
   #      SETUP CONNECTION
