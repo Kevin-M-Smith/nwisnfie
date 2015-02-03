@@ -123,11 +123,11 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
         subsetPaddedParamCast <- subset(paddedParamCast,
                                         subset = familyid %in% layersInSubset)
         
-        subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, layersInSubset)
+        subsetPaddedParamCast <- plyr::arrange(subsetPaddedParamCast, familyid)
         
-        .message(capture.output(print(layersInSubset)), config = config)
+        #.message(capture.output(print(layersInSubset)), config = config)
         
-        .message("=================", config = config)
+        #.message("=================", config = config)
         
         .message(capture.output(print(subsetPaddedParamCast[, 1])), config = config)
         
