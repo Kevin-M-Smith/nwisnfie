@@ -87,10 +87,10 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   #   Memory Management
   ###############################
   rm(siteMetadata, sensorMetadata, times)
-  
-  parallel::clusterEvalQ(cluster,{
-    rm(siteMetadata, sensorMetadata, times)
-  })
+  #
+  #parallel::clusterEvalQ(cluster,{
+  #  rm(siteMetadata, sensorMetadata, times)
+  #})
   
   ##############################
   #   
