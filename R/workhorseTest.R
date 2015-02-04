@@ -26,7 +26,7 @@ DownloadAndBuildDayTest <- function(config, date = "2012-02-03") {
     #      SPLIT SITES FOR DOWNLOAD
     #####################################
  #  mapSize controls how many sites are downloaded in a single REST call
-    mapSize = 50
+    mapSize = 100
     map <- unlist(lapply(allSites, as.character))
     map <- split(map, ceiling(seq_along(map)/mapSize))
    

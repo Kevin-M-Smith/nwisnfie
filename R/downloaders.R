@@ -59,49 +59,25 @@
 
 .DownloadDataFromNWIS <- function(sites, 
                                   params, 
-                                  startDate = NULL, 
-                                  endDate = NULL, 
-                                  period = NULL, 
+                                  startDate, 
+                                  endDate, 
                                   offset = NULL,
-                                  url = NULL,
-                                  tableName = config$tables$data,
+                                  tableName = NULL,
                                   config){
   
-#   if (is.null(url)) {
-#     url = "http://waterservices.usgs.gov/nwis/iv/?format=waterml,1.1"
-#     url = paste(url, "&sites=", sites, sep = "")  
-#     url = paste(url, "&parameterCd=", params, sep = "")
-#     
-#     if (is.null(startDate) || is.null(endDate)){
-#       if (is.null(period)){
-#         .stop("A lookback period or a pair of start 
-#             and end dates must be specified.", 
-#               config = config)
-#       } else {
-#         url = paste(url, "&period=", period, sep = "")  
-#       }
-#     } else {
-#       if (is.null(period)){
-#         if (is.null(offset)){
-#           url = paste(url, "&startDT=", startDate, "T00:00:00", sep = "")
-#           url = paste(url, "&endDT=", endDate, "T23:59:59", sep = "")
-#         } else {
-#           url = paste(url, "&startDT=", startDate, "T00:00:00", offset, sep = "")
-#           url = paste(url, "&endDT=", endDate, "T23:59:59", offset, sep = "")
-#         }
-#       } else {
-#         .stop("Please choose either a lookback period or a pair of start 
-#             and end dates, but not both.", 
-#               config = config)
-#       }
-#     }
-#   }
+  if(is.null(offset)){
+    startDate = paste0(startDate, "T00:00:00Z")
+    endDate   = paste0(startDate, "T23:59:59Z")
+  } else {
+    startDate = paste0(startDate, "T00:00:00", offset)
+    endDate   = paste0(  endDate, "T23:59:59", offset)    
+  }
   
-  startDate = paste0(startDate, "T00:00:00", offset)
-  endDate   = paste0(  endDate, "T23:59:59", offset)
-  
-  url <- dataRetrieval::constructNWISURL(siteNumber = sites, parameterCd = params, startDate = startDate,
-                   endDate = endDate, service = "uv")  
+  url <- dataRetrieval::constructNWISURL(siteNumber = sites, 
+                                         parameterCd = params, 
+                                         startDate = startDate,
+                                         endDate = endDate, 
+                                         service = "uv")  
   
   xml <- RCurl::basicTextGatherer()
   
@@ -193,7 +169,7 @@
   now <- format(Sys.time(), "%FT%T%z") 
   
   IsDataValidated <- function(x){
-    if(x == "P") 0 else 1
+    if(x == "A") 1 else 0
   }
   
   if(length(vars) > 0){
