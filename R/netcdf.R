@@ -83,15 +83,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   }
   cat("\n")
   
-  ###############################
-  #   Memory Management
-  ###############################
-  rm(siteMetadata, sensorMetadata, times, pos = 1)
-  #
-  #parallel::clusterEvalQ(cluster,{
-  #  rm(siteMetadata, sensorMetadata, times)
-  #})
-  
   ##############################
   #   
   #	  ADD VALUE AND VALIDATED
