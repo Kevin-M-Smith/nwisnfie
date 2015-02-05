@@ -8,7 +8,7 @@ time:
  utc.offset : -06:00
 
 collections:
- params : 00060,00065,00045,00095,00010,00062,00054,00036,00035
+ params : "00060,00065"
  lookback : P5W
  
 netcdf:
@@ -16,13 +16,13 @@ netcdf:
   # 2 DIGIT HUC
   huc_l1 : "/data/netcdf/iv/daily/huc_l1"
   # 4 DIGIT HUC
-  huc_l2 : "/data/netcdf/iv/huc_l2"
+  huc_l2 : "/data/netcdf/iv/daily/huc_l2"
   # 6 DIGIT HUC
-  huc_l3 : "/data/netcdf/iv/huc_l3"
+  huc_l3 : "/data/netcdf/iv/daily/huc_l3"
   # 8 DIGIT HUC
-  huc_l4 : "/data/netcdf/iv/huc_l4"
+  huc_l4 : "/data/netcdf/iv/daily/huc_l4"
   # NFIE-HYDRO
-  nfie_hydro : "/data/netcdf/iv/nfie_hydro"
+  nfie_hydro : "/data/netcdf/iv/daily/nfie_hydro"
 
 tables:
  data : data
