@@ -4,7 +4,8 @@ DownloadAndBuildDayTest <- function(config, date = "2012-02-03") {
   #      SETUP CONNECTION
   ##############################
   conn <- StartDBConnection(config)
-  cluster <- StartCluster(config)
+  cluster <- StartCluster(config, ncores = config$parallel$max.cores)
+  StartClusterDBConnections(cluster = cluster, config = config)
   
    ##############################
    #      GET SITES
@@ -82,8 +83,9 @@ DownloadAndBuildDayTest <- function(config, date = "2012-02-03") {
     
 #   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
 #   .DropDataTable(conn = conn, config = config, tableName = tableName)
-  
+
 StopDBConnection(conn = conn, config = config)
+StopClusterDBConnections(cluster = cluster, config = config)
 StopCluster(cluster = cluster, config = config)
 
 }

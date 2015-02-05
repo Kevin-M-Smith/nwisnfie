@@ -324,8 +324,9 @@ ON
   query <- paste("ALTER TABLE", config$tables$site.metadata,
                  "ADD COLUMN huc_l1 text,
                  ADD COLUMN huc_l2 text,
-                 ADD COLUMN huc_l3 text,
-                 ADD COLUMN huc_l4 text;")
+                 ADD COLUMN huc_l3 text;")
+  
+#                 ADD COLUMN huc_l4 text;")
   
   result <- RunQuery(conn = conn, 
                      query = query, 

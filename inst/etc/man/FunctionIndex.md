@@ -19,15 +19,7 @@ This page lists the files and respective functions in the `nwisnfie` package und
 #### Non-Exported: 
 * .DownloadAssetsForSites(sites, config)
 * .DownloadActiveSitesForState(state, config)
-* .DownloadDataFromNWIS(sites, 
-                                  params, 
-                                  startDate = NULL, 
-                                  endDate = NULL, 
-                                  period = NULL, 
-                                  offset = NULL,
-                                  url = NULL,
-                                  tableName = config$tables$data,
-                                  config)  
+* .DownloadDataFromNWIS(sites, params, startDate, endDate, offset = NULL, tableName, config)  
 
 ## [dynamic_tables.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/dynamic_tables.R)
 #### Non-Exported:
@@ -86,6 +78,8 @@ This page lists the files and respective functions in the `nwisnfie` package und
 * StartCluster(config)
 * StopCluster(cluster, config)
 * TestClusterSettings(config)
+* StartClusterDBConnection(cluster, config)     __@TODO: Undocumented__
+* StopClusterDBConnections(cluster, config)     __@TODO: Undocumented__
 
 ## [logging.R](https://github.com/Kevin-M-Smith/nwisnfie/tree/master/R/logging.R)
 #### Exported:

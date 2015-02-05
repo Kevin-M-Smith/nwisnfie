@@ -25,36 +25,12 @@
 NULL
 
 #' @rdname Parallelization
-StartCluster <- function(config){
+StartCluster <- function(config, ncores) {
   
   .message("Loading parallelization backend.", config = config)
   library(foreach)
   library(doParallel)
-    
-  if (config$parallel$max.cores == "NONE"){
-    ncores = parallel::detectCores()
-  } else if (is.numeric(config$parallel$max.cores)){
-    if (config$parallel$max.cores > parallel::detectCores()){
-      ncores = parallel::detectCores()
-    } else {
-      ncores = config$parallel$max.cores
-    }
-  } else {
-    warning("
-            Did not recognize configuration for parallel/max.cores. 
-            Defaulting to single core operations. 
-            
-            Please specify maximum number of cores numerically (e.g. 4) 
-              or NONE to use all available cores.
 
-            EXAMPLES
-            parallel:
-             max.cores: NONE
-
-            parallel:
-             max.cores: 2")
-  }
-  
   .message(paste("Attempting to start PSOCK cluster with", 
                  ncores, 
                  "workers."), 
@@ -68,7 +44,7 @@ StartCluster <- function(config){
              config = config)
   }
   
-
+  
   cluster <- parallel::makePSOCKcluster(names = ncores, outfile = "")
   
   doParallel::registerDoParallel(cluster)
@@ -76,24 +52,16 @@ StartCluster <- function(config){
   
   lapply(cluster, NewClusterMessage, config)
   
-  parallel::clusterEvalQ(cluster,{
-    conn2 <- nwisnfie::StartDBConnection(config = config)
-  })
-    
   return(cluster)
 }
 
 #' @rdname Parallelization
-StopCluster <- function(cluster, config){
+StopCluster <- function(cluster, config) {
   .message(paste("Attempting to stop ", 
                  capture.output(print(cluster)),
                  ".", 
                  sep = ""), 
            config = config)
-  
-  cc <- parallel::clusterEvalQ(cluster, {
-    DBI::dbDisconnect(conn2)
-  })
   
   cc <- parallel::stopCluster(cluster)
   
@@ -101,8 +69,30 @@ StopCluster <- function(cluster, config){
 }
 
 #' @rdname Parallelization
-TestClusterSettings <- function(config){
+TestClusterSettings <- function(config) {
   cluster <- StartCluster(config)
   StopCluster(cluster = cluster, config = config)
 }
 
+
+StartClusterDBConnections <- function(cluster, config) {
+  
+  .message("Starting database connections for each cluster worker.", config = config)
+  
+  parallel::clusterEvalQ(cluster,{
+    conn2 <- nwisnfie::StartDBConnection(config = config)
+  })
+    
+  return(NULL)
+}
+
+StopClusterDBConnections <- function(cluster, config) {
+  
+  .message("Attempting to close database connections for each cluster worker.", config = config)
+  
+  cc <- parallel::clusterEvalQ(cluster, {
+    DBI::dbDisconnect(conn2)
+  })
+
+  return(NULL)
+}

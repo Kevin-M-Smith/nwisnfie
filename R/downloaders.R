@@ -62,7 +62,7 @@
                                   startDate, 
                                   endDate, 
                                   offset = NULL,
-                                  tableName = NULL,
+                                  tableName,
                                   config){
   
   if(is.null(offset)){
