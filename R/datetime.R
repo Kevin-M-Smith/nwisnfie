@@ -1,4 +1,5 @@
 .ISO8601ToEpochTime <- function(ISO8601) {
+  print(typeof(ISO8601))
   time1 <- base::as.POSIXct(ISO8601, tz = "UTC") # use if coming from postgresql
   #time1 <- lubridate::fast_strptime(ISO8601, format="%Y-%m-%dT%H:%M:%OS%z")
   time0 <- base::as.POSIXct("1970-01-01 00:00:00", tz = "UTC")
