@@ -36,7 +36,8 @@ tables:
  url.stash : url_stash
 
 parallel:
- max.cores : NONE
+ max.downloaders : 4
+ max.builders : 2
 
 logging:
  level : INFO
