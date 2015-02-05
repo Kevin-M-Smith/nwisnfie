@@ -1,8 +1,11 @@
 SanityCheckNetCDF <- function(fileName, config) {
   
-  cluster <- StartCluster(config, ncores = config$parallel$max.cores)
+  cluster <- StartCluster(config, ncores = config$parallel$max.downloaders)
   
-  fileName = "~/Downloads/national_2014-05-05.nc"
+  parallel::clusterEvalQ(cluster,{
+    library(dataRetrieval)
+  })
+  
   ncdf <- ncdf4::nc_open(fileName)
   
   times <- ncdf4::ncvar_get(ncdf, "time")

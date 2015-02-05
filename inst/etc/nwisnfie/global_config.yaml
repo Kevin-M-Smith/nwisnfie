@@ -10,7 +10,8 @@ time:
 collections:
  params : "00060,00065"
  lookback : P5W
- 
+
+# netcdf subsets
 netcdf:
   national : "/data/netcdf/iv/daily/national"
   # 2 DIGIT HUC
@@ -43,3 +44,5 @@ logging:
  level : INFO
  time.stamp.format : "[%Y-%m-%d %H:%M:%S]"
  file : NULL
+ 
+tempdir: "/tmp"

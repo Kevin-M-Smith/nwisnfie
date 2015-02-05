@@ -1,0 +1,4 @@
+bulkLoadData(inputTableName, config) {
+  
+  
+}

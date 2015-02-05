@@ -478,7 +478,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   
   BuildSensorMetadataDim <- function(paramcd) {
     
-    maxChar <- max(nchar(subset(sensorMetadata, parm_cd == paramcd)$loc_web_ds))
+    maxChar <- max(nchar(subset(sensorMetadata, parm_cd == paramcd)$loc_web_ds), 1)
     
     if(is.null(maxChar) || maxChar < 1) {
       n = 1
