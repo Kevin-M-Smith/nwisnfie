@@ -1,4 +1,4 @@
-BuildSubsetQueue <- function(config) {
+BuildSubsetQueue <- function(suffix, config, conn) {
   
   buildFileNames <- function(subset) {
     switch(subset,
