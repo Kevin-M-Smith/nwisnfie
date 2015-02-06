@@ -53,7 +53,7 @@ BuildSubsetQueue <- function(suffix, config, conn) {
            })
   }
   
-  queries <- lapply(names(config$netcdf), buildFileNames)
+  queries <- lapply(names(config$netcdf), buildQueries)
   queries <- sapply(queries, c, recursive = TRUE)
   
   data.frame(name = unlist(fileNames, recursive = FALSE), 
