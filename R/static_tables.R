@@ -28,7 +28,7 @@ NULL
 PopulateStaticTables <- function(config) {
   conn <- StartDBConnection(config)
   
-  cluster <- StartCluster(config)
+  cluster <- StartCluster(config, ncores = config$parallel$max.downloaders)
   
   .PopulateParamCodes(conn = conn, config = config)
   .PopulateActiveSites(conn = conn, config = config)
