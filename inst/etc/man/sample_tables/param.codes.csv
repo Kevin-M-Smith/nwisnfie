@@ -1,0 +1,11 @@
+row.names,parameter_cd,parameter_group_nm,parameter_nm,casrn,srsname,parameter_units
+1,1,Information,"Location in cross section, distance from right bank looking upstream, feet",,,ft
+2,2,Information,"Location in cross section, distance from right bank looking upstream, percent",,,%
+3,3,Information,"Sampling depth, feet",,,ft
+4,5,Information,"Location in cross section, fraction of total depth, percent",,,%
+5,8,Information,Sample accounting number,,,nu
+6,9,Information,"Location in cross section, distance from left bank looking downstream, feet",,,ft
+7,22,Information,"Duration of exposure, sample or test, days",,,days
+8,23,Information,"Sample weight, pounds",,,lb
+9,24,Information,"Sample length, inches",,,in
+10,28,Information,"Agency analyzing sample, code",,,code

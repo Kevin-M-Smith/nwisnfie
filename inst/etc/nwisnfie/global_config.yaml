@@ -1,0 +1,48 @@
+db:
+ host : 127.0.0.1
+ name : postgres
+ user : postgres
+ pass : ""
+
+time:
+ utc.offset : -06:00
+
+collections:
+ params : "00060,00065"
+ lookback : P5W
+
+# netcdf subsets
+netcdf:
+  national : "/data/netcdf/iv/daily/national"
+  # 2 DIGIT HUC
+  huc_l1 : "/data/netcdf/iv/daily/huc_l1"
+  # 4 DIGIT HUC
+  huc_l2 : "/data/netcdf/iv/daily/huc_l2"
+  # 6 DIGIT HUC
+  huc_l3 : "/data/netcdf/iv/daily/huc_l3"
+  # 8 DIGIT HUC
+  huc_l4 : "/data/netcdf/iv/daily/huc_l4"
+  # NFIE-HYDRO
+  nfie_hydro : "/data/netcdf/iv/daily/nfie_hydro"
+
+tables:
+ data : data
+ staging.prefix : staging_
+ site.metadata : site_metadata
+ param.metadata : param_metadata
+ active.sites : active_sites
+ site.assets : site_assets
+ param.codes : param_codes
+ sensor.metadata : sensor_metadata
+ url.stash : url_stash
+
+parallel:
+ max.downloaders : 4
+ max.builders : 2
+
+logging:
+ level : INFO
+ time.stamp.format : "[%Y-%m-%d %H:%M:%S]"
+ file : NULL
+ 
+tempdir: "/tmp"

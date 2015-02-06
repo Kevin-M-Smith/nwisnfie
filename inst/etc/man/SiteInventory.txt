@@ -1,0 +1,60 @@
+# This is the type of file downloaded by .DownloadAssetsForSites(sites, config)
+#
+# http://waterservices.usgs.gov/nwis/site/?format=rdb,1.0&sites=01646500&seriesCatalogOutput=true&outputDataTypeCd=iv
+#
+# US Geological Survey
+# retrieved: 2015-02-05 21:19:45 EST	(vaas01)
+#
+# The Site File stores location and general information about groundwater,
+# surface water, and meteorological sites
+# for sites in USA.
+#
+# File-format description:  http://help.waterdata.usgs.gov/faq/about-tab-delimited-output
+# Automated-retrieval info: http://waterservices.usgs.gov/rest/Site-Service.html
+#
+# Contact:   gs-w_support_nwisweb@usgs.gov
+#
+# The following selected fields are included in this output:
+#
+#  agency_cd       -- Agency
+#  site_no         -- Site identification number
+#  station_nm      -- Site name
+#  site_tp_cd      -- Site type
+#  dec_lat_va      -- Decimal latitude
+#  dec_long_va     -- Decimal longitude
+#  coord_acy_cd    -- Latitude-longitude accuracy
+#  dec_coord_datum_cd -- Decimal Latitude-longitude datum
+#  alt_va          -- Altitude of Gage/land surface
+#  alt_acy_va      -- Altitude accuracy
+#  alt_datum_cd    -- Altitude datum
+#  huc_cd          -- Hydrologic unit code
+#  data_type_cd    -- Data type
+#  parm_cd         -- Parameter code
+#  stat_cd         -- Statistical code
+#  dd_nu           -- Internal database key
+#  loc_web_ds      -- Additional measurement description
+#  medium_grp_cd   -- Medium group code
+#  parm_grp_cd     -- Parameter group code
+#  srs_id          -- SRS ID
+#  access_cd       -- Access code
+#  begin_date      -- Begin date
+#  end_date        -- End date
+#  count_nu        -- Record count
+#
+agency_cd	site_no	station_nm	site_tp_cd	dec_lat_va	dec_long_va	coord_acy_cd	dec_coord_datum_cd	alt_va	alt_acy_va	alt_datum_cd	huc_cd	data_type_cd	parm_cd	stat_cd	dd_nu	loc_web_ds	medium_grp_cd	parm_grp_cd	srs_id	access_cd	begin_date	end_date	count_nu
+5s	15s	50s	7s	16s	16s	1s	10s	8s	3s	10s	16s	2s	5s	5s	5n	30s	3s	3s	5n	4n	20d	20d	5n
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00010		5	4.1 ft from riverbed (middle)	wat		1645597	0	2007-10-01	2015-02-05	2684
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00010		6	1.0 ft from riverbed (bottom)	wat		1645597	0	2007-10-01	2015-02-05	2684
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00010		7	[7.1 ft from riverbed (top)]	wat		1645597	0	2007-10-01	2015-02-05	2684
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00010		22	From multiparameter sonde	wat		1645597	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00060		1		wat		1645423	0	2007-10-01	2015-02-05	2684
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00065		2		wat		17164583	0	2014-10-08	2015-02-05	120
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00095		8		wat		1646694	0	2007-10-01	2015-02-05	2684
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00095		23	From multiparameter sonde	wat		1646694	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00300		15	From multiparameter sonde	wat		154302	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	00400		21	From multiparameter sonde	wat		17028275	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	32283		16	From multiparameter sonde	wat		86546	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	32295		20	From multiparameter sonde	wat		17294778	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	63680		14	From multiparameter sonde	wat		1640507	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	95204		17	From multiparameter sonde	wat		0	0	2013-11-22	2015-02-05	440
+USGS	01646500	POTOMAC RIVER NEAR WASH, DC LITTLE FALLS PUMP STA	ST	38.94977778	-77.12763889	S	NAD83	 37.20	 .1	NAVD88	02070008	uv	99133		10		wat		701177	0	2011-12-03	2015-02-05	1160

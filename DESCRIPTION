@@ -1,0 +1,12 @@
+Package: nwisnfie
+Type: Package
+Title: Facilitates data harvest from USGS National Water Information System and subsequent publication of data in NetCDF format. 
+Version: 0.1
+Date: 2015-01-05
+Author: Kevin-M-Smith (https://github.com/kevin-m-smith)
+Maintainer: Kevin Smith <Kevin.Smith@tufts.edu>
+Description: 
+License: GPL (>= 2)
+Suggests: testthat
+Imports: RPostgreSQL, DBI, yaml, XML, ncdf4, RCurl, dataRetrieval, foreach, parallel, doParallel, plyr, pryr, reshape2, lubridate, data.table
+Description: Facilitates data harvest from USGS National Water Information System and subsequent publication of data in NetCDF format. 
