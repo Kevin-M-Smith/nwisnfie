@@ -29,6 +29,7 @@ PopulateStaticTables <- function(config) {
   conn <- StartDBConnection(config)
   
   cluster <- StartCluster(config, ncores = config$parallel$max.downloaders)
+  StartClusterDBConnections(cluster = cluster, config = config)
   
   .PopulateParamCodes(conn = conn, config = config)
   .PopulateActiveSites(conn = conn, config = config)
@@ -36,6 +37,7 @@ PopulateStaticTables <- function(config) {
   .PopulateSiteMetadata(conn = conn, config = config)
   .PopulateSensorMetadata(conn = conn, config = config)
   
+  StopClusterDBConnections(cluster = cluster, config = config)
   StopCluster(cluster = cluster, config = config)
   StopDBConnection(conn = conn, config = config)
 }
