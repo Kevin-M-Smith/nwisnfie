@@ -1,4 +1,4 @@
-bulkLoadData(inputTableName, config) {
+bulkLoadData <- function(inputTableName, config) {
   
   
 }

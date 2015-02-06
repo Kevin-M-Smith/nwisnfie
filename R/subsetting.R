@@ -1,110 +1,72 @@
-BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
+BuildSubsetQueue <- function(config) {
   
-  HUCL1 <- .GetUniqueSubsets(config, subsetName = "huc_l1", conn = conn)
-  HUCL2 <- .GetUniqueSubsets(config, subsetName = "huc_l2", conn = conn)
-  HUCL3 <- .GetUniqueSubsets(config, subsetName = "huc_l3", conn = conn)
-  HUCL4 <- .GetUniqueSubsets(config, subsetName = "huc_cd", conn = conn)
-  NFIEHydro <- .GetUniqueSubsets(config, subsetName = "nfie_hydro_region_num", conn = conn)
+  buildFileNames <- function(subset) {
+    switch(subset,
+           national = {
+             prefix <- paste0(config$netcdf$national, "/", suffix)
+             dir.create(prefix, showWarnings = FALSE)
+             paste0(prefix, "/", "national", "_", suffix, ".nc")
+           },
+           nfie_hydro = { 
+             .BuildUniqueNames(config = config, 
+                               subsetName = "nfie_hydro_region_num",
+                               subsetMembers = .GetSubsetMembers(config, subsetName = "nfie_hydro_region_num", conn = conn),
+                               prefix = config$netcdf$nfie_hydro,
+                               suffix = suffix)
+           },
+           huc_l4 = {
+             .BuildUniqueNames(config = config, 
+                               subsetName = "huc_l4",
+                               subsetMembers = .GetSubsetMembers(config, subsetName = "huc_cd", conn = conn),
+                               prefix = config$netcdf$huc_l4, 
+                               suffix = suffix)
+           }, { 
+             .BuildUniqueNames(config = config, 
+                               subsetName = subset,
+                               subsetMembers = .GetSubsetMembers(config, subsetName = subset, conn = conn), 
+                               prefix = config$netcdf[[which(names(config$netcdf) == subset)]],
+                               suffix = suffix)
+           })
+  }
   
+  fileNames <- lapply(names(config$netcdf), buildFileNames)
+  fileNames <- sapply(fileNames, c, recursive = TRUE)
   
-  prefix <- paste0(config$netcdf$national, "/", suffix)
+  buildQueries <- function(subset) {
+    switch(subset,
+           national = {
+             .GetNationalQuery(config = config, conn = conn)
+           },
+           nfie_hydro = { 
+             .GetSubsetQueries(config = config, 
+                               subsetName = "nfie_hydro_region_num",
+                               subsetMembers = .GetSubsetMembers(config, subsetName = "nfie_hydro_region_num", conn = conn))
+           },
+           huc_l4 = {
+             .GetSubsetQueries(config = config, 
+                               subsetName = "huc_l4",
+                               subsetMembers = .GetSubsetMembers(config, subsetName = "huc_cd", conn = conn))
+           }, { 
+             .GetSubsetQueries(config = config,
+                               subsetName = subset,
+                               subsetMembers = .GetSubsetMembers(config, subsetName = subset, conn = conn))
+           })
+  }
   
-  dir.create(prefix, showWarnings = FALSE)
+  queries <- lapply(names(config$netcdf), buildFileNames)
+  queries <- sapply(queries, c, recursive = TRUE)
   
-  
-  
-  NationalName <-   paste0(prefix,
-                           "/",
-                           "national",
-                           "_",
-                           suffix,
-                           ".nc")
-  
-  HUCL1Names <- .BuildUniqueNames(config = config, 
-                                  subset = HUCL1, 
-                                  subsetName = "huc_l1",
-                                  prefix = config$netcdf$huc_l1, 
-                                  suffix = suffix)
-  
-  HUCL2Names <- .BuildUniqueNames(config = config, 
-                                  subset = HUCL2, 
-                                  subsetName = "huc_l2",
-                                  prefix = config$netcdf$huc_l2, 
-                                  suffix = suffix)
-  
-  HUCL3Names <- .BuildUniqueNames(config = config, 
-                                  subset = HUCL3, 
-                                  subsetName = "huc_l3",
-                                  prefix = config$netcdf$huc_l3, 
-                                  suffix = suffix)
-  
-  HUCL4Names <- .BuildUniqueNames(config = config, 
-                                  subset = HUCL4,
-                                  subsetName = "huc_l4",
-                                  prefix = config$netcdf$huc_l4, 
-                                  suffix = suffix)
-  
-  NFIEHydroNames <- .BuildUniqueNames(config = config, 
-                                      subset = NFIEHydro, 
-                                      subsetName = "nfie_hydro_region_num",
-                                      prefix = config$netcdf$nfie_hydro,
-                                      suffix = suffix)
-  
-  NationalSites <- .GetNationalSites(config = config, conn = conn)
-  
-  HUCL1Sites <- .GetSubsetSites(config = config,
-                                subset = HUCL1,
-                                subsetName = "huc_l1",
-                                conn = conn)
-  
-  HUCL2Sites <- .GetSubsetSites(config = config,
-                                subset = HUCL2,
-                                subsetName = "huc_l2",
-                                conn = conn)
-  
-  HUCL3Sites <- .GetSubsetSites(config = config,
-                                subset = HUCL3,
-                                subsetName = "huc_l3",
-                                conn = conn)
-  
-  HUCL4Sites <- .GetSubsetSites(config = config,
-                                subset = HUCL4,
-                                subsetName = "huc_cd",
-                                conn = conn)
-  
-  NFIEHydroSites <- .GetSubsetSites(config, 
-                                    subset = NFIEHydro,
-                                    subsetName = "nfie_hydro_region_num", 
-                                    conn = conn)
-  
-  AllNames <- mapply(c, 
-                     NationalName,
-                     NFIEHydroNames,
-                      HUCL1Names,
-                      HUCL2Names,
-#                      HUCL3Names,
-#                       HUCL4Names,
-                     SIMPLIFY = FALSE)
-  
-  
-  AllSiteQueries <- mapply(c, 
-                           NationalSites,
-                           NFIEHydroSites,
-                            HUCL1Sites,
-                            HUCL2Sites,
-#                            HUCL3Sites,
-#                            HUCL4Sites,
-                           SIMPLIFY = FALSE)
-  
-  data.frame(name = unlist(AllNames, recursive = FALSE), 
-             query = unlist(AllSiteQueries, recursive = FALSE),
+  data.frame(name = unlist(fileNames, recursive = FALSE), 
+             query = unlist(queries, recursive = FALSE),
              stringsAsFactors = FALSE)
   
 }
 
-.BuildUniqueNames <- function(config, subsetName, subset, prefix, suffix) {
+
+
+.BuildUniqueNames <- function(config, subsetName, subsetMembers, prefix, suffix) {
   
-  NameBuilder <- function(sub) {
+  NameBuilder <- function(member) {
     
     prefix <- paste0(prefix, "/", suffix)
     
@@ -114,17 +76,17 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
            "/",
            subsetName,
            "_",
-           sub,
+           member,
            "_",
            suffix,
            ".nc")
   }
   
-  lapply(subset, NameBuilder)
+  lapply(subsetMembers, NameBuilder)
   
 }
 
-.GetUniqueSubsets <- function(config, subsetName, conn) {
+.GetSubsetMembers <- function(config, subsetName, conn) {
   
   query <- paste0("select distinct ", 
                   subsetName, 
@@ -140,7 +102,7 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   
 }
 
-.GetNationalSites <- function(config, conn) {
+.GetNationalQuery <- function(config, conn) {
   query <- paste0("select familyid from ", 
                   config$tables$site.metadata,
                   ";")
@@ -148,18 +110,18 @@ BuildFileNamesAndLayerQueriesForAllSubsets <- function(suffix, config, conn) {
   list(query)
 }
 
-.GetSubsetSites <- function(config, subset, subsetName, conn) {
+.GetSubsetQueries <- function(config, subsetMembers, subsetName) {
   
-  SubsetSites <- function(sub) {
+  buildQuery <- function(member) {
     query <- paste0("select familyid from ", 
                     config$tables$site.metadata,
                     " where ",
                     subsetName,
                     " = '",
-                    sub,
+                    member,
                     "'; ")
   }
   
-  lapply(subset, SubsetSites)
+  lapply(subsetMembers, buildQuery)
 }
 
