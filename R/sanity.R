@@ -173,15 +173,15 @@ SanityCheckNetCDF <- function(fileName, config) {
       .debug(paste0("huc_cd", " : NCDF : ", testVarNCDF), config = config)
       
       testVarWXML <- unlist(XML::xpathApply(doc = doc, path = "//ns1:siteProperty[@name=\"stateCd\"]", fun = XML::xmlValue)) 
-      testVarNCDF <- ncdf4::ncvar_get(ncdf, "district_cd")[withData]
+      testVarNCDF <- ncdf4::ncvar_get(ncdf, "state_cd")[withData]
       testVarNCDF <- testVarNCDF[layerSelect]
       if(testVarWXML == testVarNCDF){
-        results <- rbind(results, c("district_cd", "PASS"))
+        results <- rbind(results, c("state_cd", "PASS"))
       } else {
-        results <- rbind(results, c("district_cd", "FAIL"))
+        results <- rbind(results, c("state_cd", "FAIL"))
       }
-      .debug(paste0("district_cd", " : WXML : ", testVarWXML), config = config)
-      .debug(paste0("district_cd", " : NCDF : ", testVarNCDF), config = config)
+      .debug(paste0("state_cd", " : WXML : ", testVarWXML), config = config)
+      .debug(paste0("state_cd", " : NCDF : ", testVarNCDF), config = config)
       
       # "47071" = StateCode: ("47") County Code: ("071")
       testVarWXML <- unlist(XML::xpathApply(doc = doc, path = "//ns1:siteProperty[@name=\"countyCd\"]", fun = XML::xmlValue)) 

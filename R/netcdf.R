@@ -75,7 +75,27 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                            siteMetadata = siteMetadataSubset, 
                            layers = layersInSubset, 
                            params = params, 
-                           config = config)                    
+                           config = config)    
+      
+      ncdf4::ncatt_put(ncdf, 
+                       varid   = "v00065_value",
+                       attname = "name",
+                       attval  = "Gage Height")
+      
+      ncdf4::ncatt_put(ncdf, 
+                       varid   = "v00065_value",
+                       attname = "units",
+                       attval  = "cubic feet per second")
+      
+      ncdf4::ncatt_put(ncdf, 
+                       varid   = "v00060_value",
+                       attname = "name",
+                       attval  = "Discharge")
+      
+      ncdf4::ncatt_put(ncdf, 
+                       varid   = "v00060_value",
+                       attname = "units",
+                       attval  = "feet")
       
       ncdf4::nc_close(ncdf)
       

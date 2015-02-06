@@ -308,6 +308,7 @@ ON
   b.tz_cd,
   b.agency_cd,
   b.district_cd,
+  b.state_cd,
   b.county_cd,
   b.country_cd
 INTO ", config$tables$site.metadata, 

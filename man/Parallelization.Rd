@@ -7,7 +7,7 @@
 \alias{TestClusterSettings}
 \title{Cluster Management}
 \usage{
-StartCluster(config)
+StartCluster(config, ncores)
 
 StopCluster(cluster, config)
 
