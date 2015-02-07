@@ -1,0 +1,74 @@
+varid,attname,attval
+0,comment,Provisional (Non-Compliant) File Apsiring to Conventions Noted 
+0,Conventions,CF-1.6
+0,Metadata_Conventions,Unidata Dataset Discovery v1.0
+0,featureType,timeSeries
+0,cdm_data_type,station
+0,nodc_template_version,NODC_NetCDF_TimeSeries_IncompleteTemplate_v1.1
+time,long_name,Seconds since 1970-01-01 00:00:00 0:00 GMT
+time,standard_name,time
+time,units,Seconds since 1970-01-01 00:00:00 0:00 GMT
+time,axis,T
+dec_lat_va,long_name,Latitude in Decimal Degrees North
+dec_lat_va,standard_name,latitude
+dec_lat_va,units,degrees_north
+dec_lat_va,valid_min,-90.000000
+dec_lat_va,valid_max,90.000000 
+dec_lat_va,axis,Y
+dec_long_va,long_name,Longitude in Decimal Degrees East
+dec_long_va,standard_name,longitude
+dec_long_va,units,degrees_east
+dec_long_va,valid_min,-180.000000
+dec_long_va,valid_max,180.000000
+dec_long_va,axis,Y
+familyid,long_name,Unique identifier for each feature instance.
+familyid,comment,The familyid is of the format [agency_cd:site_no:stat_cd:dd_nu].
+site_no,long_name,USGS Site Identification Number
+site_no,references,http://help.waterdata.usgs.gov/faq/sites/do-station-numbers-have-any-particular-meaning
+dd_nu,long_name,Method ID
+dd_nu,comment,"USGS uses this as an internal database key. There can be multiple dd_nu per variable at a given site, but they must be unique."
+station_nm,long_name,Name of Station
+site_tp_cd,long_name,Site Type Code
+site_tp_cd,references,http://waterdata.usgs.gov/usa/nwis/uv?codes_help#station_type_cd
+dec_coord_datum_cd,long_name,Latitude / Longitude (horizontal) Coordinate Datum
+dec_coord_datum_cd,references,http://waterdata.usgs.gov/usa/nwis/uv?codes_help#coord_datum_cd
+alt_va,long_name,Altitude of Gage / Land Surface
+alt_datum_cd,long_name,Altitude Datum Code
+huc_cd,long_name,USGS 8-digit Hydrologic Unit Code
+huc_cd,references,http://water.usgs.gov/GIS/huc_name.html
+huc_l1,long_name,USGS 2-digit Hydrologic Unit Code
+huc_l1,references,http://water.usgs.gov/GIS/huc_name.html
+huc_l2,long_name,USGS 4-digit Hydrologic Unit Code
+huc_l2,references,http://water.usgs.gov/GIS/huc_name.html
+huc_l3,long_name,USGS 6-digit Hydrologic Unit Code
+huc_l3,references,http://water.usgs.gov/GIS/huc_name.html
+tz_cd,long_name,Time Zone Code
+tz_cd,references,http://waterdata.usgs.gov/usa/nwis/uv?codes_help#tz
+agency_cd,long_name,Agency Code
+agency_cd,references,http://waterdata.usgs.gov/usa/nwis/nwis?search_criteria_help
+district_cd,long_name,District Code
+district_cd,comment,"The Water Science Centers (WSCs) across the United States use the FIPS state code as the district code. In some case, sites and samples may be managed by a water science center that is adjacent to the state in which the site actually resides. For example a site may have a district code of 30 which translates to Montana, but the state code could be 56 for Wyoming because that is where the site actually is located."
+district_cd,references,http://help.waterdata.usgs.gov/codes-and-parameters/codes
+state_cd,long_name,State Code
+state_cd,references,http://waterdata.usgs.gov/usa/nwis/uv?codes_help#fips_codes
+county_cd,long_name,County Code
+county_cd,references,http://waterdata.usgs.gov/usa/nwis/uv?codes_help#fips_codes
+country_cd,long_name,Country Code
+nfie_hydro_region_num,long_name,NFIE-Hydro Region Number
+nfie_hydro_region_name,long_name,NFIE-Hydro Region Name
+v00060_value,long_name,Discharge in Cubic Feet Per Second
+v00060_value,standard_name,Discharge
+v00060_value,units,cubic feet per second
+v00060_value,source,http://waterservices.usgs.gov/
+v00060_value,reference,http://help.waterdata.usgs.gov/codes-and-parameters/parameters
+v00060_validated,long_name,Discharge Data Validated Boolean
+v00060_validated,comment,"When data is approved by the USGS for publication, validated = 1, otherwise = 0. "
+v00060_description,long_name,Sensor Metadata
+v00065_value,long_name,Gage Height in Feet
+v00065_value,standard_name,Stage
+v00065_value,units,feet
+v00065_value,source,http://waterservices.usgs.gov/
+v00065_value,reference,http://help.waterdata.usgs.gov/codes-and-parameters/parameters
+v00065_validated,long_name,Discharge Data Validated Boolean
+v00065_validated,comment,"When data is approved by the USGS for publication, validated = 1, otherwise = 0. "
+v00065_description,long_name,Sensor Metadata

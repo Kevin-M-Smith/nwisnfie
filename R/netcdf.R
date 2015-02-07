@@ -77,25 +77,7 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                            params = params, 
                            config = config)    
       
-      ncdf4::ncatt_put(ncdf, 
-                       varid   = "v00065_value",
-                       attname = "name",
-                       attval  = "Gage Height")
-      
-      ncdf4::ncatt_put(ncdf, 
-                       varid   = "v00065_value",
-                       attname = "units",
-                       attval  = "cubic feet per second")
-      
-      ncdf4::ncatt_put(ncdf, 
-                       varid   = "v00060_value",
-                       attname = "name",
-                       attval  = "Discharge")
-      
-      ncdf4::ncatt_put(ncdf, 
-                       varid   = "v00060_value",
-                       attname = "units",
-                       attval  = "feet")
+      .AddAttributes(ncdf)
       
       ncdf4::nc_close(ncdf)
       
@@ -239,7 +221,6 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   }
   
   lapply(params, BulkAddValueAndValidatedVar)
-  
 }
 
 .PrepareNetCDF <- function(layers, times, params, siteMetadata, sensorMetadata, file, config){
@@ -782,4 +763,27 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
 }
 
 
+.AddAttributes <- function(ncdf){
+    
+  info <- capture.output(print(ncdf))
+
+  match <- function(varid){
+    (length(grep(paste0(varid, "\\["), info)) == 1)
+  }
+  
+  addAttribute <- function(attribute){
+    
+    
+    if(attribute["varid"] == 0 || match(attribute["varid"]) == TRUE){
+      ncdf4::ncatt_put(ncdf,
+                       varid = ifelse(attribute["varid"] == 0, 0, attribute["varid"]),
+                       attname = attribute["attname"],
+                       attval = attribute["attval"])
+    } 
+
+  }
+    
+  apply(variable_attributes, 1, addAttribute)
+}
+  
 
