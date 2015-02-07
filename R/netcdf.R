@@ -101,7 +101,16 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
       
     }    
   }
+  rm(cc)
   cat("\n")
+  
+  ######################################################
+  # Memory-Saver
+  ################  
+  dataFile <- tempfile()
+  save("data", file = dataFile)
+  rm(data)
+  ######################################################
   
   ##############################
   #   
@@ -113,14 +122,26 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
   
   BulkAddValueAndValidatedVar <- function(parameterCode) {
     
+    load(dataFile)
+    
     paddedParamFlat <- merge(x = paddedDataTable, 
                              y = subset(data, paramcd == parameterCode), 
                              all.x = TRUE, 
                              by = c("ts", "familyid"))
     
+    rm(data)
+    
     paddedParamCast <- reshape2::dcast(paddedParamFlat, 
                                        familyid ~ ts, 
                                        value.var = "value")
+    
+    ######################################################
+    # Memory-Saver
+    ################
+    paddedParamFlatFile <- tempfile()
+    save("paddedParamFlat", file = paddedParamFlatFile)
+    rm(paddedParamFlat)
+    ######################################################
     
     name = paste("v", parameterCode, "_value", sep = "")
     .message(paste0("Adding data for ", name, " to NetCDF File(s)..."), config = config)
@@ -156,18 +177,26 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                          vals = subsetPaddedParamCast, 
                          verbose = FALSE)  
         
+        rm(subsetPaddedParamCast)
+        
         ncdf4::nc_close(ncdf)
       }
     }
+    rm(cc)
     cat("\n")
     
     
     #############################################
     #   For Each Subset, Add Validated Vars
     #############################################
+    
+    load(paddedParamFlatFile)
+    
     paddedParamCast <- reshape2::dcast(paddedParamFlat, 
                                        familyid ~ ts, 
                                        value.var = "validated")
+    
+    rm(paddedParamFlatFile)
     
     name = paste("v", parameterCode, "_validated", sep = "")
     .message(paste0("Adding data for ", name, " to NetCDF File(s)..."), config = config)
@@ -200,9 +229,12 @@ BuildNetCDF <- function(data, queue, cluster, suffix, config, conn) {
                          vals = subsetPaddedParamCast, 
                          verbose = FALSE)  
         
+        rm(subsetPaddedParamCast)
+        
         ncdf4::nc_close(ncdf)
       }
     }
+    rm(cc)
     cat("\n")
   }
   
