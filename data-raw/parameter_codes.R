@@ -9,4 +9,4 @@ library(devtools)
 
 parameter_codes <- dataRetrieval::importRDB1("parameter_codes.rdb")
 setwd("../")
-devtools::use_data(parameter_codes, internal = TRUE)
+devtools::use_data(parameter_codes, internal = TRUE, overwrite = TRUE)
