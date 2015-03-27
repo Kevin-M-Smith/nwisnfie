@@ -1,6 +1,6 @@
 DownloadAndBuildHour <- function(config) {
   
-  date = "2015-03-25"
+  date = "rolling"
   
   ##############################
   #      SETUP CONNECTION
@@ -17,8 +17,7 @@ DownloadAndBuildHour <- function(config) {
   ##############################
   #      SETUP TABLE
   ##############################
-  tableName <- paste0(config$tables$staging.prefix, 
-                      gsub(pattern = "-", replacement = "_", date))
+  tableName <- "rolling"
   
   .CreateDataTable(conn = conn, config = config, tableName = tableName)
   .CreateDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
