@@ -43,20 +43,13 @@ DownloadAndBuildHour <- function(config) {
     setTxtProgressBar(pb, i)
     
     if(length(map[[i]]) > 1){
-      commaSeparated <- paste(map[[i]], collapse=',')
-      .DownloadDataFromNWIS(sites = map[[i]],
+      .DownloadHourlyDataFromNWIS(sites = map[[i]], 
                             params = unlist(strsplit(config$collections$params, split = ',')),
-                            startDate = date,
-                            endDate = date,
-                            offset = config$time$utc.offset, 
                             tableName = tableName,
                             config = config)
     } else {
-      .DownloadDataFromNWIS(sites = map[[i]],
+      .DownloadHourlyDataFromNWIS(sites = map[[i]],
                             params = unlist(strsplit(config$collections$params, split = ',')),
-                            startDate = date,
-                            endDate = date,
-                            offset = config$time$utc.offset, 
                             tableName = tableName,
                             config = config)
     }
