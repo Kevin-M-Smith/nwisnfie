@@ -14,7 +14,8 @@
                state,
                "&period=",
                config$collections$lookback,
-               "&siteOutput=expanded&hasDataTypeCd=iv,id",
+               "&siteOutput=expanded&hasDataTypeCd=iv,id&parameterCd=", 
+               config$collections$params,
                sep = "")
   
   active <- dataRetrieval::importRDB1(url)
