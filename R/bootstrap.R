@@ -66,3 +66,39 @@ DownloadDay <- function(config, date) {
 
   file.create(paste("~/receipts/", date)
 }
+
+BuildDay <- function(config, date) {
+
+  file.remove("~/receipts/", date)
+
+  #####################################
+  #      Prepare Bulk NetCDF Build
+  #####################################
+  cluster <- StartCluster(config, ncores = config$parallel$max.builders)
+  StartClusterDBConnections(cluster = cluster, config = config)
+  
+  .message(paste0("Building NetCDF Files for ", date, "..."), config = config)
+  
+  query <- paste0("select ts, familyid, value, paramcd, validated from \"", 
+                  tableName,
+                  "\";")
+  
+  data <- RunQuery(conn = conn,
+                   query = query,
+                   config = config)
+  
+  #####################################
+  #     Build All Subsets
+  #####################################
+  
+  queue <- BuildSubsetQueue(suffix = date, config = config, conn = conn)
+  BuildNetCDF(data = data, queue = queue, cluster = cluster, suffix = date, config = config, conn = conn)
+  
+  #   .DropDataTableUpsertTrigger(conn = conn, config = config, tableName = tableName)
+  #   .DropDataTable(conn = conn, config = config, tableName = tableName)
+  
+  StopClusterDBConnections(cluster = cluster, config = config)
+  StopDBConnection(conn = conn, config = config)
+  StopCluster(cluster = cluster, config = config)
+  
+}
