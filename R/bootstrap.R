@@ -64,12 +64,12 @@ DownloadDay <- function(config, date) {
   StopClusterDBConnections(cluster = cluster, config = config)
   StopCluster(cluster = cluster, config = config)
 
-  file.create(paste("~/receipts/", date)
+  file.create(paste("~/receipts/", date, sep = ""))
 }
 
 BuildDay <- function(config, date) {
 
-  file.remove("~/receipts/", date)
+  file.remove(paste("~/receipts/", date, sep = ""))
 
   #####################################
   #      Prepare Bulk NetCDF Build
