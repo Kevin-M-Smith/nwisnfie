@@ -65,9 +65,16 @@ DownloadDay <- function(config, date) {
   StopCluster(cluster = cluster, config = config)
 
   file.create(paste("~/receipts/", date, sep = ""))
+  StopDBConnection(conn = conn, config = config)
+
 }
 
 BuildDay <- function(config, date) {
+
+  ##############################
+  #      SETUP CONNECTION
+  ##############################
+  conn <- StartDBConnection(config)
 
   file.remove(paste("~/receipts/", date, sep = ""))
   
