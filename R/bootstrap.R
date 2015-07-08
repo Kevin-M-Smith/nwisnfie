@@ -70,6 +70,9 @@ DownloadDay <- function(config, date) {
 BuildDay <- function(config, date) {
 
   file.remove(paste("~/receipts/", date, sep = ""))
+  
+  tableName <- paste0(config$tables$staging.prefix, gsub(pattern = "-", replacement = "_", date))
+  
 
   #####################################
   #      Prepare Bulk NetCDF Build
@@ -98,8 +101,6 @@ BuildDay <- function(config, date) {
   #   .DropDataTable(conn = conn, config = config, tableName = tableName)
   
   StopClusterDBConnections(cluster = cluster, config = config)
-  
-  tableName <- paste0(config$tables$staging.prefix, gsub(pattern = "-", replacement = "_", date))
   
   query <- paste0("drop table \"", tableName, "\" cascade;")
   
